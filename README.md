@@ -1,2 +1,2 @@
-# springWebshop
+# Spring Webshop
 Examination Java Enterprise
