@@ -9,7 +9,7 @@ public class Product {
     private String fullImageUrl;
     private String thumbnailUrl;
     private ArrayList<ProductType> productTypes;
-    private ArrayList<ProductCategory> productCategories;
+//    private ArrayList<ProductCategory> productCategories;
 
 
 
