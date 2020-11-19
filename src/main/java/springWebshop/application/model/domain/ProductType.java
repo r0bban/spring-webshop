@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+
 @Data
 @Entity
 /**
@@ -15,7 +16,5 @@ public class ProductType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String name;
-    @ManyToOne
-    @JoinColumn
-    Product product;
+
 }
