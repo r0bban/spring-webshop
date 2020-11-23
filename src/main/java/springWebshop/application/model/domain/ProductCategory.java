@@ -1,6 +1,5 @@
 package springWebshop.application.model.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +11,4 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String name;
-    @ManyToOne
-    @JoinColumn
-    Product product;
 }
