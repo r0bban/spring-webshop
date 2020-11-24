@@ -1,8 +1,12 @@
 package springWebshop.application.config;
 
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springWebshop.application.integration.ProductCategoryRepository;
 import springWebshop.application.integration.ProductRepository;
 import springWebshop.application.integration.ProductTypeRepository;
@@ -10,20 +14,21 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductType;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Configuration
 public class BaseConfig {
-
-
+	@Autowired
+	ProductRepository productRepository;
+	@Autowired
+	ProductTypeRepository typeRepo;
+	@Autowired
+	ProductCategoryRepository catRepo;
     @Bean
-    public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo, ProductCategoryRepository catRepo) {
+    public CommandLineRunner testStuffInHere() {
 
         return (args) -> {
             System.out.println("Put custom code in this method for easy testing capabilities");
             ProductType productTypeNuevo = new ProductType("Typo nuevo");
+            productTypeNuevo.setId(0L);
 
             ProductType type1 = new ProductType();
             type1.setName("Furniture");
@@ -47,22 +52,36 @@ public class BaseConfig {
 
                 Product product = new Product();
                 product.setTitle("Product " + i);
-                Set<ProductType> productTypeSet = new HashSet<>();
-
-                productTypeSet.add(i < 51
-                        ? typeRepo.findByName("Furniture")
-                        : typeRepo.findByName("Tools"));
-                product.getProductCategories().add(i < 51
-                        ? catRepo.findByName("Sofa")
-                        : catRepo.findByName("Hammer"));
-
-                if (i % 3 == 0) {
-                    productTypeSet.add(typeRepo.findById(3L).get());
-                }
+                productRepository.save(product);
+//                Set<ProductType> productTypeSet = new HashSet<>();
+//
+//                productTypeSet.add(i < 51
+//                        ? typeRepo.findByName("Furniture")
+//                        : typeRepo.findByName("Tools"));
+//                product.getProductCategories().add(i < 51
+//                        ? catRepo.findByName("Sofa")
+//                        : catRepo.findByName("Hammer"));
+//
+//                if (i % 3 == 0) {
+//                    productTypeSet.add(typeRepo.findById(3L).get());
+//                }
 //                if(i == 77) productTypeSet.add(productTypeNuevo);
-                product.setProductTypes(productTypeSet);
+//                product.setProductTypes(productTypeSet);
+                
+                product.getProductTypes().add(i < 51
+                		? typeRepo.findByName("Furniture")
+                				: typeRepo.findByName("Tools"));
+                product.getProductCategories().add(i < 51
+                		? catRepo.findByName("Sofa")
+                				: catRepo.findByName("Hammer"));
+                
+                if (i % 3 == 0) {
+                	product.getProductTypes().add(typeRepo.findById(3L).get());
+                }
+                if(i == 77) product.addProductType(productTypeNuevo);
 
                 productRepository.save(product);
+                
             }
 
             productRepository.findAll().forEach(product ->

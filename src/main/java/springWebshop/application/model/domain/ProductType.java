@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GeneratorType;
+
 
 @Data
 @Entity
@@ -15,8 +17,9 @@ import javax.persistence.*;
  */
 public class ProductType {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
+    
     String name;
 
     public ProductType(String name) {

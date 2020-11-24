@@ -11,21 +11,28 @@ import java.util.Set;
 @Entity
 @Data
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private double basePrice;
-    private String title;
-    private String description;
-    private String fullImageUrl;
-    private String thumbnailUrl;
-    @ManyToMany(fetch = FetchType.EAGER)//, cascade = CascadeType.PERSIST)
-    private Set<ProductType> productTypes;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<ProductCategory> productCategories;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+	private double basePrice;
+	private String title;
+	private String description;
+	private String fullImageUrl;
+	private String thumbnailUrl;
 
-    public Product() {
-        this.productTypes = new HashSet<>();
-        this.productCategories = new HashSet<>();
-    }
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private Set<ProductType> productTypes;
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<ProductCategory> productCategories;
+
+	public Product() {
+		this.id = 0L;
+		this.productTypes = new HashSet<>();
+		this.productCategories = new HashSet<>();
+	}
+
+	public void addProductType(ProductType productType) {
+		productTypes.add(productType);
+	}
+	
 }
