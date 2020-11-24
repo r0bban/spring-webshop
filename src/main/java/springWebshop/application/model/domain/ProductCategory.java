@@ -6,6 +6,10 @@ import javax.persistence.*;
 
 @Entity
 @Data
+/**
+ * Product category is the second level of product segmentation.
+ * Such as Couch, Tables, Chairs etc.
+ */
 public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

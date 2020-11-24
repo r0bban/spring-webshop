@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,10 +19,13 @@ public class Product {
     private String description;
     private String fullImageUrl;
     private String thumbnailUrl;
+    @ManyToMany(fetch = FetchType.EAGER)//, cascade = CascadeType.PERSIST)
+    private Set<ProductType> productTypes;
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<ProductType> productTypes;
+    private Set<ProductCategory> productCategories;
 
     public Product() {
-        this.productTypes = new ArrayList<>();
+        this.productTypes = new HashSet<>();
+        this.productCategories = new HashSet<>();
     }
 }
