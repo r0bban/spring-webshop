@@ -22,7 +22,8 @@ public class Product {
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<ProductType> productTypes;
-	@ManyToMany(fetch = FetchType.EAGER)
+	
+	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<ProductCategory> productCategories;
 
 	public Product() {
@@ -33,6 +34,15 @@ public class Product {
 
 	public void addProductType(ProductType productType) {
 		productTypes.add(productType);
+	}
+	public void removeProductType(ProductType productType) {
+		productTypes.remove(productType);
+	}
+	public void addProductCategory(ProductCategory productCategory) {
+		productCategories.add(productCategory);
+	}
+	public void removeProductCategory(ProductCategory productCategory) {
+		productCategories.remove(productCategory);
 	}
 	
 }
