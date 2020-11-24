@@ -22,6 +22,7 @@ import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.domain.user.Company;
 import springWebshop.application.model.domain.user.Customer;
+import springWebshop.application.service.ProductSerivce;
 
 @Configuration
 public class BaseConfig {
@@ -37,27 +38,60 @@ public class BaseConfig {
 	@Autowired
 	CompanyRepository companyRepository;
 	
+	@Autowired
+	ProductSerivce productService;
+	
 	
     @Bean
     public CommandLineRunner testStuffInHere() {
-
+    	
+    	
         return (args) -> {
-            System.out.println("Put custom code in this method for easy testing capabilities");
-            productTypeCategoryTests();
-            
-        	companyCustomerTests();
+        
+//        	simpleServiceTest();
         	
-        	Optional<Product> product = productRepository.findById(4L);
-        	if(product.isPresent()) {
-        		System.out.println("Deleting:"+product.toString());
-        		productRepository.delete(product.get());
-        	}
+        	
+        	
+//            System.out.println("Put custom code in this method for easy testing capabilities");
+//            productTypeCategoryTests();
+//            
+//        	companyCustomerTests();
+//        	
+//        	Optional<Product> product = productRepository.findById(4L);
+//        	if(product.isPresent()) {
+//        		System.out.println("Deleting:"+product.toString());
+//        		productRepository.delete(product.get());
+//        	}
         	
         	
         };
 
 
     }
+
+	private void simpleServiceTest() {
+		ProductCategory existingCategory = new ProductCategory("Alpha");
+		catRepo.save(existingCategory);
+		for (int i = 0; i < 10; i++) {
+			Product product = new Product();
+			product.setName("" + i);
+			product.addProductCategory(new ProductCategory("" + (i-25)));
+			productService.save(product);
+		}
+		
+		
+		Optional<Product> product = productService.getProductByName("5");
+		if(product.isPresent()) {
+			System.out.println(product.get());
+		Product localProduct = product.get();	
+			localProduct.addProductCategory(new ProductCategory("Beta"));
+			Optional<ProductCategory> exCat = catRepo.findByName("Alpha");
+			if(exCat.isPresent())
+			localProduct.addProductCategory(exCat.get());
+			productService.save(localProduct);
+		}
+		productService.getAllProducts().forEach(p->System.out.println(p + "\n"));
+	}
 
 	private void companyCustomerTests() {
 		Company company1 = new Company();
@@ -120,15 +154,15 @@ public class BaseConfig {
 		for (int i = 0; i < 100; i++) {
 
 		    Product product = new Product();
-		    product.setTitle("Product " + i);
+		    product.setName("Product " + i);
 		    productRepository.save(product);
 		    
 		    product.addProductType(i < 51
-		    		? typeRepo.findByName("Furniture")
-		    				: typeRepo.findByName("Tools"));
+		    		? typeRepo.findByName("Furniture").get()
+		    				: typeRepo.findByName("Tools").get());
 		    product.getProductCategories().add(i < 51
-		    		? catRepo.findByName("Sofa")
-		    				: catRepo.findByName("Hammer"));
+		    		? catRepo.findByName("Sofa").get()
+		    				: catRepo.findByName("Hammer").get());
 		    
 		    if (i % 3 == 0) {
 		    	product.getProductTypes().add(typeRepo.findById(3L).get());
@@ -144,7 +178,7 @@ public class BaseConfig {
 		        System.out.println(product));
 
 		productRepository.findByProductTypes_Name("Grocery").forEach(product ->
-		        System.out.println(product.getTitle()
+		        System.out.println(product.getName()
 		                + product.getProductTypes()
 		                .stream()
 		                .map(ProductType::getName)
