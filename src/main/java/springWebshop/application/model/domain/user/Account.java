@@ -29,7 +29,7 @@ public abstract class Account {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	private String firstName;
 	private String lastName;
@@ -40,6 +40,13 @@ public abstract class Account {
 	
 	private int phoneNumber;
 	private int mobileNumber;
+	@Override
+	public String toString() {
+		return "Account [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", password=" + password
+				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", mobileNumber=" + mobileNumber + "]";
+	}
+	
+	
 
 	//	private String profileName;
 

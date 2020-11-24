@@ -19,5 +19,12 @@ public class Admin extends Account {
 
 	@ElementCollection
 	private List<AdminRole> roles;
+
+	@Override
+	public String toString() {
+		return "Admin [roles=" + roles + ", toString()=" + super.toString() + "]";
+	}
+	
+	
 	
 }
