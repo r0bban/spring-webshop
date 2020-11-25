@@ -1,5 +1,7 @@
 package springWebshop.application.model.dto;
 
+import java.util.List;
+
 public class ProductFormModel {
 
 	private long id;
@@ -13,6 +15,46 @@ public class ProductFormModel {
 	private String fullImageUrl;
 	
 	private String thumbnailUrl;
+	
+	private String newCategory;
+	
+	private String newType;
+	
+	private List<String> categories;
+	
+	private List<String> types;
+
+	public String getNewCategory() {
+		return newCategory;
+	}
+
+	public void setNewCategory(String newCategory) {
+		this.newCategory = newCategory;
+	}
+
+	public String getNewType() {
+		return newType;
+	}
+
+	public void setNewType(String newType) {
+		this.newType = newType;
+	}
+
+	public List<String> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+
+	public List<String> getTypes() {
+		return types;
+	}
+
+	public void setTypes(List<String> types) {
+		this.types = types;
+	}
 
 	public long getId() {
 		return id;
@@ -65,8 +107,10 @@ public class ProductFormModel {
 	@Override
 	public String toString() {
 		return "ProductFormModel [id=" + id + ", basePrice=" + basePrice + ", name=" + name + ", description="
-				+ description + "]";
+				+ description + ", newCategory=" + newCategory + ", newType=" + newType + "]";
 	}
+
+	
 	
 	
 	
