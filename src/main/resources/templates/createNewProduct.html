@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<style type="text/css">
+		.formLayout {
+			display: grid;
+			/* grid-auto-rows: auto;
+			grid-auto-columns: 30%; */
+		}
+
+		.containerLayout {
+			display: flex;
+			height: 100vh;
+			width: 40vw;
+			background-color: beige;
+
+		}
+	</style>
+	<meta charset="ISO-8859-1">
+	<title>Create a new Product here!</title>
+</head>
+
+<body>
+	<h2>Create your new product</h2>
+	<article class="containerLayout">
+		<section>
+
+			<form class="formLayout" th:object="${newProduct}" method="POST" th:action="@{/}">
+				<label>Name</label>
+				<input th:field="*{name}" type="text" />
+
+				<label>Price</label>
+				<input th:field="*{basePrice}" type="number" />
+
+				<label>Description</label>
+				<textarea th:field="*{description}"></textarea>
+				<input type="submit" value="Create!" />
+			</form>
+		</section>
+		<section>
+
+			<form class="formLayout" action="POST">
+				<select>
+					<optgroup label="Types">
+						<th:block th:each="type : ${types}">
+							<option th:text="${type.name}">Furniture</option>
+						</th:block>
+					</optgroup>
+				</select>
+				<input type="text" placeholder="Your own type" />
+				<input type="submit" value="Create new type!" />
+
+			</form>
+
+			<form class="formLayout" action="POST">
+				<select>
+					<optgroup label="Categories">
+						<th:block th:each="category : ${categories}">
+							<option th:text="${category.name}">Couches</option>
+						</th:block>
+					</optgroup>
+				</select>
+				<input type="text" placeholder="Your own type" />
+				<input type="submit" value="Create new category!" />
+
+			</form>
+
+		</section>
+
+	</article>
+
+
+
+</body>
+
+</html>
