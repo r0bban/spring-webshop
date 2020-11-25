@@ -71,16 +71,17 @@ public class ProductController {
 	
 	@PostMapping("/category/newCategory")
 	public String postCategory(ProductFormModel postData, Model model) {
-		System.out.println("Category:"+postData);
+		System.out.println("Category:"+postData.getNewCategory());
+		productCategoryService.save(new ProductCategory(postData.getNewCategory()));
 		model.addAttribute("newProduct", new ProductFormModel());
-		return "createNewProduct";
+		return "forward:/webshop/createNewProduct";
 	}
 	@PostMapping("/type/newType")
 	public String postType(ProductFormModel postData, Model model) {
-		System.out.println(postData.getNewType());
+		System.out.println("Type:"+postData.getNewType());
+		productTypeService.save(new ProductType(postData.getNewType()));
 		model.addAttribute("newProduct", new ProductFormModel());
-
-		return "createNewProduct";
+		return "forward:/webshop/";
 	}
 	
 	
