@@ -20,14 +20,13 @@ public class Product {
 	private String fullImageUrl;
 	private String thumbnailUrl;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<ProductType> productTypes;
 	
-	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<ProductCategory> productCategories;
 
 	public Product() {
-		this.id = 0L;
 		this.productTypes = new HashSet<>();
 		this.productCategories = new HashSet<>();
 	}
