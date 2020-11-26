@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import springWebshop.application.model.domain.ProductCategory;
-import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.service.ProductCategoryService;
 import springWebshop.application.service.ProductSerivce;
@@ -23,7 +23,7 @@ import springWebshop.application.service.ProductTypeService;
 @RequestMapping("webshop")
 public class ProductController {
 
-	@Autowired
+/*	@Autowired
 	ProductSerivce productService;
 	
 	@Autowired
@@ -37,7 +37,7 @@ public class ProductController {
 		return productCategoryService.getAllProductCategories();
 	}
 	@ModelAttribute("types")
-	private List<ProductType> getAllTypesFromService() {
+	private List<ProductSubCategory> getAllTypesFromService() {
 		return productTypeService.getAllProductTypes();
 	}
 	
@@ -45,13 +45,13 @@ public class ProductController {
 	
 	@PostConstruct
 	void init() {
-		productCategoryService.save(new ProductCategory("Tools"));
+*//*		productCategoryService.save(new ProductCategory("Tools"));
 		productCategoryService.save(new ProductCategory("Furniture"));
 		productCategoryService.save(new ProductCategory("Grocery"));
-		
-		productTypeService.save(new ProductType("Hammers"));
-		productTypeService.save(new ProductType("Couches"));
-		productTypeService.save(new ProductType("Ice Cream"));
+
+		productTypeService.save(new ProductSubCategory("Hammers"));
+		productTypeService.save(new ProductSubCategory("Couches"));
+		productTypeService.save(new ProductSubCategory("Ice Cream"));*//*
 	}
 	
 	
@@ -79,10 +79,10 @@ public class ProductController {
 	@PostMapping("/type/newType")
 	public String postType(ProductFormModel postData, Model model) {
 		System.out.println("Type:"+postData.getNewType());
-		productTypeService.save(new ProductType(postData.getNewType()));
+		productTypeService.save(new ProductSubCategory(postData.getNewType()));
 		model.addAttribute("newProduct", new ProductFormModel());
 		return "forward:/webshop/";
 	}
-	
+	*/
 	
 }

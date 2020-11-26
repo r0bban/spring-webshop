@@ -3,14 +3,14 @@ package springWebshop.application.service;
 import java.util.List;
 import java.util.Optional;
 
-import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.model.domain.ProductSubCategory;
 
 public interface ProductTypeService {
 	
-	boolean save(ProductType productType);
-	Optional<ProductType> getById(long id);
-	Optional<ProductType> getByName(String name);
-	List<ProductType> getAllProductTypes();
+	boolean save(ProductSubCategory productSubCategory);
+	Optional<ProductSubCategory> getById(long id);
+	Optional<ProductSubCategory> getByName(String name);
+	List<ProductSubCategory> getAllProductTypes();
 	
 	
 }

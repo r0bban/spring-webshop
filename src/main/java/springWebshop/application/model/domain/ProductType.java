@@ -4,25 +4,32 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import org.hibernate.annotations.GeneratorType;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Data
 @Entity
 @NoArgsConstructor
 /**
- * Product type is the highest level of product segmentation.
- * Such as Clothes, Home appliance, Tools etc.
+ * Product type is most specific (lowest) level of product segmentation
+ * which is a child entity of Product Subcategory.
  */
 public class ProductType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    
+
+    @NotBlank
     String name;
 
-    public ProductType(String name) {
+    @ManyToOne
+    @NotNull
+    private ProductSubCategory productSubCategory;
+
+    public ProductType(String name, ProductSubCategory productSubCategory) {
         this.name = name;
+        this.productSubCategory = productSubCategory;
     }
+
 }
