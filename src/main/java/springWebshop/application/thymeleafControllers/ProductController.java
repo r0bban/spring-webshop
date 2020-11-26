@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductType;
@@ -19,7 +20,8 @@ import springWebshop.application.service.ProductSerivce;
 import springWebshop.application.service.ProductTypeService;
 
 @Controller
-public class BaseThymeleafController {
+@RequestMapping("webshop")
+public class ProductController {
 
 	@Autowired
 	ProductSerivce productService;
@@ -56,7 +58,6 @@ public class BaseThymeleafController {
 	@GetMapping("/")
 	public String home(Model model) {
 		model.addAttribute("newProduct", new ProductFormModel());
-		
 		return "createNewProduct";
 	}
 	
@@ -66,6 +67,21 @@ public class BaseThymeleafController {
 		model.addAttribute("newProduct", new ProductFormModel());
 		
 		return "createNewProduct";
+	}
+	
+	@PostMapping("/category/newCategory")
+	public String postCategory(ProductFormModel postData, Model model) {
+		System.out.println("Category:"+postData.getNewCategory());
+		productCategoryService.save(new ProductCategory(postData.getNewCategory()));
+		model.addAttribute("newProduct", new ProductFormModel());
+		return "forward:/webshop/createNewProduct";
+	}
+	@PostMapping("/type/newType")
+	public String postType(ProductFormModel postData, Model model) {
+		System.out.println("Type:"+postData.getNewType());
+		productTypeService.save(new ProductType(postData.getNewType()));
+		model.addAttribute("newProduct", new ProductFormModel());
+		return "forward:/webshop/";
 	}
 	
 	
