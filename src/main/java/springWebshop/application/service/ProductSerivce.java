@@ -12,8 +12,8 @@ public interface ProductSerivce {
 	Optional<Product> getProductById();
 	Optional<Product> getProductByName(String string);
 	List<Product> getAllProducts();
-	boolean save(Product newProduct);
-	
-	
-	
+	Product create (Product newProduct);
+	Product update(Product updatedProduct);
+
+
 }

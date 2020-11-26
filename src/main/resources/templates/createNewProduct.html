@@ -28,13 +28,13 @@
 
 			<form class="formLayout" method="POST" th:action="@{/webshop/}">
 				<label>Name</label>
-				<input th:field="*{name}" type="text" />
+				<input th:field="*{domainProduct.name}" type="text" />
 
 				<label>Price</label>
-				<input th:field="*{basePrice}" type="number" />
+				<input th:field="*{domainProduct.basePrice}" type="number" />
 
 				<label>Description</label>
-				<textarea th:field="*{description}"></textarea>
+				<textarea th:field="*{domainProduct.description}"></textarea>
 				<input type="submit" value="Create!" />
 			</form>
 		</section>

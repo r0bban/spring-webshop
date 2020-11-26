@@ -1,8 +1,10 @@
 package springWebshop.application.config;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -20,55 +22,84 @@ import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.domain.user.Company;
 import springWebshop.application.model.domain.user.Customer;
 import springWebshop.application.service.ProductSerivce;
+import springWebshop.application.service.ServiceErrorMessages;
+import springWebshop.application.service.ServiceResponse;
 
 @Configuration
 public class BaseConfig {
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    ProductTypeRepository typeRepo;
-    @Autowired
-    ProductCategoryRepository catRepo;
-    @Autowired
-    ProductSubCategoryRepository subCatRepo;
+//    final
+//    ProductRepository productRepository;
+//    final
+//    ProductTypeRepository typeRepo;
+//    final
+//    ProductCategoryRepository catRepo;
+//    final
+//    ProductSubCategoryRepository subCatRepo;
+//
+//    final
+//    AccountRepository accountRepository;
+//    final
+//    CompanyRepository companyRepository;
 
-    @Autowired
-    AccountRepository accountRepository;
-    @Autowired
-    CompanyRepository companyRepository;
-
-    @Autowired
-    ProductSerivce productService;
-    @Autowired
-    private ThymeleafProperties properties;
+//    final
+//    ProductSerivce productService;
+    private final ThymeleafProperties properties;
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;
 
+    public BaseConfig(ThymeleafProperties properties) {
+//        this.productRepository = productRepository;
+//        this.typeRepo = typeRepo;
+//        this.catRepo = catRepo;
+//        this.subCatRepo = subCatRepo;
+//        this.accountRepository = accountRepository;
+//        this.companyRepository = companyRepository;
+//        this.productService = productService;
+        this.properties = properties;
+    }
+
     @Bean
-    public CommandLineRunner testStuffInHere() {
+    public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
+                                             ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
+                                             AccountRepository accountRepository, CompanyRepository companyRepository,
+                                             ProductSerivce productService) {
 
 
         return (args) -> {
-            ProductCategory category = new ProductCategory("Möbler");
-            catRepo.save(category);
+//            ProductCategory category = new ProductCategory("Möbler");
+//            catRepo.save(category);
+//
+//            ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
+//            subCatRepo.save(subCategory);
+//
+//            ProductSubCategory subCat2 = new ProductSubCategory();
+//            subCat2.setId(1L);
+//            ProductType prodType = new ProductType("Gungstol", subCat2);
+//            typeRepo.save(prodType);
+            Product product1 = new Product();
+            Product product2 = new Product();
+            ArrayList products = new ArrayList();
+            ArrayList errors = new ArrayList();
+            products.add(product1);
+            products.add(product2);
+            errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
 
-            ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
-            subCatRepo.save(subCategory);
+            ServiceResponse response = new ServiceResponse<Product>(products, errors);
 
-            ProductSubCategory subCat2 = new ProductSubCategory();
-            subCat2.setId(1L);
-            ProductType prodType = new ProductType("Gungstol", subCat2);
-            typeRepo.save(prodType);
+            System.out.println(response.isSucessful());
+            System.out.println(response.getResponseObjects());
+            System.out.println(response.getErrorMessages());
 
-            ProductType prodType2 = new ProductType();
-            prodType2.setId(1L);
-
-
-            Product product = new Product();
-            product.setName("Testprodukt");
-            product.setProductType(prodType2);
+//            ProductType prodType2 = new ProductType();
+//            prodType2.setName("finns inte");
+//            prodType2.setId(3L);
+//            Product product = new Product();
+//            product.setName("Testprodukt");
+//            product.setProductType(prodType2);
 //            product.setProductType(typeRepo.findByName("Gungstol").get());
-            productRepository.save(product);
+//            productRepository.save(product);
+//            productService.create(product);
+
 //            productTypeCategoryTests();
 //        	simpleServiceTest();
 
