@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 response.addResponseObject(product.get());
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind(id));
         }
         return response;
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         ServiceResponse<Product> response = new ServiceResponse<>();
         List<String> errors = new ArrayList<>();
 
-        if (isValidateNewProduct(newProduct, errors)) try {
+        if (isValidNewProduct(newProduct, errors)) try {
             response.addResponseObject(productRepository.save(newProduct));
         } catch (Exception e) {
             response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotCreate());
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         return response;
     }
 
-    private boolean isValidateNewProduct(Product newProduct, List<String> errors) {
+    private boolean isValidNewProduct(Product newProduct, List<String> errors) {
         boolean isValid = true;
         if (!isNewProduct(newProduct)) {
             isValid = false;

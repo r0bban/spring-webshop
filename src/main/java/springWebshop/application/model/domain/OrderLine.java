@@ -24,10 +24,12 @@ import lombok.Setter;
 public class OrderLine {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private int numberOfItems;
+	private long productId;
+
+	private int itemQuantity;
 
 	private double sum;
 	
