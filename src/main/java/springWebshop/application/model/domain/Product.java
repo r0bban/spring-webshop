@@ -19,6 +19,7 @@ public class Product {
 	private String description;
 	private String fullImageUrl;
 	private String thumbnailUrl;
+	private boolean published;
 
 	@ManyToOne
 	private ProductType productType;
