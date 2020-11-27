@@ -56,6 +56,7 @@ public class BaseConfig {
 
 
         return (args) -> {
+            //second rebase test
             // test
             ProductCategory category = new ProductCategory("Möbler");
             catRepo.save(category);
