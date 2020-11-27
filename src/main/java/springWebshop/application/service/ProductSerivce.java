@@ -9,15 +9,15 @@ import springWebshop.application.model.domain.Product;
 
 public interface ProductSerivce {
 	
-	Optional<Product> getProductById();
+	ServiceResponse<Product> getProductById();
 	//Todo decide list or unique
-	Optional<Product> getProductByName(String string);
-	List<Product> getAllProducts();
-	List<Product> getAllProducts(int page, int size);
-	Product create (Product newProduct);
-	Product update(Product updatedProduct);
-	List<Product> ProductBySegmentation(ProductSearchConfig productSearchConfig);
-	List<Product> ProductBySearchString(ProductSearchConfig productSearchConfig);
+	ServiceResponse<Product> getProductByName(String string);
+	ServiceResponse<Product> getAllProducts();
+	ServiceResponse<Product> getAllProducts(int page, int size);
+	ServiceResponse<Product> create (Product newProduct);
+	ServiceResponse<Product> update(Product updatedProduct);
+	ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig);
+	ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig);
 
 
 

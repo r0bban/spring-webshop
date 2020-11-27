@@ -45,11 +45,6 @@ public class ProductServiceImpl implements ProductSerivce {
 
     @Override
     public List<Product> getAllProducts(int page, int size) {
-//        List<Product> lista = productRepository.findAll(PageRequest.of(page, size)).getContent();
-//        System.out.println("//////////////////////////getContent//////////////");
-//        System.out.println(productRepository.findAll(PageRequest.of(page, size)));
-//        System.out.println("//////////////////////////getContent//////////////");
-//        System.out.println(lista);
         return productRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 
