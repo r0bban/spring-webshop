@@ -66,29 +66,50 @@ public class BaseConfig {
 
 
         return (args) -> {
-//            ProductCategory category = new ProductCategory("Möbler");
-//            catRepo.save(category);
-//
-//            ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
-//            subCatRepo.save(subCategory);
-//
-//            ProductSubCategory subCat2 = new ProductSubCategory();
-//            subCat2.setId(1L);
-//            ProductType prodType = new ProductType("Gungstol", subCat2);
-//            typeRepo.save(prodType);
-            Product product1 = new Product();
-            Product product2 = new Product();
-            ArrayList products = new ArrayList();
-            ArrayList errors = new ArrayList();
-            products.add(product1);
-            products.add(product2);
-            errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
+            ProductCategory category = new ProductCategory("Möbler");
+            catRepo.save(category);
 
-            ServiceResponse response = new ServiceResponse<Product>(products, errors);
+            ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
+            subCatRepo.save(subCategory);
 
-            System.out.println(response.isSucessful());
-            System.out.println(response.getResponseObjects());
-            System.out.println(response.getErrorMessages());
+            ProductSubCategory subCat2 = new ProductSubCategory();
+            subCat2.setId(1L);
+            ProductType prodType = new ProductType("Gungstol", subCat2);
+            typeRepo.save(prodType);
+
+            for (int i = 0; i < 100; i++) {
+                Product product1 = new Product();
+                product1.setName("Product " + i);
+                ProductType prodType2 = new ProductType();
+                prodType2.setId(1L);
+                product1.setProductType(prodType2);
+                productRepository.save(product1);
+//                productService.create(product1);
+            }
+
+//            System.out.println(productRepository.findByName(("Product 1")));
+
+//            System.out.println(productService.getAllProducts());
+
+//            System.out.println(productService.getAllProducts());
+            System.out.println("första TIO!!!");
+            productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
+            System.out.println("41 - 50!!!");
+            productService.getAllProducts(4,10).forEach(product -> System.out.println(product.getName()));
+
+//            Product product1 = new Product();
+//            Product product2 = new Product();
+//            ArrayList products = new ArrayList();
+//            ArrayList errors = new ArrayList();
+//            products.add(product1);
+//            products.add(product2);
+//            errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
+//
+//            ServiceResponse response = new ServiceResponse<Product>(products, errors);
+//
+//            System.out.println(response.isSucessful());
+//            System.out.println(response.getResponseObjects());
+//            System.out.println(response.getErrorMessages());
 
 //            ProductType prodType2 = new ProductType();
 //            prodType2.setName("finns inte");

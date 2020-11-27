@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GeneratorType;
 
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -49,4 +50,24 @@ public class ProductSubCategory {
         productTypes.remove(productType);
     }
 
+    @Override
+    public String toString() {
+        return "ProductSubCategory{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductSubCategory that = (ProductSubCategory) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
