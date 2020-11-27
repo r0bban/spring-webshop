@@ -1,11 +1,5 @@
 package springWebshop.application.config;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.core.JsonToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
@@ -19,11 +13,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.domain.user.Company;
-import springWebshop.application.model.domain.user.Customer;
-import springWebshop.application.service.ProductSerivce;
-import springWebshop.application.service.ServiceErrorMessages;
-import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.ProductService;
 
 @Configuration
 public class BaseConfig {
@@ -62,7 +52,7 @@ public class BaseConfig {
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
                                              AccountRepository accountRepository, CompanyRepository companyRepository,
-                                             ProductSerivce productService) {
+                                             ProductService productService) {
 
 
         return (args) -> {
@@ -80,22 +70,28 @@ public class BaseConfig {
             for (int i = 0; i < 100; i++) {
                 Product product1 = new Product();
                 product1.setName("Product " + i);
-                ProductType prodType2 = new ProductType();
-                prodType2.setId(1L);
-                product1.setProductType(prodType2);
-                productRepository.save(product1);
-//                productService.create(product1);
+//                ProductType prodType2 = new ProductType();
+//                prodType2.setId(1L);
+                product1.setProductType(prodType);
+//                productRepository.save(product1);
+                productService.create(product1);
             }
+
+            Product newProd2 = new Product();
+            ProductType type44 = new ProductType();
+            type44.setId(90L);
+            newProd2.setProductType(type44);
+            System.out.println(productService.create(newProd2).getErrorMessages());
 
 //            System.out.println(productRepository.findByName(("Product 1")));
 
 //            System.out.println(productService.getAllProducts());
 
 //            System.out.println(productService.getAllProducts());
-            System.out.println("första TIO!!!");
-            productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
-            System.out.println("41 - 50!!!");
-            productService.getAllProducts(4,10).forEach(product -> System.out.println(product.getName()));
+            System.out.println("0- 9!!!");
+            productService.getAllProducts().getResponseObjects().forEach(product -> System.out.println(product.getName()));
+            System.out.println("40 - 49!!!");
+            productService.getAllProducts(4).getResponseObjects().forEach(product -> System.out.println(product.getName()));
 
 //            Product product1 = new Product();
 //            Product product2 = new Product();

@@ -2,8 +2,6 @@ package springWebshop.application.thymeleafControllers;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +10,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.service.ProductCategoryService;
-import springWebshop.application.service.ProductSerivce;
+import springWebshop.application.service.ProductService;
 import springWebshop.application.service.ProductTypeService;
 
 @Controller
@@ -26,7 +23,7 @@ import springWebshop.application.service.ProductTypeService;
 public class ProductController {
 
 	@Autowired
-	ProductSerivce productService;
+    ProductService productService;
 	
 	@Autowired
 	ProductCategoryService productCategoryService;
