@@ -1,11 +1,5 @@
 package springWebshop.application.config;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.core.JsonToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -20,11 +14,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.domain.user.Company;
-import springWebshop.application.model.domain.user.Customer;
-import springWebshop.application.service.ProductSerivce;
-import springWebshop.application.service.ServiceErrorMessages;
-import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.ProductService;
 
 @Configuration
 public class BaseConfig {
@@ -83,6 +73,12 @@ public class BaseConfig {
 
 
         };
+
+            Product newProd2 = new Product();
+            ProductType type44 = new ProductType();
+            type44.setId(90L);
+            newProd2.setProductType(type44);
+            System.out.println(productService.create(newProd2).getErrorMessages());
 
 
     }

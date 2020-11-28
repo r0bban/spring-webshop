@@ -11,6 +11,6 @@ import springWebshop.application.model.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-//    List <Product> findByProductTypes_Name(final String typeName);
-    Optional<Product> findByName(String name);
+    //    List <Product> findByProductTypes_Name(final String typeName);
+    List<Product> findByName(String name);
 }

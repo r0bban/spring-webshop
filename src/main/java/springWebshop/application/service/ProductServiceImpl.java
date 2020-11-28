@@ -1,10 +1,10 @@
 package springWebshop.application.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import springWebshop.application.integration.ProductRepository;
@@ -12,10 +12,13 @@ import springWebshop.application.integration.ProductTypeRepository;
 import springWebshop.application.model.domain.Product;
 
 @Service
-public class ProductServiceImpl implements ProductSerivce {
+public class ProductServiceImpl implements ProductService {
 
     final ProductRepository productRepository;
     final ProductTypeRepository productTypeRepository;
+
+    final int defaultPageSize = 10;
+    final int maxPageSize = 30;
 
 
     public ProductServiceImpl(ProductRepository productRepository, ProductTypeRepository productTypeRepository) {
@@ -23,124 +26,131 @@ public class ProductServiceImpl implements ProductSerivce {
         this.productTypeRepository = productTypeRepository;
     }
 
-//    @Override
-//
-//    public Optional<Product> getProductById() {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public Optional<Product> getProductByName(String name) {
-//        return productRepository.findByName(name);
-//    }
-//
-//    @Override
-//    public List<Product> getAllProducts() {
-////        Pageable tenPerPage = PageRequest.of(0,10);
-////        List<Product> productList = productRepository.findAll(tenPerPage).getContent();
-////        return productList;
-//        return productRepository.findAll();
-//    }
-//
-//    @Override
-//    public List<Product> getAllProducts(int page, int size) {
-//        return productRepository.findAll(PageRequest.of(page, size)).getContent();
-//    }
-//
-//    @Override
-//    public Product create(Product newProduct) {
-//        if (!validProductType(newProduct))
-//            throw new RuntimeException("Could not create product since defined product type does not exist");
-//
-//        if (newProduct.getId() == 0L) {
-//            try {
-//                return productRepository.save(newProduct);
-//            } catch (Exception e) {
-//                throw new RuntimeException("Could not create new product" + e);
-//            }
-//        } else throw new RuntimeException("This is not a new product");
-//    }
-//
-//    @Override
-//    public Product update(Product updatedProduct) {
-//        if (productRepository.existsById(updatedProduct.getId())) {
-//            try {
-//                return productRepository.save(updatedProduct);
-//            } catch (IllegalArgumentException e) {
-//                throw new RuntimeException("Product found, but failed to update product with id: " + updatedProduct.getId() + e);
-//            }
-//        } else throw new RuntimeException("Could not find product id: " + updatedProduct.getId());
-//    }
-//
-//    @Override
-//    public List<Product> ProductBySegmentation(ProductSearchConfig productSearchConfig) {
-//        return null;
-//    }
-//
-//    @Override
-//    public List<Product> ProductBySearchString(ProductSearchConfig productSearchConfig) {
-//        return null;
-//    }
+    @Override
+    public ServiceResponse<Product> getProductById(long id) {
+        ServiceResponse<Product> response = new ServiceResponse<>();
+        try {
+            Optional<Product> product = productRepository.findById(id);
+            if (!product.isPresent()) {
+                response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind(id));
+            } else {
+                response.addResponseObject(product.get());
+            }
+        } catch (Exception e) {
+            response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind(id));
+        }
+        return response;
+    }
 
-    boolean validProductType(Product product) {
+    @Override
+    public ServiceResponse<Product> getProductByName(String name) {
+        ServiceResponse<Product> response = new ServiceResponse<>();
+        try {
+            response.setResponseObjects(productRepository.findByName(name));
+        } catch (Exception e) {
+            response.addErrorMessage("Problem occurred when searching for product");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<Product> getAllProducts() {
+        return getAllProductPageAndSize(0, defaultPageSize);
+    }
+
+    @Override
+    public ServiceResponse<Product> getAllProducts(int page, int size) {
+        return getAllProductPageAndSize(page, size);
+    }
+
+    @Override
+    public ServiceResponse<Product> getAllProducts(int page) {
+        return getAllProductPageAndSize(page, defaultPageSize);
+    }
+
+    private ServiceResponse<Product> getAllProductPageAndSize(int page, int size) {
+        ServiceResponse<Product> response = new ServiceResponse<>();
+        if (size <= maxPageSize) try {
+            response.setResponseObjects(productRepository.findAll(PageRequest.of(page, size)).getContent());
+        } catch (Exception e) {
+            response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind() + "s page " + page + ".");
+        }
+        else
+            response.addErrorMessage("You have requested " + size + "products. Max allowed page size is " + maxPageSize);
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<Product> create(Product newProduct) {
+        ServiceResponse<Product> response = new ServiceResponse<>();
+        List<String> errors = new ArrayList<>();
+
+        if (isValidNewProduct(newProduct, errors)) try {
+            response.addResponseObject(productRepository.save(newProduct));
+        } catch (Exception e) {
+            response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotCreate());
+        }
+        response.setErrorMessages(errors);
+        return response;
+    }
+
+    private boolean isValidNewProduct(Product newProduct, List<String> errors) {
+        boolean isValid = true;
+        if (!isNewProduct(newProduct)) {
+            isValid = false;
+            errors.add("Product id is provided. Id should not be provided for a new product");
+        }
+        if (!hasValidProductType(newProduct)) {
+            isValid = false;
+            errors.add("Provided product type does not exist. New Product must be associated to existing Product Type.");
+        }
+        return isValid;
+    }
+
+    @Override
+    public ServiceResponse<Product> update(Product updatedProduct) {
+        ServiceResponse<Product> response = new ServiceResponse<>();
+        List<String> errors = new ArrayList<>();
+
+        if (isExistingProduct(updatedProduct, errors)) {
+            try {
+                response.addResponseObject(productRepository.save(updatedProduct));
+            } catch (Exception e) {
+                response.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotUpdate(updatedProduct.getId()));
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig) {
+        return null;
+    }
+
+    boolean hasValidProductType(Product product) {
         return product.getProductType() != null
                 ? productTypeRepository.existsById(product.getProductType().getId())
                 : false;
     }
 
-	@Override
-	public ServiceResponse<Product> getProductById() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    boolean isNewProduct(Product product) {
+        return product.getId() == 0L
+                ? true
+                : false;
+    }
 
-	@Override
-	public ServiceResponse<Product> getProductByName(String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> getAllProducts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> getAllProducts(int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> create(Product newProduct) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> update(Product updatedProduct) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> getProductById(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    boolean isExistingProduct(Product product, List<String> errors) {
+        boolean isExisting = true;
+        if (!productRepository.existsById(product.getId())) {
+            isExisting = false;
+            errors.add(ServiceErrorMessages.PRODUCT.couldNotFind(product.getId()));
+        }
+        return isExisting;
+    }
 
 }
