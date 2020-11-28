@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Products Page</title>
+    <style>
+        .container {
+            display: flex;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Welcome to all products page</h1>
+    <article class="container">
+
+        <section>
+            <th:body th:each="product : ${allProducts}">
+
+                <h2 th:text="${product.name}">test</h2>
+                <ul>
+                    <li th:text="|Id: ${product.id}|"></li>
+                    <li th:text="|basePrice: ${product.basePrice}|"></li>
+                    <li th:text="|description: ${product.description}|"></li>
+                    <li th:text="|fullImageUrl: ${product.fullImageUrl}|"></li>
+                    <li th:text="|thumbnailUrl: ${product.thumbnailUrl}|"></li>
+
+                </ul>
+                <h3>Product Type</h3>
+                <div>
+                    <p th:text="${product.productType}"></p>
+
+                </div>
+
+
+
+
+            </th:body>
+            <a th:if="${currentPage > 0}" th:href="@{/webshop/products/${currentPage}}">Back</a>
+            <a>Next</a>
+        </section>
+
+        <section th:object="${newProduct}">
+
+            <form class="formLayout" method="POST" th:action="@{/webshop/products}">
+                <label>Name</label>
+                <input th:field="*{name}" type="text" />
+
+                <label>Price</label>
+                <input th:field="*{basePrice}" type="text" />
+
+                <label>Description</label>
+                <textarea th:field="*{description}"></textarea>
+                <input type="submit" value="Create!" />
+            </form>
+        </section>
+
+
+
+    </article>
+
+</body>
+
+</html>

@@ -18,6 +18,7 @@ public interface ProductSerivce {
 	ServiceResponse<Product> update(Product updatedProduct);
 	ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig);
 	ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig);
+	ServiceResponse<Product> getProductById(long id);
 
 
 

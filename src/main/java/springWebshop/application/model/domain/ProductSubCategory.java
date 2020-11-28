@@ -70,4 +70,8 @@ public class ProductSubCategory {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+	public @NotBlank String getFullyQualifiedName() {
+		return productCategory.getFullyQualifiedName() + "/" + name ;
+	}
 }

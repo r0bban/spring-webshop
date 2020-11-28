@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
@@ -57,90 +58,82 @@ public class BaseConfig {
 //        this.productService = productService;
         this.properties = properties;
     }
+    
+    @Autowired 
+//    @Qualifier("productServiceMockImpl")
+    ProductSerivce productService;
 
     @Bean
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
-                                             AccountRepository accountRepository, CompanyRepository companyRepository,
-                                             ProductSerivce productService) {
+                                             AccountRepository accountRepository, CompanyRepository companyRepository
+                                             ) {
 
 
         return (args) -> {
-            ProductCategory category = new ProductCategory("Möbler");
-            catRepo.save(category);
 
-            ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
-            subCatRepo.save(subCategory);
-
-            ProductSubCategory subCat2 = new ProductSubCategory();
-            subCat2.setId(1L);
-            ProductType prodType = new ProductType("Gungstol", subCat2);
-            typeRepo.save(prodType);
-
-            for (int i = 0; i < 100; i++) {
-                Product product1 = new Product();
-                product1.setName("Product " + i);
-                ProductType prodType2 = new ProductType();
-                prodType2.setId(1L);
-                product1.setProductType(prodType2);
-                productRepository.save(product1);
-//                productService.create(product1);
-            }
-
-//            System.out.println(productRepository.findByName(("Product 1")));
-
-//            System.out.println(productService.getAllProducts());
-
-//            System.out.println(productService.getAllProducts());
-            System.out.println("första TIO!!!");
-            productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
-            System.out.println("41 - 50!!!");
-            productService.getAllProducts(4,10).forEach(product -> System.out.println(product.getName()));
-
-//            Product product1 = new Product();
-//            Product product2 = new Product();
-//            ArrayList products = new ArrayList();
-//            ArrayList errors = new ArrayList();
-//            products.add(product1);
-//            products.add(product2);
-//            errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
-//
-//            ServiceResponse response = new ServiceResponse<Product>(products, errors);
-//
-//            System.out.println(response.isSucessful());
-//            System.out.println(response.getResponseObjects());
-//            System.out.println(response.getErrorMessages());
-
-//            ProductType prodType2 = new ProductType();
-//            prodType2.setName("finns inte");
-//            prodType2.setId(3L);
-//            Product product = new Product();
-//            product.setName("Testprodukt");
-//            product.setProductType(prodType2);
-//            product.setProductType(typeRepo.findByName("Gungstol").get());
-//            productRepository.save(product);
-//            productService.create(product);
-
-//            productTypeCategoryTests();
-//        	simpleServiceTest();
-
-
-//            System.out.println("Put custom code in this method for easy testing capabilities");
-//            productTypeCategoryTests();
-//
-//        	companyCustomerTests();
-//
-//        	Optional<Product> product = productRepository.findById(4L);
-//        	if(product.isPresent()) {
-//        		System.out.println("Deleting:"+product.toString());
-//        		productRepository.delete(product.get());
-//        	}
+//        	productService.getAllProducts().getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
+//        	System.out.println();
+//        	productService.getAllProducts(2, 2).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
+//        	System.out.println();
+//        	System.out.println();
+//        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
+//        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
+//        	
 
 
         };
 
 
     }
+    
+    private void testingServiceResponseClass() {
+    	Product product1 = new Product();
+      Product product2 = new Product();
+      ArrayList products = new ArrayList();
+      ArrayList errors = new ArrayList();
+      products.add(product1);
+      products.add(product2);
+      errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
+      ServiceResponse response = new ServiceResponse<Product>(products, errors);
+      System.out.println(response.isSucessful());
+      System.out.println(response.getResponseObjects());
+      System.out.println(response.getErrorMessages());
+    }
+
+	private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
+			ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
+			ProductSerivce productService) {
+		ProductCategory category = new ProductCategory("Möbler");
+		catRepo.save(category);
+
+		ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
+		subCatRepo.save(subCategory);
+
+		ProductSubCategory subCat2 = new ProductSubCategory();
+		subCat2.setId(1L);
+		ProductType prodType = new ProductType("Gungstol", subCat2);
+		typeRepo.save(prodType);
+
+		for (int i = 0; i < 100; i++) {
+		    Product product1 = new Product();
+		    product1.setName("Product " + i);
+		    ProductType prodType2 = new ProductType();
+		    prodType2.setId(1L);
+		    product1.setProductType(prodType2);
+		    productRepository.save(product1);
+		}
+
+		System.out.println(productRepository.findByName(("Product 1")));
+
+		System.out.println(productService.getAllProducts());
+
+		System.out.println(productService.getAllProducts());
+		System.out.println("första TIO!!!");
+//		productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
+		System.out.println("41 - 50!!!");
+//		productService.getAllProducts(4,10).forEach(product -> System.out.println(product.getName()));
+	}
 //
 //    private void simpleServiceTest() {
 //        ProductCategory existingCategory = new ProductCategory("Alpha");

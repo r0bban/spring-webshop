@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -70,6 +71,24 @@ public class ProductController {
 		postData.getDomainProduct().setProductType(new ProductType());
         productService.create(postData.getDomainProduct());
 		return "createNewProduct";
+	}
+	
+	
+	@GetMapping("products/{page}")
+	public String getAllProducts(@PathVariable("page") int page, Model m) {
+		m.addAttribute("newProduct",new Product());
+		m.addAttribute("currentPage", page);
+		m.addAttribute("allProducts", productService.getAllProducts(page,2).getResponseObjects());
+			
+		return "displayProducts";
+	}
+	@PostMapping("products")
+	public String postProduct(Product product, Model m) {
+		System.out.println(product);
+		productService.create(product);
+		m.addAttribute("newProduct",new Product());
+		m.addAttribute("allProducts", productService.getAllProducts(0,2).getResponseObjects());
+		return "displayProducts";
 	}
 //
 //	@PostMapping("/category/newCategory")

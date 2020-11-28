@@ -3,6 +3,8 @@ package springWebshop.application.model.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -56,4 +58,8 @@ public class ProductCategory {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+	public @NotBlank String getFullyQualifiedName() {
+		return name;
+	}
 }

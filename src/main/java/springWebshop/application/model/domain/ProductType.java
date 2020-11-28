@@ -32,4 +32,14 @@ public class ProductType {
         this.productSubCategory = productSubCategory;
     }
 
+	@Override
+	public String toString() {
+		return "ProductType [name=" + name + ", productSubCategory=" + productSubCategory.getName() + "]";
+	}
+    
+	public String getFullyQualifiedName() {
+		return productSubCategory.getFullyQualifiedName() + "/" +  name;
+	}
+    
+
 }
