@@ -1,6 +1,8 @@
 package springWebshop.application.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
@@ -9,12 +11,19 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import springWebshop.application.integration.*;
+import springWebshop.application.integration.AccountRepository;
+import springWebshop.application.integration.CompanyRepository;
+import springWebshop.application.integration.ProductCategoryRepository;
+import springWebshop.application.integration.ProductRepository;
+import springWebshop.application.integration.ProductSubCategoryRepository;
+import springWebshop.application.integration.ProductTypeRepository;
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.service.ProductService;
+import springWebshop.application.service.ProductSerivce;
+import springWebshop.application.service.ServiceErrorMessages;
+import springWebshop.application.service.ServiceResponse;
 
 @Configuration
 public class BaseConfig {
@@ -74,11 +83,6 @@ public class BaseConfig {
 
         };
 
-            Product newProd2 = new Product();
-            ProductType type44 = new ProductType();
-            type44.setId(90L);
-            newProd2.setProductType(type44);
-            System.out.println(productService.create(newProd2).getErrorMessages());
 
 
     }
