@@ -87,14 +87,14 @@ public class ProductController {
 		return "displayProducts";
 	}
 
-	@PostMapping("products")
-	public String postProduct(Product product, Model m) {
-		System.out.println(product);
-		productService.create(product);
-		m.addAttribute("newProduct", new Product());
-		m.addAttribute("allProducts", productService.getAllProducts(0, 2).getResponseObjects());
-		return "displayProducts";
-	}
+//	@PostMapping("products")
+//	public String postProduct(Product product, Model m) {
+//		System.out.println(product);
+//		productService.create(product);
+//		m.addAttribute("newProduct", new Product());
+//		m.addAttribute("allProducts", productService.getAllProducts(0, 2).getResponseObjects());
+//		return "displayProducts";
+//	}
 //
 //	@PostMapping("/category/newCategory")
 //	public String postCategory(ProductFormModel postData, Model model) {

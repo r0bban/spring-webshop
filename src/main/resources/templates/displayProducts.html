@@ -7,6 +7,23 @@
     <style>
         .container {
             display: flex;
+            flex-direction: column;
+
+
+        }
+
+        section {
+            margin: 2% 0;
+        }
+
+        .productContainer {
+            display: grid;
+            grid-template-columns: repeat(5, auto);
+
+            background-color: darkgrey;
+            border: solid crimson 1px;
+
+
         }
     </style>
 
@@ -18,18 +35,18 @@
         th:href="@{/webshop/products/{page}(page=__${currentPage-1>1?currentPage-1:''}__)}">Back</a>
     <a th:href="@{/webshop/products/{page}(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
     <article class="container">
-        <section>
+        <section class="productContainer">
             <th:body th:each="product : ${allProducts}">
 
                 <h2 th:text="${product.name}">test</h2>
-                <ul>
+                <!--  <ul>
                     <li th:text="|Id: ${product.id}|"></li>
                     <li th:text="|basePrice: ${product.basePrice}|"></li>
                     <li th:text="|description: ${product.description}|"></li>
                     <li th:text="|fullImageUrl: ${product.fullImageUrl}|"></li>
                     <li th:text="|thumbnailUrl: ${product.thumbnailUrl}|"></li>
 
-                </ul>
+                </ul> -->
                 <h3>Product Type</h3>
                 <div>
                     <p th:text="${product.productType}"></p>
@@ -43,8 +60,8 @@
 
 
         </section>
-
-        <section th:object="${newProduct}">
+        <!-- Save this for admin UI -->
+        <!-- <section th:object="${newProduct}">
 
             <form class="formLayout" method="POST" th:action="@{/webshop/products}">
                 <label>Name</label>
@@ -57,7 +74,7 @@
                 <textarea th:field="*{description}"></textarea>
                 <input type="submit" value="Create!" />
             </form>
-        </section>
+        </section> -->
 
 
 
