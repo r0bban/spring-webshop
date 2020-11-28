@@ -21,7 +21,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.service.ProductSerivce;
+import springWebshop.application.service.ProductService;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
@@ -60,7 +60,7 @@ public class BaseConfig {
     
     @Autowired 
 //    @Qualifier("productServiceMockImpl")
-    ProductSerivce productService;
+    ProductService productService;
 
     @Bean
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
@@ -70,7 +70,7 @@ public class BaseConfig {
 
 
         return (args) -> {
-
+        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
 //        	productService.getAllProducts().getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	System.out.println();
 //        	productService.getAllProducts(2, 2).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
@@ -102,8 +102,7 @@ public class BaseConfig {
     }
 
 	private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
-			ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
-			ProductSerivce productService) {
+			ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
 		ProductCategory category = new ProductCategory("Möbler");
 		catRepo.save(category);
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import springWebshop.application.integration.ProductTypeRepository;
 import springWebshop.application.model.domain.Product;
 
 @Service
+@Primary
 public class ProductServiceImpl implements ProductService {
 
     final ProductRepository productRepository;

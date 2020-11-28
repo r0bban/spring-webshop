@@ -14,8 +14,10 @@
 
 <body>
     <h1>Welcome to all products page</h1>
+    <a th:if="${currentPage > 0}"
+        th:href="@{/webshop/products/{page}(page=__${currentPage-1>1?currentPage-1:''}__)}">Back</a>
+    <a th:href="@{/webshop/products/{page}(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
     <article class="container">
-
         <section>
             <th:body th:each="product : ${allProducts}">
 
@@ -38,8 +40,8 @@
 
 
             </th:body>
-            <a th:if="${currentPage > 0}" th:href="@{/webshop/products/${currentPage}}">Back</a>
-            <a>Next</a>
+
+
         </section>
 
         <section th:object="${newProduct}">

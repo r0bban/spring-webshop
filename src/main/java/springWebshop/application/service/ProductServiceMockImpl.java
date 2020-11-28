@@ -1,8 +1,6 @@
 package springWebshop.application.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,8 +13,7 @@ import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 
 @Service
-@Primary
-public class ProductServiceMockImpl implements ProductSerivce {
+public class ProductServiceMockImpl implements ProductService {
 
 	List<Product> productStore;
 	static int idGenerator = 0;
@@ -86,6 +83,7 @@ public class ProductServiceMockImpl implements ProductSerivce {
 
 	@Override
 	public ServiceResponse<Product> getAllProducts() {
+		System.out.println("Mock GetAllProducts");
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
 		responseObjects.addAll(productStore);
@@ -148,9 +146,10 @@ public class ProductServiceMockImpl implements ProductSerivce {
 	}
 
 	@Override
-	public ServiceResponse<Product> getProductById() {
+	public ServiceResponse<Product> getAllProducts(int page) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
