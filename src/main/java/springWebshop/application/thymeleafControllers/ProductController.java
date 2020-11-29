@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.ProductFormModel;
+import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ProductCategoryService;
 import springWebshop.application.service.ProductService;
 import springWebshop.application.service.ProductTypeService;
@@ -24,6 +26,7 @@ import springWebshop.application.service.ServiceResponse;
 
 @Controller
 @RequestMapping("webshop")
+@SessionAttributes({"shoppingCart","currentPage"})
 public class ProductController {
 
 	@Autowired
@@ -45,6 +48,16 @@ public class ProductController {
 		return productTypeService.getAllProductTypes();
 	}
 
+	@ModelAttribute("shoppingCart")
+	private ShoppingCartDTO getShoppingCart() {
+		return new ShoppingCartDTO();
+	}
+	@ModelAttribute("currentPage")
+	private Integer getCurrentProductPage() {
+		return new Integer(0);
+	}
+	
+	
 //
 //	@PostConstruct
 //	void init() {
@@ -73,18 +86,48 @@ public class ProductController {
 	}
 
 	@GetMapping(path = { "products/{page}", "products" })
-	public String getAllProducts(@PathVariable(required = false, name = "page") Optional<Integer> pathPage, Model m) {
+	public String getAllProducts(@ModelAttribute("currentPage") int currentPage,
+			@PathVariable(required = false, name = "page") Optional<Integer> pathPage, Model m,
+			@ModelAttribute("shoppingCart") ShoppingCartDTO cart) {
 		m.addAttribute("newProduct", new Product());
-		int page = pathPage.isPresent() ? pathPage.get() : 0;
+		currentPage = pathPage.isPresent() ? pathPage.get() : currentPage;
 
 		// Call the service
-		ServiceResponse<Product> response = productService.getAllProducts(page > 1 ? page - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 1 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		System.out.println(response.getErrorMessages());
 
-		m.addAttribute("currentPage", page);
+		m.addAttribute("currentPage", currentPage);
+		
+		
 
 		return "displayProducts";
+	}
+//	@GetMapping(path = { "products/{page}", "products" })
+//	public String getAllProducts(@PathVariable(required = false, name = "page") Optional<Integer> pathPage, Model m,
+//			@ModelAttribute("shoppingCart") ShoppingCartDTO cart) {
+//		m.addAttribute("newProduct", new Product());
+//		int page = pathPage.isPresent() ? pathPage.get() : 0;
+//		
+//		// Call the service
+//		ServiceResponse<Product> response = productService.getAllProducts(page > 1 ? page - 1 : 0, 10);
+//		m.addAttribute("allProducts", response.getResponseObjects());
+//		System.out.println(response.getErrorMessages());
+//		
+//		m.addAttribute("currentPage", page);
+//		
+//		
+//		
+//		return "displayProducts";
+//	}
+	
+	@GetMapping("/products/product/{id}")
+	public String getProduct(Model m,@PathVariable("id") long productId) {
+		
+		ServiceResponse<Product> response = productService.getProductById(productId);
+		m.addAttribute("currentProduct", response.getResponseObjects().get(0));
+		
+		return "displayProduct";
 	}
 
 //	@PostMapping("products")

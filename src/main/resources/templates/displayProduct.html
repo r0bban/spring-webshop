@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Single Product</title>
+</head>
+
+<body th:object="${currentProduct}" th:with="test=('/webshop/products/')">
+
+    <article>
+
+
+        <h1 th:text="*{name}"></h1>
+        <ul>
+            <li th:text="|Id: *{id}|"></li>
+            <li th:text="|basePrice: *{basePrice}|"></li>
+            <li th:text="|description: *{description}|"></li>
+            <li th:text="|fullImageUrl: *{fullImageUrl}|"></li>
+            <li th:text="|thumbnailUrl: *{thumbnailUrl}|"></li>
+
+        </ul>
+
+    </article>
+    <p th:if="${test}" th:text="${test}">sadasd</p>
+    <p th:unless="${test}">Empty</p>
+    <a th:href="@{${test}}">Back</a>
+</body>
+
+</html>

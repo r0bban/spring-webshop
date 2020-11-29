@@ -37,25 +37,21 @@
     <article class="container">
         <section class="productContainer">
             <th:body th:each="product : ${allProducts}">
+                <p th:text="${#request.getPathInfo()}"></p>
+                <a th:href="@{__${#request.getRequestURL()}__product/__${product.id}__}">
 
-                <h2 th:text="${product.name}">test</h2>
-                <!--  <ul>
-                    <li th:text="|Id: ${product.id}|"></li>
-                    <li th:text="|basePrice: ${product.basePrice}|"></li>
-                    <li th:text="|description: ${product.description}|"></li>
-                    <li th:text="|fullImageUrl: ${product.fullImageUrl}|"></li>
-                    <li th:text="|thumbnailUrl: ${product.thumbnailUrl}|"></li>
+                    <h2 th:text="${product.name}">test</h2>
+                    
+                    <h3>Product Type</h3>
+                    <div>
+                        <p th:text="${product.productType}"></p>
 
-                </ul> -->
-                <h3>Product Type</h3>
-                <div>
-                    <p th:text="${product.productType}"></p>
-
-                </div>
+                    </div>
 
 
 
 
+                </a>
             </th:body>
 
 
