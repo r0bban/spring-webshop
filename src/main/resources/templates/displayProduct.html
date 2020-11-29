@@ -6,7 +6,7 @@
     <title>Single Product</title>
 </head>
 
-<body th:object="${currentProduct}" th:with="test=('/webshop/products/')">
+<body th:object="${currentProduct}" th:with="test=('/webshop/product')">
 
     <article>
 
@@ -22,9 +22,9 @@
         </ul>
 
     </article>
-    <p th:if="${test}" th:text="${test}">sadasd</p>
-    <p th:unless="${test}">Empty</p>
-    <a th:href="@{${test}}">Back</a>
+    <!-- <p th:if="${test}" th:text="${test}">sadasd</p>
+    <p th:unless="${test}">Empty</p> -->
+    <a th:href="@{/webshop/products(page=${session.currentPage})}">Back</a>
 </body>
 
 </html>
