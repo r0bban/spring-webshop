@@ -1,6 +1,7 @@
 package springWebshop.application.config;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +15,21 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import springWebshop.application.integration.AccountRepository;
 import springWebshop.application.integration.CompanyRepository;
+import springWebshop.application.integration.OrderRepository;
 import springWebshop.application.integration.ProductCategoryRepository;
 import springWebshop.application.integration.ProductRepository;
 import springWebshop.application.integration.ProductSubCategoryRepository;
 import springWebshop.application.integration.ProductTypeRepository;
+import springWebshop.application.model.domain.Order;
+import springWebshop.application.model.domain.OrderLine;
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.service.ProductService;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.order.OrderService;
+import springWebshop.application.service.product.ProductService;
 
 @Configuration
 public class BaseConfig {
@@ -66,12 +71,17 @@ public class BaseConfig {
     @Bean
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
-                                             AccountRepository accountRepository, CompanyRepository companyRepository
-                                             ) {
+                                             AccountRepository accountRepository, CompanyRepository companyRepository,
+                                             OrderRepository orderRepository, OrderService orderService) {
 
 
         return (args) -> {
-        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
+        	
+        	
+        	
+        	orderService.getAllOrders().getResponseObjects().forEach(System.out::println);
+        	
+//        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
 //        	productService.getAllProducts().getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	System.out.println();
 //        	productService.getAllProducts(2, 2).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
@@ -87,6 +97,23 @@ public class BaseConfig {
 
 
     }
+
+	private void orderTests(OrderRepository orderRepository, OrderService orderService) {
+		for (int i = 0; i < 5; i++) {
+			Order localOrder = new Order();
+			orderRepository.save(localOrder);
+			List<OrderLine> orderlines = new ArrayList<OrderLine>();
+			for (int j = 0; j < 10; j++) {
+				OrderLine orderLine = new OrderLine();
+				orderLine.setDiscount(new Random().nextInt(10));
+				orderLine.setSum(new Random().nextInt(10));
+				localOrder.addOrderLine(orderLine);
+			}
+			localOrder.setTotalSum(new Random().nextInt(100));
+			localOrder.setTotalVatSum(new Random().nextInt(100));
+			orderService.create(localOrder);
+		}
+	}
     
     private void testingServiceResponseClass() {
     	Product product1 = new Product();

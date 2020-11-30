@@ -22,10 +22,10 @@ import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.ProductDTO;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.model.dto.ShoppingCartDTO;
-import springWebshop.application.service.ProductCategoryService;
-import springWebshop.application.service.ProductService;
-import springWebshop.application.service.ProductTypeService;
 import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.product.ProductCategoryService;
+import springWebshop.application.service.product.ProductService;
+import springWebshop.application.service.product.ProductTypeService;
 
 @Controller
 @RequestMapping("webshop")

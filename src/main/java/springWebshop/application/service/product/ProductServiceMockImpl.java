@@ -1,4 +1,4 @@
-package springWebshop.application.service;
+package springWebshop.application.service.product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.service.ServiceResponse;
 
 @Service
 public class ProductServiceMockImpl implements ProductService {

@@ -1,4 +1,4 @@
-package springWebshop.application.service;
+package springWebshop.application.service.product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import springWebshop.application.integration.ProductRepository;
 import springWebshop.application.integration.ProductTypeRepository;
 import springWebshop.application.model.domain.Product;
+import springWebshop.application.service.ServiceErrorMessages;
+import springWebshop.application.service.ServiceResponse;
 
 @Service
 @Primary

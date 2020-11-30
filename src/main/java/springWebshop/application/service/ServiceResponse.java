@@ -28,22 +28,22 @@ public class ServiceResponse<T> {
         this.sucessful = CollectionUtils.isEmpty(errorMessages);
     }
 
-    void addErrorMessage(String error) {
+    public void addErrorMessage(String error) {
         sucessfulFalse();
         this.errorMessages.add(error);
     }
 
-    void addResponseObject(T object) {
+    public void addResponseObject(T object) {
         sucessfulTrue();
         this.responseObjects.add(object);
     }
 
-    void setResponseObjects(List<T> objects) {
+    public void setResponseObjects(List<T> objects) {
         sucessfulTrue();
         this.responseObjects = objects;
     }
 
-    void setErrorMessages(List<String> errorMessages) {
+    public void setErrorMessages(List<String> errorMessages) {
         if (!errorMessages.isEmpty()) sucessfulFalse();
         this.errorMessages = errorMessages;
     }
