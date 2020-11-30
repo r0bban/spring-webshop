@@ -1,6 +1,7 @@
 package springWebshop.application.config;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,6 +118,8 @@ public class BaseConfig {
 		for (int i = 0; i < 100; i++) {
 		    Product product1 = new Product();
 		    product1.setName("Product " + i);
+		    product1.setDescription("Testing this big product " + i);
+		    product1.setBasePrice(new Random().nextInt(50));
 		    ProductType prodType2 = new ProductType();
 		    prodType2.setId(1L);
 		    product1.setProductType(prodType2);
