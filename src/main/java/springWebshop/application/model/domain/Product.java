@@ -15,6 +15,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private double basePrice;
+	private double vatPercentage;
 	private String name;
 	private String description;
 	private String fullImageUrl;

@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import springWebshop.application.model.domain.user.Address;
 import springWebshop.application.model.domain.user.Customer;
 
 @Getter
@@ -27,9 +28,11 @@ public class Order {
     private double totalDiscount;
     private double totalPayable;
     private Currency currency;
+    private Date created;
     private Date dispatched;
     private Date InDelivery;
     private Date deliveryComplete;
+    private Address deliveryAddress;
     @ManyToOne
     private Customer customer;
 

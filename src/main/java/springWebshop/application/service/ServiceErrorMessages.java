@@ -1,6 +1,8 @@
 package springWebshop.application.service;
 
 public enum ServiceErrorMessages {
+        CUSTOMER("customer"),
+        ORDER("order"),
         PRODUCT("product"),
         PRODUCT_TYPE("product type"),
         PRODUCT_CATEGORY("product category"),

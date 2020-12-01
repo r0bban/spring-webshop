@@ -79,7 +79,6 @@ public class ProductServiceImpl implements ProductService {
 				Page<Product> response = productRepository.findAll(PageRequest.of(page, size));
 				setPageMetaData(response, serviceResponse);
 				serviceResponse.setResponseObjects(response.getContent());
-// 				serviceResponse.setResponseObjects(productRepository.findAll(PageRequest.of(page, size)).getContent());
 			} catch (Exception e) {
 				serviceResponse.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind() + "s page " + page + ".");
 			}
@@ -89,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
 		return serviceResponse;
 	}
 
-	void setPageMetaData(Page page, ServiceResponse serviceResponse) {
+	private void setPageMetaData(Page page, ServiceResponse serviceResponse) {
 		serviceResponse.setTotalPages(page.getTotalPages());
 		serviceResponse.setTotalItems((int) page.getTotalElements());
 		serviceResponse.setCurrentPage(page.getNumber());

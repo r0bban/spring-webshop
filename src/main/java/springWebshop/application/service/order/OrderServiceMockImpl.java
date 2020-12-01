@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
 import springWebshop.application.model.domain.OrderStatus;
+import springWebshop.application.model.domain.user.Address;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 
@@ -99,7 +100,7 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, Address deliveryAddress) {
 		return null;
 	}
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -19,7 +18,6 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.dto.ProductDTO;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
@@ -53,7 +51,7 @@ public class ProductController {
 
 	@ModelAttribute("shoppingCart")
 	private ShoppingCartDTO getShoppingCart() {
-		return new ShoppingCartDTO();
+		return new ShoppingCartDTO(productService);
 	}
 	@ModelAttribute("currentPage")
 	private Integer getCurrentProductPage() {
@@ -124,10 +122,10 @@ public class ProductController {
 		if(action.isPresent()) {
 			
 			if(action.get().compareToIgnoreCase("add")==0) {
-				cart.addItem(product);
+				cart.addItem(product.getId());
 			}
 			else if(action.get().compareToIgnoreCase("remove")==0) {
-				cart.removeItem(product);
+				cart.removeItem(product.getId());
 			}
 			
 		}
