@@ -19,6 +19,7 @@ import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.ProductFormModel;
+import springWebshop.application.model.dto.SessionModel;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.product.ProductCategoryService;
@@ -27,7 +28,7 @@ import springWebshop.application.service.product.ProductTypeService;
 
 @Controller
 @RequestMapping("webshop")
-@SessionAttributes({"shoppingCart","currentPage"})
+@SessionAttributes({"sessionModel"})
 public class ProductController {
 
 	@Autowired
@@ -49,13 +50,9 @@ public class ProductController {
 		return productTypeService.getAllProductTypes();
 	}
 
-	@ModelAttribute("shoppingCart")
-	private ShoppingCartDTO getShoppingCart() {
-		return new ShoppingCartDTO(productService);
-	}
-	@ModelAttribute("currentPage")
-	private Integer getCurrentProductPage() {
-		return new Integer(1);
+	@ModelAttribute("sessionModel")
+	private SessionModel getShoppingCart() {
+		return new SessionModel();
 	}
 	
 	
@@ -87,10 +84,9 @@ public class ProductController {
 	}
 
 	@GetMapping(path = { "products" })
-	public String getAllProducts(@ModelAttribute("currentPage") Integer xPage,
-			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m,
-			@ModelAttribute("shoppingCart") ShoppingCartDTO cart) {
-		int currentPage = pathPage.isPresent() ? pathPage.get() : xPage;
+	public String getAllProducts(@ModelAttribute("sessionModel") SessionModel session,
+			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
+		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
 		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
@@ -99,7 +95,9 @@ public class ProductController {
 		System.out.println(response.getTotalPages());
 		// Doesnt return Error Message? Empty list
 		System.out.println(response.getErrorMessages());
-		m.addAttribute("currentPage", currentPage);
+		session.setProductPage(currentPage);
+		m.addAttribute("totalPages", response.getTotalPages());
+		m.addAttribute("sessionModel", session);
 
 		return "displayProducts";
 	}
@@ -122,10 +120,10 @@ public class ProductController {
 		if(action.isPresent()) {
 			
 			if(action.get().compareToIgnoreCase("add")==0) {
-				cart.addItem(product.getId());
+				cart.addItem(product);
 			}
 			else if(action.get().compareToIgnoreCase("remove")==0) {
-				cart.removeItem(product.getId());
+				cart.removeItem(product);
 			}
 			
 		}

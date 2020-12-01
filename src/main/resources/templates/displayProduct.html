@@ -4,45 +4,117 @@
 <head>
     <meta charset="ISO-8859-1">
     <title>Single Product</title>
+    <style>
+        .container {
+            display: grid;
+            grid-template-rows: 5vh 80vh 10vh;
+            margin: auto;
+            width: 80vw;
+        }
+
+        header {
+            border-bottom: 1px solid darkcyan;
+            display: flex;
+            align-items: center;
+        }
+
+        footer {
+            border-top: 1px solid darkcyan;
+        }
+
+        main {
+            background-color: antiquewhite;
+            display: grid;
+            grid-template-rows: 10fr 1fr;
+        }
+
+        .itemFields {
+            background-color: aquamarine;
+        }
+
+        .actionButtons {
+            display: flex;
+            justify-content: space-around;
+            background-color: maroon;
+        }
+
+
+
+        input[type='submit'] {
+            border: none;
+
+        }
+
+
+
+        a:link,
+        a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: royalblue;
+        }
+    </style>
 </head>
 
 <body th:with="test=('/webshop/product'),abc=${currentProduct}">
-    <p th:text="${abc}"></p>
-    <article th:object="${currentProduct}">
+    <!-- <p th:text="${abc}"></p> -->
+    <article th:object="${currentProduct}" class="container">
+        <header>
+            <h1 th:text="${abc.name}"></h1>
 
-        <h1 th:text="*{name}"></h1>
-        <ul>
-            <li th:text="|Id: *{id}|"></li>
-            <li th:text="|basePrice: *{basePrice}|"></li>
-            <li th:text="|description: *{description}|"></li>
-            <li th:text="|fullImageUrl: *{fullImageUrl}|"></li>
-            <li th:text="|thumbnailUrl: *{thumbnailUrl}|"></li>
+        </header>
 
-        </ul>
-        <form th:action="@{/webshop/products/product/__${currentProduct.id}__(cartAction=add)}" method="POST">
-            <input type="hidden" th:field="*{name}" />
-            <input type="hidden" th:field="*{id}" />
-            <input type="hidden" th:field="*{basePrice}" />
-            <input type="hidden" th:field="*{description}" />
-            <input type="hidden" th:field="*{fullImageUrl}" />
-            <input type="hidden" th:field="*{thumbnailUrl}" />
-            <input type="submit" value="Add to cart" />
-        </form>
-        <form th:action="@{/webshop/products/product/__*{id}__(cartAction=remove)}" method="POST">
-            <input type="hidden" th:field="*{name}" />
-            <input type="hidden" th:field="*{id}" />
-            <input type="hidden" th:field="*{basePrice}" />
-            <input type="hidden" th:field="*{description}" />
-            <input type="hidden" th:field="*{fullImageUrl}" />
-            <input type="hidden" th:field="*{thumbnailUrl}" />
-            <input type="submit" value="Delete from cart" />
-        </form>
+        <main>
+            <section class="itemFields">
+                <div class="itemField">
+                    <span>Price</span>
+                    <span th:text="*{basePrice}">Empty</span>
+                </div>
+                <div class="itemField">
+                    <span>Description</span>
+                    <textarea th:text="*{basePrice}">Empty</textarea>
+                </div>
 
+            </section>
+            <section class="shoppingCartActions">
+
+                <div class="actionButtons">
+
+                    <form th:action="@{/webshop/products/product/__${currentProduct.id}__(cartAction=add)}"
+                        method="POST">
+                        <input type="hidden" th:field="*{name}" />
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{basePrice}" />
+                        <input type="hidden" th:field="*{description}" />
+                        <input type="hidden" th:field="*{fullImageUrl}" />
+                        <input type="hidden" th:field="*{thumbnailUrl}" />
+                        <input type="submit" value="Add to cart" />
+                    </form>
+                    <form th:action="@{/webshop/products/product/__*{id}__(cartAction=remove)}" method="POST">
+                        <input type="hidden" th:field="*{name}" />
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{basePrice}" />
+                        <input type="hidden" th:field="*{description}" />
+                        <input type="hidden" th:field="*{fullImageUrl}" />
+                        <input type="hidden" th:field="*{thumbnailUrl}" />
+                        <input type="submit" value="Delete from cart" />
+                    </form>
+                </div>
+            </section>
+        </main>
+
+
+        <!-- <p th:if="${test}" th:text="${test}">sadasd</p>
+            <p th:unless="${test}">Empty</p> -->
+        <footer>
+            <a th:href="@{/webshop/products(page=${session.sessionModel.productPage})}">Back</a>
+
+
+        </footer>
     </article>
-
-    <!-- <p th:if="${test}" th:text="${test}">sadasd</p>
-    <p th:unless="${test}">Empty</p> -->
-    <a th:href="@{/webshop/products(page=${session.currentPage})}">Back</a>
 </body>
 
 </html>

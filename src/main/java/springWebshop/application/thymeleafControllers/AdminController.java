@@ -2,6 +2,10 @@ package springWebshop.application.thymeleafControllers;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +28,10 @@ public class AdminController {
 
 	@GetMapping(path = { "products" })
 	public String getAllProducts( Model m) {
-		ServiceResponse<Product> response = productService.getAllProducts();
+		
+		
+		
+		ServiceResponse<Product> response = productService.getAllProducts(0,20);
 		m.addAttribute("allProducts", response.getResponseObjects());
 
 		return "adminProductsView";

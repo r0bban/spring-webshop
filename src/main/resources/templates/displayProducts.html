@@ -6,56 +6,94 @@
     <title>Products Page</title>
     <style>
         .container {
+            display: grid;
+            grid-template-rows: 5vh 80vh 10vh;
+            margin: auto;
+            width: 80vw;
+        }
+
+        header {
+            border-bottom: 1px solid darkcyan;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
 
+        .navigationLinks {}
 
+        footer {
+            border-top: 1px solid darkcyan;
         }
 
         section {
-            margin: 2% 0;
+            /* margin: 2% 0; */
+        }
+
+        .filterOptions {
+            padding: 1rem;
+            border-bottom: 1px solid darkcyan;
+            display: flex;
+            justify-content: center;
         }
 
         .productContainer {
-            display: grid;
-            grid-template-columns: repeat(5, auto);
 
-            background-color: darkgrey;
-            border: solid crimson 1px;
+            display: flex;
+            flex-wrap: wrap;
+            /* grid-template-columns: repeat(3, auto); */
 
 
+
+        }
+
+        .productItem {
+            width: 10vw;
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        a:link,
+        a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: royalblue;
         }
     </style>
 
 </head>
-<p th:text="${session.currentPage}"></p>
 
-<body th:with="currentPage=(${session.currentPage})">
-    <h1 th:text="${currentPage}">Welcome to all products page</h1>
-    <a th:if="${currentPage > 1}" th:href="@{/webshop/products(page=__${currentPage-1>0?currentPage-1:''}__)}">Back</a>
-    <a th:href="@{/webshop/products(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
+
+<body th:with="currentPage=(${session.sessionModel.productPage})">
+
     <article class="container">
-        <section class="productContainer">
-            <th:body th:each="product : ${allProducts}">
-                <p th:text="${#request.getPathInfo()}"></p>
-                <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
+        <header>
+            <h1>Browsing ....</h1>
+            <nav class="navigationLinks">
+                <a href="/webshop/products">Products</a>
+                <a href="">Shopping Cart</a>
+            </nav>
+        </header>
+        <main>
 
-                    <h2 th:text="${product.name}">test</h2>
-                    
-                    <h3>Product Type</h3>
-                    <div>
-                        <p th:text="${product.productType}"></p>
+            <div class="filterOptions">
+                <select>
+                    <option value="">Empty</option>
+                </select>
 
-                    </div>
+            </div>
+            <div class="productContainer">
+                <th:body th:each="product : ${allProducts}" class="productItem">
+                    <p th:text="${#request.getPathInfo()}"></p>
+                    <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
+                        <span th:text="${product.name}">test</span></a>
+                    </th:body>
+                </div>
 
 
-
-
-                </a>
-            </th:body>
-
-
-        </section>
+            </main>
         <!-- Save this for admin UI -->
         <!-- <section th:object="${newProduct}">
 
@@ -73,9 +111,15 @@
         </section> -->
 
 
+        <footer>
+            <!-- <p th:text="${session.sessionModel.productPage}"></p> -->
+            <!-- <h1 th:text="${currentPage}">Welcome to all products page</h1> -->
+            <a th:if="${currentPage > 1}" th:href="@{/webshop/products(page=__${currentPage-1>0?currentPage-1:''}__)}">Back</a>
+            <a th:if="${currentPage!=totalPages}" th:href="@{/webshop/products(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
 
+        </footer>
     </article>
-
+    
 </body>
 
 </html>
