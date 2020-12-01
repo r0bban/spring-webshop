@@ -79,9 +79,9 @@ public class BaseConfig {
         	
         	
         	
-        	orderService.getAllOrders().getResponseObjects().forEach(System.out::println);
+//        	orderService.getAllOrders().getResponseObjects().forEach(System.out::println);
         	
-//        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
+        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
 //        	productService.getAllProducts().getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	System.out.println();
 //        	productService.getAllProducts(2, 2).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));

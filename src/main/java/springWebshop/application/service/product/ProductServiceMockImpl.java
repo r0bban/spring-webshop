@@ -12,8 +12,8 @@ import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.service.ServiceResponse;
-
 @Service
+//@Primary
 public class ProductServiceMockImpl implements ProductService {
 
 	List<Product> productStore;

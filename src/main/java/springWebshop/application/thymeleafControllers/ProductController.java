@@ -96,7 +96,9 @@ public class ProductController {
 		
 		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
-		
+		System.out.println(response.getCurrentPage());
+		System.out.println(response.getTotalItems());
+		System.out.println(response.getTotalPages());
 		// Doesnt return Error Message? Empty list
 		System.out.println(response.getErrorMessages());
 		m.addAttribute("currentPage", currentPage);

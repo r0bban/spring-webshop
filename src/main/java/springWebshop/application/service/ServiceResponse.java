@@ -12,9 +12,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class ServiceResponse<T> {
-    boolean sucessful;
-    List<T> responseObjects;
-    List<String> errorMessages;
+    private boolean sucessful;
+    private List<T> responseObjects;
+    private int currentPage;
+    private int totalPages;
+    private int totalItems;
+    private List<String> errorMessages;
 
     public ServiceResponse() {
         this.responseObjects = new ArrayList<T>();
