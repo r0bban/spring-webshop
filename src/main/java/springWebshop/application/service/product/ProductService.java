@@ -1,4 +1,4 @@
-package springWebshop.application.service;
+package springWebshop.application.service.product;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import springWebshop.application.model.domain.Product;
+import springWebshop.application.service.ServiceResponse;
 
 public interface ProductService {
 	

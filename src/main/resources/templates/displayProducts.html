@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Products Page</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+
+
+        }
+
+        section {
+            margin: 2% 0;
+        }
+
+        .productContainer {
+            display: grid;
+            grid-template-columns: repeat(5, auto);
+
+            background-color: darkgrey;
+            border: solid crimson 1px;
+
+
+        }
+    </style>
+
+</head>
+<p th:text="${session.currentPage}"></p>
+
+<body th:with="currentPage=(${session.currentPage})">
+    <h1 th:text="${currentPage}">Welcome to all products page</h1>
+    <a th:if="${currentPage > 1}" th:href="@{/webshop/products(page=__${currentPage-1>0?currentPage-1:''}__)}">Back</a>
+    <a th:href="@{/webshop/products(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
+    <article class="container">
+        <section class="productContainer">
+            <th:body th:each="product : ${allProducts}">
+                <p th:text="${#request.getPathInfo()}"></p>
+                <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
+
+                    <h2 th:text="${product.name}">test</h2>
+                    
+                    <h3>Product Type</h3>
+                    <div>
+                        <p th:text="${product.productType}"></p>
+
+                    </div>
+
+
+
+
+                </a>
+            </th:body>
+
+
+        </section>
+        <!-- Save this for admin UI -->
+        <!-- <section th:object="${newProduct}">
+
+            <form class="formLayout" method="POST" th:action="@{/webshop/products}">
+                <label>Name</label>
+                <input th:field="*{name}" type="text" />
+
+                <label>Price</label>
+                <input th:field="*{basePrice}" type="text" />
+
+                <label>Description</label>
+                <textarea th:field="*{description}"></textarea>
+                <input type="submit" value="Create!" />
+            </form>
+        </section> -->
+
+
+
+    </article>
+
+</body>
+
+</html>

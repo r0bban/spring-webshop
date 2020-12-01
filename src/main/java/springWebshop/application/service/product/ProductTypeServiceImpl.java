@@ -1,4 +1,4 @@
-package springWebshop.application.service;
+package springWebshop.application.service.product;
 
 import java.util.List;
 import java.util.Optional;

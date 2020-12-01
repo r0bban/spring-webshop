@@ -47,4 +47,9 @@ public class OrderLine {
 	
 	private Currency currency;
 
+	@Override
+	public String toString() {
+		return "OrderLine [id=" + id + ", sum=" + sum + ", discount=" + discount + "]";
+	}
+
 }

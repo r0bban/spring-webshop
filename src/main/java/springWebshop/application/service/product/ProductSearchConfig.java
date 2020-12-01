@@ -1,4 +1,4 @@
-package springWebshop.application.service;
+package springWebshop.application.service.product;
 
 public class ProductSearchConfig {
     long productCategoryId;

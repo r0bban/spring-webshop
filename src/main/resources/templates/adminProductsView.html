@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Manage the products here</title>
+</head>
+<style type="text/css">
+    .tableContent {
+        display: grid;
+        grid-template-columns: 50vw 50vw;
+    }
+
+    .tableSection {
+        background-color: azure;
+    }
+
+    .editSection {
+        background-color: goldenrod;
+    }
+
+    .tableLayout {
+        display: grid;
+        grid-auto-rows: 2rem;
+        grid-template-columns: repeat(7, 100px);
+
+        gap: 2rem;
+    }
+
+
+    .tableHeader {
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        border-bottom: 2px solid black;
+    }
+
+
+
+    .tableContent>span {
+        overflow: hidden;
+        border-right: black 1px solid;
+        border-bottom: black 1px solid;
+    }
+</style>
+
+<body>
+    <h1>Manage the products</h1>
+    <article class="tableContent">
+        <section class="tableSection">
+
+
+            <div class="tableLayout tableHeader">
+                <span>Id</span>
+                <span>Price</span>
+                <span>Name</span>
+                <span>Description</span>
+                <span>Image Url</span>
+                <span>Thumbnail Url</span>
+                <span>Published</span>
+            </div>
+            <div class="tableContent">
+                <thbody th:each="product : ${allProducts}" class="tableLayout">
+                    <span th:text="${product.id}"></span>
+                    <span th:text="${product.basePrice}"></span>
+                    <span th:text="${product.description}"></span>
+                    <span th:text="${product.fullImageUrl}"></span>
+                    <span th:text="${product.thumbnailUrl}"></span>
+
+
+                </thbody>
+            </div>
+        </section>
+        <section class="editSection">
+            asd
+
+
+        </section>
+
+
+
+
+    </article>
+
+
+
+
+
+</body>
+
+</html>
