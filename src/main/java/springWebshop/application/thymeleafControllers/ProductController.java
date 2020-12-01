@@ -3,6 +3,8 @@ package springWebshop.application.thymeleafControllers;
 import java.util.List;
 import java.util.Optional;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +22,6 @@ import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.model.dto.SessionModel;
-import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.product.ProductCategoryService;
 import springWebshop.application.service.product.ProductService;
@@ -52,7 +53,7 @@ public class ProductController {
 
 	@ModelAttribute("sessionModel")
 	private SessionModel getShoppingCart() {
-		return new SessionModel();
+		return new SessionModel(productService);
 	}
 	
 	
@@ -90,11 +91,9 @@ public class ProductController {
 		
 		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
-		System.out.println(response.getCurrentPage());
-		System.out.println(response.getTotalItems());
-		System.out.println(response.getTotalPages());
+		
+		
 		// Doesnt return Error Message? Empty list
-		System.out.println(response.getErrorMessages());
 		session.setProductPage(currentPage);
 		m.addAttribute("totalPages", response.getTotalPages());
 		m.addAttribute("sessionModel", session);
@@ -102,36 +101,61 @@ public class ProductController {
 		return "displayProducts";
 	}
 	
+	@PostMapping(path = { "products" })
+	public String postAddItemToCart(@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
+			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
+		if(productId.isPresent())
+			session.getCart().addItem(productId.get());
+		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
+		
+		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		m.addAttribute("allProducts", response.getResponseObjects());
+		// Doesnt return Error Message? Empty list
+		
+		m.addAttribute("totalPages", response.getTotalPages());
+		m.addAttribute("sessionModel", session);
+
+		return "displayProducts";
+	}
+	
 	@GetMapping("/products/product/{id}")
-	public String getProduct(Model m,@PathVariable("id") long productId) {
+	public String getProduct(Model m,@PathVariable("id") long productId,
+			@ModelAttribute("sessionModel") SessionModel session) {
 		System.out.println("GetProduct");
 		ServiceResponse<Product> response = productService.getProductById(productId);
 		m.addAttribute("currentProduct", response.getResponseObjects().get(0));
-		
+//		m.addAttribute("quantity", session.getCart().getProductMap())
 		return "displayProduct";
 	}
-	@PostMapping("/products/product/{id}")
-	public String postProduct(Product product,
-			@ModelAttribute("shoppingCart") ShoppingCartDTO cart,
-			 @RequestParam(name="cartAction",required = false) Optional<String> action,Model m) {
+	
+	@PostMapping(value = "/products/product/{id}",params = "cartAction=Add")
+	public String postAddItemToCart(Product product, @PathVariable("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session, Model m) {
+		if(productId.isPresent())
+			session.getCart().addItem(productId.get());
 		System.out.println("POST");
-		System.out.println(product);
-		System.out.println("What to do with the basket?" + action);
-		if(action.isPresent()) {
-			
-			if(action.get().compareToIgnoreCase("add")==0) {
-				cart.addItem(product);
-			}
-			else if(action.get().compareToIgnoreCase("remove")==0) {
-				cart.removeItem(product);
-			}
-			
-		}
 		m.addAttribute("currentProduct", product);
-		
-		System.out.println(cart);
-		
+		System.out.println(session.getCart());
 		return "displayProduct";
+	}
+	@PostMapping(value = "/products/product/{id}",params = "cartAction=Remove")
+	public String postRemoveItemToCart(Product product, @PathVariable("id") Optional<Integer> productId, @ModelAttribute("sessionModel") SessionModel session, Model m) {
+		if(productId.isPresent())
+		session.getCart().removeItem(productId.get());
+		System.out.println("POST");
+		m.addAttribute("currentProduct", product);
+		System.out.println(session.getCart());
+		return "displayProduct";
+	}
+	
+	
+	
+	@GetMapping("shoppingcart")
+	public String getShoppingCart(@ModelAttribute SessionModel sesionModel, Model m) {
+		System.out.println(sesionModel);
+		
+		
+		
+		return "displayShoppingCart";
 	}
 
 	

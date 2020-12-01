@@ -69,18 +69,13 @@
 <body th:with="currentPage=(${session.sessionModel.productPage})">
 
     <article class="container">
-        <header>
-            <h1>Browsing ....</h1>
-            <nav class="navigationLinks">
-                <a href="/webshop/products">Products</a>
-                <a href="">Shopping Cart</a>
-            </nav>
-        </header>
+        <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
+
         <main>
 
             <div class="filterOptions">
                 <select>
-                    <option value="">Empty</option>
+                    <option value="">All</option>
                 </select>
 
             </div>
@@ -89,6 +84,9 @@
                     <p th:text="${#request.getPathInfo()}"></p>
                     <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
                         <span th:text="${product.name}">test</span></a>
+                        <form method="POST" th:action="@{/webshop/products(id=__${product.id}__)}">
+                            <input  type="submit" value="Add to cart"/>
+                        </form>
                     </th:body>
                 </div>
 

@@ -16,6 +16,7 @@
             border-bottom: 1px solid darkcyan;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
 
         footer {
@@ -60,12 +61,9 @@
 </head>
 
 <body th:with="test=('/webshop/product'),abc=${currentProduct}">
-    <!-- <p th:text="${abc}"></p> -->
+    <!-- <p th:text="$"></p> -->
     <article th:object="${currentProduct}" class="container">
-        <header>
-            <h1 th:text="${abc.name}"></h1>
-
-        </header>
+        <div th:replace="fragments/header.html :: header(title=${abc.name})"></div>
 
         <main>
             <section class="itemFields">
@@ -75,15 +73,17 @@
                 </div>
                 <div class="itemField">
                     <span>Description</span>
-                    <textarea th:text="*{basePrice}">Empty</textarea>
+                    <textarea th:text="*{description}">Empty</textarea>
                 </div>
 
             </section>
+
+
             <section class="shoppingCartActions">
 
                 <div class="actionButtons">
 
-                    <form th:action="@{/webshop/products/product/__${currentProduct.id}__(cartAction=add)}"
+                    <form th:action="@{/webshop/products/product/__${currentProduct.id}__(cartAction=Add)}"
                         method="POST">
                         <input type="hidden" th:field="*{name}" />
                         <input type="hidden" th:field="*{id}" />
@@ -93,7 +93,7 @@
                         <input type="hidden" th:field="*{thumbnailUrl}" />
                         <input type="submit" value="Add to cart" />
                     </form>
-                    <form th:action="@{/webshop/products/product/__*{id}__(cartAction=remove)}" method="POST">
+                    <form th:action="@{/webshop/products/product/__*{id}__(cartAction=Remove)}" method="POST">
                         <input type="hidden" th:field="*{name}" />
                         <input type="hidden" th:field="*{id}" />
                         <input type="hidden" th:field="*{basePrice}" />

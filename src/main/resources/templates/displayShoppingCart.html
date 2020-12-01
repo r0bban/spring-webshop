@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Shopping Cart</title>
+</head>
+
+<body th:with="cart=${session.sessionModel.cart}">
+    <p th:text="${cart}"></p>
+    <div th:replace="fragments/header.html :: header(title='Shopping Cart')"></div>
+    <a href="/webshop/products">Back to Shopping</a>
+
+
+    <div>Footer Here</div>
+
+</body>
+
+</html>
