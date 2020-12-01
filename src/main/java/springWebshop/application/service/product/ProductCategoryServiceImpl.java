@@ -13,9 +13,13 @@ import springWebshop.application.model.domain.ProductCategory;
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
 	
-	@Autowired
+	final
 	ProductCategoryRepository productCategoryRepository;
-	
+
+	public ProductCategoryServiceImpl(ProductCategoryRepository productCategoryRepository) {
+		this.productCategoryRepository = productCategoryRepository;
+	}
+
 	@Override
 	public boolean save(ProductCategory productCategory) {
 		productCategoryRepository.save(productCategory);

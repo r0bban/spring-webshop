@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
+import springWebshop.application.model.domain.OrderStatus;
+import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 
 @Service
@@ -97,15 +99,24 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> update(Order updatedOrder) {
-		ArrayList<Order> responseObjects = new ArrayList<>();
-		ArrayList<String> errorMessages = new ArrayList<>();
-		orderStore.set(Long.numberOfTrailingZeros(updatedOrder.getId()), updatedOrder);
-		ServiceResponse<Order> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
-
-		return serviceResponse;
+	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+		return null;
 	}
 
+	@Override
+	public ServiceResponse<Order> cancelOrderById(long id) {
+		return null;
+	}
+
+	@Override
+	public boolean orderIsCancelable(Order order) {
+		return false;
+	}
+
+	@Override
+	public ServiceResponse<Order> setStatus(OrderStatus orderStatus) {
+		return null;
+	}
 
 	@Override
 	public ServiceResponse<Order> getAllOrders(int page) {

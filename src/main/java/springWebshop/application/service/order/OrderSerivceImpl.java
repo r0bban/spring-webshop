@@ -12,21 +12,26 @@ import springWebshop.application.integration.OrderRepository;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.Order;
+import springWebshop.application.model.domain.OrderStatus;
+import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
 @Service
 public class OrderSerivceImpl implements OrderService {
 
-	@Autowired
-	OrderRepository orderRepository;
+	final
+    OrderRepository orderRepository;
 	
 	  final int defaultPageSize = 10;
 	    final int maxPageSize = 30;
 
-	    	
-	
-	@Override
+    public OrderSerivceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+
+    @Override
 	public ServiceResponse<Order> getOrderById(long id) {
 		// TODO Auto-generated method stub
 		return null;
@@ -67,9 +72,24 @@ public class OrderSerivceImpl implements OrderService {
         return response;
     }
 
-	@Override
-	public ServiceResponse<Order> update(Order updatedOrder) {
-		return null;
-	}
+    @Override
+    public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse<Order> cancelOrderById(long id) {
+        return null;
+    }
+
+    @Override
+    public boolean orderIsCancelable(Order order) {
+        return false;
+    }
+
+    @Override
+    public ServiceResponse<Order> setStatus(OrderStatus orderStatus) {
+        return null;
+    }
 
 }

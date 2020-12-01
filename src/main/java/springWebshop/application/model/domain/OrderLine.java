@@ -41,9 +41,9 @@ public class OrderLine {
 	
 	private double sumPayable;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn
-	private Order order;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn
+//	private Order order;
 	
 	private Currency currency;
 
