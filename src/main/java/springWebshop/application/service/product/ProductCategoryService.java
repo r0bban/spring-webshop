@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import springWebshop.application.model.domain.ProductCategory;
+import springWebshop.application.model.domain.ProductSubCategory;
 
 public interface ProductCategoryService {
 	

@@ -54,7 +54,7 @@ public class ProductSubCategory {
     public String toString() {
         return "ProductSubCategory{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + name + ',' + productCategory.getName() + '\'' + 
                 '}';
     }
 

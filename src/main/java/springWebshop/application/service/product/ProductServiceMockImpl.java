@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -13,61 +16,41 @@ import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.service.ServiceResponse;
+
 @Service
 @Primary
 public class ProductServiceMockImpl implements ProductService {
 
 	List<Product> productStore;
-	List<ProductCategory> categoryStore;
-	List<ProductType> typeStore;
-	List<ProductSubCategory> subStore;
 	static int idProductGenerator = 0;
-	static int idProductCategoryGenerator = 0;
-	static int idProductSubCategoryGenerator = 0;
-	static int idProductTypeGenerator = 0;
 
-	public ProductServiceMockImpl() {
-		typeStore = new ArrayList<ProductType>();
-		subStore = new ArrayList<ProductSubCategory>();
+	@Autowired
+	ProductSegmentationService productSegmentationService;
+	private ArrayList<ProductType> typeStore;
+	private ArrayList<ProductCategory> subStore;
+	private ArrayList<ProductSubCategory> categoryStore;
+
+	@PostConstruct
+	void init() {
+		System.out.println(productSegmentationService.getNoTypes());
 		productStore = new ArrayList<Product>();
-		categoryStore = new ArrayList<>();
-		
-		int noCat=3, noSub=3, noType=10;
-		for(int i = 0;i<noCat;i++) {
-			ProductCategory z = new ProductCategory("ProductCategory " + (i));
-			z.setId(++idProductCategoryGenerator);
-			categoryStore.add(z);
-			
-		}
-		for(int i = 0;i<noSub;i++) {
-			ProductSubCategory y = new ProductSubCategory("ProductSubCategory " + (i),categoryStore.get(new Random().nextInt(noCat)));
-			y.setId(++idProductSubCategoryGenerator);
-			subStore.add(y);
-			
-		}
-		for(int i = 0;i<noType;i++) {
-			ProductType x = new ProductType("ProductType " + (i),subStore.get(new Random().nextInt(noSub)));
-			x.setId(++idProductTypeGenerator);
-			typeStore.add(x);
-			
-		}
-		
-
-		
-		
-		
-		
-	
-		
+		typeStore = productSegmentationService.getTypeStore();
+		subStore = productSegmentationService.getCategoryStore();
+		categoryStore = productSegmentationService.getSubCategoryStore();
+		System.out.println(typeStore);
 		for (int i = 0; i < 100; i++) {
 			Product localProduct = new Product();
 			localProduct.setId(++idProductGenerator);
-			localProduct.setName("Product " + i);
+			localProduct.setName("Product " + idProductGenerator);
 			localProduct.setBasePrice(new Random().nextInt(1000));
-			localProduct.setProductType(typeStore.get(new Random().nextInt(noType)));
+			localProduct.setProductType(typeStore.get(new Random().nextInt(typeStore.size())));
 			productStore.add(localProduct);
 		}
-		productStore.forEach(System.out::println);
+	}
+
+	public ProductServiceMockImpl() {
+
+//		productStore.forEach(System.out::println);
 //		Product product = new Product();
 //		product.setName("Johannes");
 //		product.setId(++idProductGenerator);
@@ -77,8 +60,6 @@ public class ProductServiceMockImpl implements ProductService {
 //		product.setId(++idGenerator);
 //		productStore.add(product);
 //		product = new Product();
-//		product.setName("Robert");
-//		product.setId(++idGenerator);
 //		productStore.add(product);
 	}
 
@@ -107,11 +88,11 @@ public class ProductServiceMockImpl implements ProductService {
 		List<Product> list = productStore.stream().filter(t -> t.getName().compareToIgnoreCase(string) == 0)
 				.collect(Collectors.toList());
 		responseObjects.addAll(list);
-		
-		if(list.size() == 0) {
+
+		if (list.size() == 0) {
 			errorMessages.add("Couldnt find product with name: " + string);
 			System.out.println(errorMessages);
-			
+
 		}
 
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
@@ -142,51 +123,45 @@ public class ProductServiceMockImpl implements ProductService {
 
 	private List<Product> paginatedList(int page, int size, ProductSearchConfig conf) {
 		List<Product> localProductStore = null;
-		
-		if(conf != null) {
-			if(conf.getProductTypeId()>0) {
+
+		if (conf != null) {
+			if (conf.getProductTypeId() > 0) {
 				// Filter on Category/SubCategory/Type
 				System.out.println("In type");
-				localProductStore =  productStore
-				.parallelStream()
-				.filter(product->product.getProductType().getId() == conf.getProductTypeId())
-				.collect(Collectors.toList());
-			}
-			else if(conf.getProductSubCategoryId()>0){
-				// Filter on Category/Subcategory
-				
-				System.out.println("In Sub");
-				localProductStore =  productStore
-						.parallelStream()
-						.filter(product->product.getProductType().getProductSubCategory().getId() == conf.getProductSubCategoryId())
+				localProductStore = productStore.parallelStream()
+						.filter(product -> product.getProductType().getId() == conf.getProductTypeId())
 						.collect(Collectors.toList());
+			} else if (conf.getProductSubCategoryId() > 0) {
+				// Filter on Category/Subcategory
 
+				System.out.println("In Sub");
+				localProductStore = productStore.parallelStream().filter(product -> product.getProductType()
+						.getProductSubCategory().getId() == conf.getProductSubCategoryId())
+						.collect(Collectors.toList());
 
 //						.filter(subCatId->subCatId==conf.getProductSubCategoryId())
 //						.collect(Collectors.toList());
-			}
-			else if(conf.getProductCategoryId()>0) {
+			} else if (conf.getProductCategoryId() > 0) {
 				System.out.println("In cat");
-				localProductStore =  productStore
-						.parallelStream()
-						.filter(p->	p.getProductType().getProductSubCategory().getProductCategory().getId() == conf.getProductCategoryId())
-						.collect(Collectors.toList());
-				
-			}
-			else {
+				localProductStore = productStore.parallelStream().filter(p -> p.getProductType().getProductSubCategory()
+						.getProductCategory().getId() == conf.getProductCategoryId()).collect(Collectors.toList());
+
+			} else {
 				// Check for Tags instead
 			}
-			
+
 		}
-		
 
 		return populateResultList(page, size, localProductStore);
 	}
 
 	private List<Product> populateResultList(int page, int size, List<Product> filteredList) {
-		if(filteredList == null) filteredList = productStore;
 		ArrayList<Product> list = new ArrayList<>();
-		for (int i = page * size; i < page * size + size; i++) {
+		if (filteredList == null)
+			filteredList = productStore;
+		else if (filteredList.size() == 0)
+			return list;
+		for (int i = page * size; i < filteredList.size() && i < page * size + size; i++) {
 			list.add(filteredList.get(i));
 		}
 		return list;
@@ -213,7 +188,6 @@ public class ProductServiceMockImpl implements ProductService {
 		return serviceResponse;
 	}
 
-
 	@Override
 	public ServiceResponse<Product> getProducts(int page) {
 		// TODO Auto-generated method stub
@@ -237,11 +211,10 @@ public class ProductServiceMockImpl implements ProductService {
 		System.out.println(productSearchConfig);
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
-		responseObjects.addAll(paginatedList(page, size,productSearchConfig));
+		responseObjects.addAll(paginatedList(page, size, productSearchConfig));
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
 
 		return serviceResponse;
 	}
-
 
 }

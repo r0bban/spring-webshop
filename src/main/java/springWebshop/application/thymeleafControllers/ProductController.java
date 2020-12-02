@@ -1,9 +1,6 @@
 package springWebshop.application.thymeleafControllers;
 
-import java.util.List;
 import java.util.Optional;
-
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,19 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import springWebshop.application.model.domain.Product;
-import springWebshop.application.model.domain.ProductCategory;
-import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.model.dto.CategoryModelObject;
 import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.model.dto.SessionModel;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.product.ProductCategoryService;
 import springWebshop.application.service.product.ProductSearchConfig;
-import springWebshop.application.service.product.ProductService;
+import springWebshop.application.service.product.ProductSegmentationService;
+import springWebshop.application.service.product.ProductServiceMockImpl;
 import springWebshop.application.service.product.ProductTypeService;
 
 @Controller
@@ -36,11 +30,14 @@ import springWebshop.application.service.product.ProductTypeService;
 @SessionAttributes({"sessionModel"})
 public class ProductController {
 
+	/// ÄNDRADE FRÅN INTERFACE TILL KONKRETE IMPL FÖRATT KOMMA ÅT EGNA Metode
 	@Autowired
-	ProductService productService;
+	ProductServiceMockImpl productService;
 
 	@Autowired
 	ProductCategoryService productCategoryService;
+	@Autowired
+	ProductSegmentationService productSegmentationService;
 
 	@Autowired
 	ProductTypeService productTypeService;
@@ -52,8 +49,11 @@ public class ProductController {
 	}
 
 	@ModelAttribute("categoriesAvailable")
-	private List<ProductCategory> getAllCategories(){
-		return productCategoryService.getAllProductCategories();
+	private CategoryModelObject getAllCategories(){
+		CategoryModelObject model = new CategoryModelObject();
+		model.setCategories(productSegmentationService.getAllCategories());
+		System.out.println(model);
+		return model;
 	}
 	
 	
@@ -95,11 +95,9 @@ public class ProductController {
 		selectFilteredProducts(category,subcategory,type);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
-		ProductSearchConfig config = new ProductSearchConfig();
-//		config.setProductTypeId(2L);
-		config.setProductCategoryId(1L);
+	
 		
-		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 2);
+		ServiceResponse<Product> response = productService.getProducts(null,currentPage > 0 ? currentPage - 1 : 0, 10);
 //		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		
@@ -125,13 +123,32 @@ public class ProductController {
 	}
 
 	@PostMapping(path = { "products" })
-	public String postAddItemToCart(@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
+	public String postAddItemToCart(@ModelAttribute("categoriesAvailable") CategoryModelObject categoryDTO,
+			@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
+		System.out.println("POST from products");
+		System.out.println(categoryDTO);
+		ProductSearchConfig config = new ProductSearchConfig();
+		config.setProductCategoryId(categoryDTO.getSelectedCat());
+		config.setProductSubCategoryId(categoryDTO.getSelectedSub());
+		config.setProductTypeId(categoryDTO.getSelectedType());
+		
+		
 		if(productId.isPresent())
 			session.getCart().addItem(productId.get());
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
-		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 10);
+//		if(config.getProductSubCategoryId()>0) {
+//			categoryDTO.setSelectedSub(pro);
+//			if(config.getProductTypeId()>0) {
+//				// Fetch All Types connected in heirarchy
+//				categoryDTO.setSelectedType(selectedType);
+//			}
+//			
+//		}
+		
+		
 		m.addAttribute("allProducts", response.getResponseObjects());
 		// Doesnt return Error Message? Empty list
 		

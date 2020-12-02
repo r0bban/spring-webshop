@@ -65,19 +65,23 @@
     </style>
 
     <script type="text/javascript" th:src="@{/js/categoriesScript.js}"></script>
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     <script th:inline="javascript">
-        function myFunction() {
+        function selectedCategory() {
             var container = document.getElementById("categoryParent")
             console.log(container)
             var select = document.querySelector('#sel');
             console.log(select.value)
             var subCategory = document.createElement("select")
-            container.appendChild(subCategory)
-
 
 
         }
-
+        $(document).ready(function () {
+            $('#sel').on('change', function () {
+                document.forms['cat'].submit();
+            });
+        });
     </script>
 </head>
 
@@ -90,19 +94,23 @@
         <main>
 
             <div class="filterOptions" id="categoryParent">
-                <select id="sel" onchange="myFunction()">
-                    <th:body th:each="category,meta : ${categoriesAvailable}">
-                        <option th:text="${category.name}" th:value="${meta.index}">Categories</option>
+                <form name="cat" th:action="@{/webshop/products}" method="POST" th:object="${categoriesAvailable}">
+                    <select id="sel" th:field="*{selectedCat}">
+                        <option th:text="All" th:value="0">Categories</option>
+
+                        <th:body th:each="category : ${categoriesAvailable.categories}">
+                            <option th:text="${category.name}" th:value="${category.id}">Categories</option>
+                        </th:body>
+                    </select>
+                </form>
+                <select id="sub" disabled>
+                    <th:body>
+                        <option value="">Subcategories</option>
                     </th:body>
                 </select>
                 <!-- <select>
-                    <th:body th:each="subCategory : ${categories.subCategories}">
-                        <option th:text="${subCategory}" value="">Subcategories</option>
-                    </th:body>
-                </select>
-                <select>
-                    <th:body th:each="type : ${categories.types}">
-                        <option th:text="${type}" value="">Types</option>
+                    <th:body>
+                        <option value="">Types</option>
                     </th:body>
                 </select> -->
 
