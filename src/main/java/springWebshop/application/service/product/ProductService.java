@@ -12,13 +12,18 @@ public interface ProductService {
 	
 	ServiceResponse<Product> getProductById(long id);
 	ServiceResponse<Product> getProductByName(String string);
-	ServiceResponse<Product> getAllProducts();
-	ServiceResponse<Product> getAllProducts(int page);
-	ServiceResponse<Product> getAllProducts(int page, int size);
+	ServiceResponse<Product> getProducts();
+	ServiceResponse<Product> getProducts(int page);
+	ServiceResponse<Product> getProducts(int page, int size);
+	ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig);
+	ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page);
+	ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size);
+
 	ServiceResponse<Product> create (Product newProduct);
 	ServiceResponse<Product> update(Product updatedProduct);
-	ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig);
-	ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig);
+	
+//	ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig);
+//	ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig);
 
 
 

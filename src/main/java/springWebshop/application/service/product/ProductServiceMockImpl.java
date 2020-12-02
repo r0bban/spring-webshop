@@ -83,7 +83,7 @@ public class ProductServiceMockImpl implements ProductService {
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts() {
+	public ServiceResponse<Product> getProducts() {
 		System.out.println("Mock GetAllProducts");
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
@@ -94,7 +94,7 @@ public class ProductServiceMockImpl implements ProductService {
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts(int page, int size) {
+	public ServiceResponse<Product> getProducts(int page, int size) {
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
 		responseObjects.addAll(paginatedList(page, size));
@@ -134,20 +134,27 @@ public class ProductServiceMockImpl implements ProductService {
 		return serviceResponse;
 	}
 
+
 	@Override
-	public ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig) {
+	public ServiceResponse<Product> getProducts(int page) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig) {
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts(int page) {
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size) {
 		// TODO Auto-generated method stub
 		return null;
 	}

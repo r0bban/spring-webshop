@@ -58,17 +58,17 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts() {
+	public ServiceResponse<Product> getProducts() {
 		return getAllProductPageAndSize(0, defaultPageSize);
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts(int page, int size) {
+	public ServiceResponse<Product> getProducts(int page, int size) {
 		return getAllProductPageAndSize(page, size);
 	}
 
 	@Override
-	public ServiceResponse<Product> getAllProducts(int page) {
+	public ServiceResponse<Product> getProducts(int page) {
 		return getAllProductPageAndSize(page, defaultPageSize);
 	}
 
@@ -138,15 +138,6 @@ public class ProductServiceImpl implements ProductService {
 		return response;
 	}
 
-	@Override
-	public ServiceResponse<Product> productBySegmentation(ProductSearchConfig productSearchConfig) {
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> ProductBySearchString(ProductSearchConfig productSearchConfig) {
-		return null;
-	}
 
 	boolean hasValidProductType(Product product) {
 		return product.getProductType() != null ? productTypeRepository.existsById(product.getProductType().getId())
@@ -164,6 +155,24 @@ public class ProductServiceImpl implements ProductService {
 			errors.add(ServiceErrorMessages.PRODUCT.couldNotFind(product.getId()));
 		}
 		return isExisting;
+	}
+
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -31,7 +31,7 @@ public class AdminController {
 		
 		
 		
-		ServiceResponse<Product> response = productService.getAllProducts(0,20);
+		ServiceResponse<Product> response = productService.getProducts(0,20);
 		m.addAttribute("allProducts", response.getResponseObjects());
 
 		return "adminProductsView";

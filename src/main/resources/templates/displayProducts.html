@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="ISO-8859-1">
     <title>Products Page</title>
     <style>
@@ -63,20 +64,47 @@
         }
     </style>
 
+    <script type="text/javascript" th:src="@{/js/categoriesScript.js}"></script>
+    <script th:inline="javascript">
+        function myFunction() {
+            var container = document.getElementById("categoryParent")
+            console.log(container)
+            var select = document.querySelector('#sel');
+            console.log(select.value)
+            var subCategory = document.createElement("select")
+            container.appendChild(subCategory)
+
+
+
+        }
+
+    </script>
 </head>
 
 
 <body th:with="currentPage=(${session.sessionModel.productPage})">
-
+    <button type="button" th:onclick="showAlert()">Show Alert</button>
     <article class="container">
         <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
 
         <main>
 
-            <div class="filterOptions">
-                <select>
-                    <option value="">All</option>
+            <div class="filterOptions" id="categoryParent">
+                <select id="sel" onchange="myFunction()">
+                    <th:body th:each="category,meta : ${categoriesAvailable}">
+                        <option th:text="${category.name}" th:value="${meta.index}">Categories</option>
+                    </th:body>
                 </select>
+                <!-- <select>
+                    <th:body th:each="subCategory : ${categories.subCategories}">
+                        <option th:text="${subCategory}" value="">Subcategories</option>
+                    </th:body>
+                </select>
+                <select>
+                    <th:body th:each="type : ${categories.types}">
+                        <option th:text="${type}" value="">Types</option>
+                    </th:body>
+                </select> -->
 
             </div>
             <div class="productContainer">
@@ -117,7 +145,7 @@
 
         </footer>
     </article>
-    
+   
 </body>
 
 </html>

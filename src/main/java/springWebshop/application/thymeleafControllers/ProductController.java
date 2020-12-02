@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
@@ -41,19 +44,15 @@ public class ProductController {
 	@Autowired
 	ProductTypeService productTypeService;
 
-	@ModelAttribute("categories")
-	private List<ProductCategory> getAllCategoriesFromService() {
-		return productCategoryService.getAllProductCategories();
-	}
-
-	@ModelAttribute("types")
-	private List<ProductSubCategory> getAllTypesFromService() {
-		return productTypeService.getAllProductTypes();
-	}
 
 	@ModelAttribute("sessionModel")
 	private SessionModel getShoppingCart() {
 		return new SessionModel(productService);
+	}
+
+	@ModelAttribute("categoriesAvailable")
+	private List<ProductCategory> getAllCategories(){
+		return productCategoryService.getAllProductCategories();
 	}
 	
 	
@@ -84,12 +83,18 @@ public class ProductController {
 		return "createNewProduct";
 	}
 
-	@GetMapping(path = { "products" })
-	public String getAllProducts(@ModelAttribute("sessionModel") SessionModel session,
+	@GetMapping(path = { "products","products/{category}","products/{category}/{subcategory}","products/{category}/{subcategory}/{type}" })
+	public String getAllProducts(
+			@PathVariable(name = "category",required = false) Optional<String> category,
+			@PathVariable(name = "subcategory",required = false) Optional<String> subcategory,
+			@PathVariable(name = "type",required = false) Optional<String> type,
+			@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
+		
+		selectFilteredProducts(category,subcategory,type);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
-		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		
 		
@@ -98,9 +103,21 @@ public class ProductController {
 		m.addAttribute("totalPages", response.getTotalPages());
 		m.addAttribute("sessionModel", session);
 
+		
+		
+		
+		
+		
+		
 		return "displayProducts";
 	}
 	
+	private void selectFilteredProducts(Optional<String> category, Optional<String> subcategory, Optional<String> type) {
+		System.out.println(category);
+		System.out.println(subcategory);
+		System.out.println(type);
+	}
+
 	@PostMapping(path = { "products" })
 	public String postAddItemToCart(@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
@@ -108,7 +125,7 @@ public class ProductController {
 			session.getCart().addItem(productId.get());
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
-		ServiceResponse<Product> response = productService.getAllProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		// Doesnt return Error Message? Empty list
 		
