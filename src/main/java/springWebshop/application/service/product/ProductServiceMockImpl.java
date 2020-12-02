@@ -2,6 +2,7 @@ package springWebshop.application.service.product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
@@ -13,36 +14,72 @@ import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.service.ServiceResponse;
 @Service
-//@Primary
+@Primary
 public class ProductServiceMockImpl implements ProductService {
 
 	List<Product> productStore;
-	static int idGenerator = 0;
+	List<ProductCategory> categoryStore;
+	List<ProductType> typeStore;
+	List<ProductSubCategory> subStore;
+	static int idProductGenerator = 0;
+	static int idProductCategoryGenerator = 0;
+	static int idProductSubCategoryGenerator = 0;
+	static int idProductTypeGenerator = 0;
 
 	public ProductServiceMockImpl() {
+		typeStore = new ArrayList<ProductType>();
+		subStore = new ArrayList<ProductSubCategory>();
 		productStore = new ArrayList<Product>();
-		for (int i = 0; i < 5; i++) {
+		categoryStore = new ArrayList<>();
+		
+		int noCat=3, noSub=3, noType=10;
+		for(int i = 0;i<noCat;i++) {
+			ProductCategory z = new ProductCategory("ProductCategory " + (i));
+			z.setId(++idProductCategoryGenerator);
+			categoryStore.add(z);
+			
+		}
+		for(int i = 0;i<noSub;i++) {
+			ProductSubCategory y = new ProductSubCategory("ProductSubCategory " + (i),categoryStore.get(new Random().nextInt(noCat)));
+			y.setId(++idProductSubCategoryGenerator);
+			subStore.add(y);
+			
+		}
+		for(int i = 0;i<noType;i++) {
+			ProductType x = new ProductType("ProductType " + (i),subStore.get(new Random().nextInt(noSub)));
+			x.setId(++idProductTypeGenerator);
+			typeStore.add(x);
+			
+		}
+		
+
+		
+		
+		
+		
+	
+		
+		for (int i = 0; i < 100; i++) {
 			Product localProduct = new Product();
-			localProduct.setId(++idGenerator);
+			localProduct.setId(++idProductGenerator);
 			localProduct.setName("Product " + i);
-			ProductCategory z = new ProductCategory("ProductCategory " + (i*4));
-			ProductSubCategory y = new ProductSubCategory("ProductSubCategory " + (i+33),z);
-			ProductType x = new ProductType("ProductType " + (i-20),y);
-			localProduct.setProductType(x);
+			localProduct.setBasePrice(new Random().nextInt(1000));
+			localProduct.setProductType(typeStore.get(new Random().nextInt(noType)));
 			productStore.add(localProduct);
 		}
-		Product product = new Product();
-		product.setName("Johannes");
-		product.setId(++idGenerator);
-		productStore.add(product);
-		product = new Product();
-		product.setName("Hednan");
-		product.setId(++idGenerator);
-		productStore.add(product);
-		product = new Product();
-		product.setName("Robert");
-		product.setId(++idGenerator);
-		productStore.add(product);
+		productStore.forEach(System.out::println);
+//		Product product = new Product();
+//		product.setName("Johannes");
+//		product.setId(++idProductGenerator);
+//		productStore.add(product);
+//		product = new Product();
+//		product.setName("Hednan");
+//		product.setId(++idGenerator);
+//		productStore.add(product);
+//		product = new Product();
+//		product.setName("Robert");
+//		product.setId(++idGenerator);
+//		productStore.add(product);
 	}
 
 	@Override
@@ -97,19 +134,61 @@ public class ProductServiceMockImpl implements ProductService {
 	public ServiceResponse<Product> getProducts(int page, int size) {
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
-		responseObjects.addAll(paginatedList(page, size));
+		responseObjects.addAll(paginatedList(page, size, null));
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
 
 		return serviceResponse;
 	}
 
-	private List<Product> paginatedList(int page, int size) {
-		ArrayList<Product> list = new ArrayList<>();
+	private List<Product> paginatedList(int page, int size, ProductSearchConfig conf) {
+		List<Product> localProductStore = null;
+		
+		if(conf != null) {
+			if(conf.getProductTypeId()>0) {
+				// Filter on Category/SubCategory/Type
+				System.out.println("In type");
+				localProductStore =  productStore
+				.parallelStream()
+				.filter(product->product.getProductType().getId() == conf.getProductTypeId())
+				.collect(Collectors.toList());
+			}
+			else if(conf.getProductSubCategoryId()>0){
+				// Filter on Category/Subcategory
+				
+				System.out.println("In Sub");
+				localProductStore =  productStore
+						.parallelStream()
+						.filter(product->product.getProductType().getProductSubCategory().getId() == conf.getProductSubCategoryId())
+						.collect(Collectors.toList());
 
-		for (int i = page * size; i < page * size + size; i++) {
-			list.add(productStore.get(i));
+
+//						.filter(subCatId->subCatId==conf.getProductSubCategoryId())
+//						.collect(Collectors.toList());
+			}
+			else if(conf.getProductCategoryId()>0) {
+				System.out.println("In cat");
+				localProductStore =  productStore
+						.parallelStream()
+						.filter(p->	p.getProductType().getProductSubCategory().getProductCategory().getId() == conf.getProductCategoryId())
+						.collect(Collectors.toList());
+				
+			}
+			else {
+				// Check for Tags instead
+			}
+			
 		}
+		
 
+		return populateResultList(page, size, localProductStore);
+	}
+
+	private List<Product> populateResultList(int page, int size, List<Product> filteredList) {
+		if(filteredList == null) filteredList = productStore;
+		ArrayList<Product> list = new ArrayList<>();
+		for (int i = page * size; i < page * size + size; i++) {
+			list.add(filteredList.get(i));
+		}
 		return list;
 	}
 
@@ -117,7 +196,7 @@ public class ProductServiceMockImpl implements ProductService {
 	public ServiceResponse<Product> create(Product newProduct) {
 		ArrayList<Product> responseObjects = new ArrayList<>();
 		ArrayList<String> errorMessages = new ArrayList<>();
-		newProduct.setId(++idGenerator);
+		newProduct.setId(++idProductGenerator);
 		productStore.add(newProduct);
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
 
@@ -155,8 +234,13 @@ public class ProductServiceMockImpl implements ProductService {
 
 	@Override
 	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println(productSearchConfig);
+		ArrayList<Product> responseObjects = new ArrayList<>();
+		ArrayList<String> errorMessages = new ArrayList<>();
+		responseObjects.addAll(paginatedList(page, size,productSearchConfig));
+		ServiceResponse<Product> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
+
+		return serviceResponse;
 	}
 
 

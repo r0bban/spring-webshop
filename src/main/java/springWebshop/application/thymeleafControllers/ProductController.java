@@ -27,6 +27,7 @@ import springWebshop.application.model.dto.ProductFormModel;
 import springWebshop.application.model.dto.SessionModel;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.product.ProductCategoryService;
+import springWebshop.application.service.product.ProductSearchConfig;
 import springWebshop.application.service.product.ProductService;
 import springWebshop.application.service.product.ProductTypeService;
 
@@ -94,7 +95,12 @@ public class ProductController {
 		selectFilteredProducts(category,subcategory,type);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
-		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		ProductSearchConfig config = new ProductSearchConfig();
+//		config.setProductTypeId(2L);
+		config.setProductCategoryId(1L);
+		
+		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 2);
+//		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		
 		

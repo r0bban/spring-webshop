@@ -16,7 +16,7 @@ import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
 @Service
-@Primary
+//@Primary
 public class ProductServiceImpl implements ProductService {
 
 	final ProductRepository productRepository;
