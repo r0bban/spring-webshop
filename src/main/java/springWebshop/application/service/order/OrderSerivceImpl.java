@@ -11,16 +11,15 @@ import springWebshop.application.integration.OrderRepository;
 import springWebshop.application.integration.ProductRepository;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
-import springWebshop.application.model.domain.OrderStatus;
+import springWebshop.application.model.domain.Order.OrderStatus;
 import springWebshop.application.model.domain.Product;
-import springWebshop.application.model.domain.user.Address;
+import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.domain.user.Customer;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
 import javax.persistence.EntityNotFoundException;
-import javax.swing.text.html.Option;
 
 @Service
 public class OrderSerivceImpl implements OrderService {
@@ -137,7 +136,7 @@ public class OrderSerivceImpl implements OrderService {
 
     @Override
     public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
-                                                              long customerId, Address deliveryAddress) {
+                                                              long customerId, CustomerAddress deliveryAddress) {
         System.out.println("-----createOrderFromShoppingCart-----");
 
         ServiceResponse<Order> response = new ServiceResponse<>();
@@ -207,9 +206,7 @@ public class OrderSerivceImpl implements OrderService {
                 errors.add(ServiceErrorMessages.PRODUCT.couldNotFind(product.getId()));
             }
         });
-        return shoppingCartDTO.getProductMap().size() == productList.size()
-                ? true
-                : false;
+        return shoppingCartDTO.getProductMap().size() == productList.size();
     }
 
     @Override

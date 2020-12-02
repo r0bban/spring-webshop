@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import springWebshop.application.model.domain.Order;
+import springWebshop.application.model.domain.Order.OrderStatus;
 import springWebshop.application.model.domain.OrderLine;
-import springWebshop.application.model.domain.OrderStatus;
-import springWebshop.application.model.domain.user.Address;
+import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 
@@ -34,7 +34,7 @@ public class OrderServiceMockImpl implements OrderService {
 				orderlines.add(orderLine);
 			}
 			Order localOrder = new Order();
-			localOrder.setId(++orderIdGenerator);
+			localOrder.setId((long) ++orderIdGenerator);
 			localOrder.setTotalSum(new Random().nextInt(100));
 			localOrder.setTotalVatSum(new Random().nextInt(100));
 			localOrder.setOrderLines(orderlines);
@@ -100,7 +100,7 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, Address deliveryAddress) {
+	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, CustomerAddress deliveryAddress) {
 		return null;
 	}
 

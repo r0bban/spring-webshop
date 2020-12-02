@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import springWebshop.application.model.domain.user.Address;
 import springWebshop.application.model.domain.user.Customer;
 
 @Getter
@@ -19,8 +20,8 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Long id;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<OrderLine> orderLines;
     private int totalNumberOfItem;
     private double totalSum;
@@ -32,7 +33,8 @@ public class Order {
     private Date dispatched;
     private Date InDelivery;
     private Date deliveryComplete;
-    private Address deliveryAddress;
+    @Embedded
+    private DeliveryAddress deliveryAddress;
     @ManyToOne
     private Customer customer;
 
@@ -110,6 +112,82 @@ public class Order {
 
     private void clearTotalSums(){
         this.totalDiscount = this.totalPayable = this.totalSum = this.totalVatSum = this.totalNumberOfItem = 0;
+    }
+
+    public void setDeliveryAddress(Address address){
+        this.deliveryAddress = new DeliveryAddress(address);
+    }
+
+    public Address getDeliveryAddress(){
+        return this.deliveryAddress;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @Embeddable
+    private static class DeliveryAddress implements Address{
+        @NotBlank
+        private String deliveryStreet;
+        @NotBlank
+        private int deliveryZipCode;
+        @NotBlank
+        private String deliveryCity;
+        @NotBlank
+        private String deliveryCountry;
+
+        public String getStreet() {
+            return deliveryStreet;
+        }
+
+        public void setStreet(String deliveryStreet) {
+            this.deliveryStreet = deliveryStreet;
+        }
+
+        public int getZipCode() {
+            return deliveryZipCode;
+        }
+
+        public void setZipCode(int deliveryZipCode) {
+            this.deliveryZipCode = deliveryZipCode;
+        }
+
+        public String getCity() {
+            return deliveryCity;
+        }
+
+        public void setCity(String deliveryCity) {
+            this.deliveryCity = deliveryCity;
+        }
+
+        public String getCountry() {
+            return deliveryCountry;
+        }
+
+        public void setCountry(String deliveryCountry) {
+            this.deliveryCountry = deliveryCountry;
+        }
+
+        private DeliveryAddress(String street, int zipCode, String city, String country) {
+            this.deliveryStreet = street;
+            this.deliveryZipCode = zipCode;
+            this.deliveryCity = city;
+            this.deliveryCountry = country;
+        }
+
+        private DeliveryAddress(Address address){
+            this.deliveryStreet = address.getStreet();
+            this.deliveryZipCode = address.getZipCode();
+            this.deliveryCity = address.getCity();
+            this.deliveryCountry = address.getCountry();
+        }
+
+    }
+
+    public static enum OrderStatus {
+        NOT_HANDLED,
+        DISPATCHED,
+        DELIVERY,
+        DELIVERY_COMPLETED,
     }
 
 }

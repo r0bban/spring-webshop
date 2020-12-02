@@ -2,6 +2,7 @@ package springWebshop.application.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.domain.user.Address;
+import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.domain.user.Customer;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
@@ -68,7 +69,9 @@ public class BaseConfig {
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
 											 ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
 											 AccountRepository accountRepository, CompanyRepository companyRepository,
-											 OrderRepository orderRepository, OrderService orderService, CustomerRepository customerRepository, ProductService productService) {
+											 OrderRepository orderRepository, OrderService orderService,
+											 CustomerRepository customerRepository, ProductService productService
+	,											CustomerAddressRespoitory addressRespoitory) {
 
 
         return (args) -> {
@@ -91,15 +94,38 @@ public class BaseConfig {
 			customer.setLastName("Larsson");
 			customer.setEmail("janne.larsson@gmail.com");
 			customer.setPhoneNumber("46709408925");
+
+			CustomerAddress address = new CustomerAddress("Storgatan " + (1), 17142, "Solna", "Sweden");
+			customer.addAddress(address);
 			customerRepository.save(customer);
-			
-			Customer persistedCustomer = customerRepository.getOne(1L);
-			for (int i = 0; i < 1; i++) {
-				Address address = new Address("Storgatan " + i+1, 17142, "Solna", "Sweden");
-				persistedCustomer.addAddress(address);
-			}
-			
-			customerRepository.save(persistedCustomer);
+
+			CustomerAddress newAddress = new CustomerAddress("Storgatan " + (1), 17142, "Solna", "Sweden");
+			Customer foundCustomer = customerRepository.findById(1L).get();
+			foundCustomer.getAddresses().size();
+			foundCustomer.addAddress(newAddress);
+			customerRepository.save(foundCustomer);
+
+//
+			System.out.println("---------not getting address list!!!!---------");
+			Optional<Customer> persistedCustomer = customerRepository.findById(1L);
+//			System.out.println(persistedCustomer.get().getFirstName());
+//			persistedCustomer.setAddresses(null);
+//			System.out.println(persistedCustomer);
+			System.out.println("---------NOW GETTING  getting address list!!!!---------");
+			List<CustomerAddress> addresLisssssta = persistedCustomer.get().getAddresses();
+//			List<CustomerAddress> addresLisssssta = customerRepository.findById(1L).get().getAddresses();
+//			persistedCustomer.getAddresses().size();
+//			System.out.println(persistedCustomer.getAddresses());
+//			addressRespoitory.findByCustomerId(1L)
+//					.forEach(System.out::println);
+
+
+//			for (int i = 0; i <= 1; i++) {
+//				CustomerAddress address = new CustomerAddress("Storgatan " + (i+1), 17142, "Solna", "Sweden");
+//				persistedCustomer.addAddress(address);
+//			}
+//
+//			customerRepository.save(persistedCustomer);
 
 
         };

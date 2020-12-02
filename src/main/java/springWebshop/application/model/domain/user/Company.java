@@ -32,26 +32,24 @@ import lombok.Setter;
 public class Company{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
 	private String name;
-	private int VAT;
-	
-	private int phoneNumber;
-	private int mobileNumber;
+	private String VAT;
+	private String phoneNumber;
+	private String mobileNumber;
 	
 //	@ElementCollection(fetch = FetchType.EAGER)
 //	private List<Address> addresses = new ArrayList<>();
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	@JoinColumn(name = "companyId")
 	private List<Customer> customers = new ArrayList<>();
 
 	@Override
 	public String toString() {
 		return "Company [id=" + id + ", name=" + name + ", VAT=" + VAT + ", phoneNumber=" + phoneNumber
-				+ ", mobileNumber=" + mobileNumber + " customer=" + customers + "]";
+				+ ", mobileNumber=" + mobileNumber +"]";
 	}
 	
 	

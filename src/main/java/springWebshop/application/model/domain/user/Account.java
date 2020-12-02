@@ -1,8 +1,5 @@
 package springWebshop.application.model.domain.user;
 
-import java.math.BigInteger;
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,8 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-
-import org.apache.tomcat.jni.Address;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,11 +40,4 @@ public abstract class Account {
 		return "Account [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", password=" + password
 				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", mobileNumber=" + mobileNumber + "]";
 	}
-	
-	
-
-	//	private String profileName;
-
-	// private LocalDate dateOfBirth;
-
 }

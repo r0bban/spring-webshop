@@ -2,7 +2,9 @@ package springWebshop.application.model.domain.user;
 
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,7 +12,6 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import springWebshop.application.model.domain.Order;
 
@@ -18,26 +19,26 @@ import springWebshop.application.model.domain.Order;
 @Setter
 @AllArgsConstructor
 @Entity(name = "customers")
-public class Customer extends Account {
+public class Customer extends Account implements Serializable {
 	
 	
-//	@ElementCollection(fetch = FetchType.LAZY)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Address> addresses;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)//, mappedBy = "customer")
+	private List<CustomerAddress> addresses;
 
-	@OneToMany (mappedBy = "customer")
-	private Set<Order> orders;
+//	@OneToMany (mappedBy = "customer")
+//	private List<Order> orders;
 
-	@Override
-	public String toString() {
-		return "Customer [addresses=" + addresses + " toString()=" + super.toString() + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Customer [addresses="  + " toString()=" + super.toString() + "]";
+//	}
 	
 	public Customer() {
 		addresses = new ArrayList<>();
 	}
 
-	public void addAddress(Address address){
+	public void addAddress(CustomerAddress address){
 		this.addresses.add(address);
+		address.setCustomer(this);
 	}
 }
