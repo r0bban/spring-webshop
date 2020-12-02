@@ -21,7 +21,8 @@ import springWebshop.application.model.domain.Order;
 public class Customer extends Account {
 	
 	
-	@ElementCollection(fetch = FetchType.LAZY)
+//	@ElementCollection(fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses;
 
 	@OneToMany (mappedBy = "customer")
@@ -35,7 +36,8 @@ public class Customer extends Account {
 	public Customer() {
 		addresses = new ArrayList<>();
 	}
-	
-	
 
+	public void addAddress(Address address){
+		this.addresses.add(address);
+	}
 }

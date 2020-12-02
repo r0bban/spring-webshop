@@ -1,5 +1,6 @@
 package springWebshop.application.model.domain.user;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -21,7 +22,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "Accounts")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -38,8 +38,8 @@ public abstract class Account {
 
 	private String email;
 	
-	private int phoneNumber;
-	private int mobileNumber;
+	private String phoneNumber;
+	private String mobileNumber;
 	@Override
 	public String toString() {
 		return "Account [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", password=" + password

@@ -13,19 +13,15 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import springWebshop.application.integration.AccountRepository;
-import springWebshop.application.integration.CompanyRepository;
-import springWebshop.application.integration.OrderRepository;
-import springWebshop.application.integration.ProductCategoryRepository;
-import springWebshop.application.integration.ProductRepository;
-import springWebshop.application.integration.ProductSubCategoryRepository;
-import springWebshop.application.integration.ProductTypeRepository;
+import springWebshop.application.integration.*;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.model.domain.user.Address;
+import springWebshop.application.model.domain.user.Customer;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.order.OrderService;
@@ -70,9 +66,9 @@ public class BaseConfig {
 
     @Bean
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
-                                             ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
-                                             AccountRepository accountRepository, CompanyRepository companyRepository,
-                                             OrderRepository orderRepository, OrderService orderService) {
+											 ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
+											 AccountRepository accountRepository, CompanyRepository companyRepository,
+											 OrderRepository orderRepository, OrderService orderService, CustomerRepository customerRepository, ProductService productService) {
 
 
         return (args) -> {
@@ -89,7 +85,21 @@ public class BaseConfig {
 //        	System.out.println();
 //        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
-//        	
+//
+			Customer customer = new Customer();
+			customer.setFirstName("Janne");
+			customer.setLastName("Larsson");
+			customer.setEmail("janne.larsson@gmail.com");
+			customer.setPhoneNumber("46709408925");
+			customerRepository.save(customer);
+			
+			Customer persistedCustomer = customerRepository.getOne(1L);
+			for (int i = 0; i < 1; i++) {
+				Address address = new Address("Storgatan " + i+1, 17142, "Solna", "Sweden");
+				persistedCustomer.addAddress(address);
+			}
+			
+			customerRepository.save(persistedCustomer);
 
 
         };

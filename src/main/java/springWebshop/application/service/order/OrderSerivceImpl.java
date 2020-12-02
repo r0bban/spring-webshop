@@ -95,6 +95,7 @@ public class OrderSerivceImpl implements OrderService {
 
     @Override
     public ServiceResponse<Order> create(Order newOrder) {
+        System.out.println("--------public ServiceResponse<Order> create(Order newOrder) {--------");
         ServiceResponse<Order> response = new ServiceResponse<>();
         List<String> errors = new ArrayList<>();
 
@@ -111,6 +112,8 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     boolean hasValidCustomerAssociation(Order order, List<String> errors) {
+        System.out.println("--------hasValidCustomerAssociation--------");
+
         if (order.getCustomer() != null
                 && !customerRepository.existsById(order.getCustomer().getId())) {
             return true;
@@ -122,6 +125,7 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     boolean hasValidDeliveryAddress(Order order, List<String> errors) {
+        System.out.println("-----hasValidDeliveryAddress-----");
         if (order.getDeliveryAddress() != null) {
             return true;
         } else {
@@ -134,33 +138,39 @@ public class OrderSerivceImpl implements OrderService {
     @Override
     public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
                                                               long customerId, Address deliveryAddress) {
+        System.out.println("-----createOrderFromShoppingCart-----");
+
         ServiceResponse<Order> response = new ServiceResponse<>();
         List<String> errors = new ArrayList<>();
         List<Product> productList = new ArrayList<>();
         Order newOrder = new Order();
 
+        System.out.println("-----Optional<Customer> customer = customerRepository.findById(customerId);-----");
         Optional<Customer> customer = customerRepository.findById(customerId);
         newOrder.setCustomer(customer.isPresent()
                 ? customer.get()
                 : null);
 
+        System.out.println("-----newOrder.setDeliveryAddress(deliveryAddress);-----");
         newOrder.setDeliveryAddress(deliveryAddress);
 
-        validateAndFillProductList(shoppingCartDTO, productList, errors);
-        prepareOrderFromShoppingCart(newOrder, shoppingCartDTO, productList, errors);
+//        validateAndFillProductList(shoppingCartDTO, productList, errors);
+//        prepareOrderFromShoppingCart(newOrder, shoppingCartDTO, productList, errors);
 
         if (validateAndFillProductList(shoppingCartDTO, productList, errors)
-                && prepareOrderFromShoppingCart(newOrder, shoppingCartDTO, productList, errors))
+                && prepareOrderFromShoppingCart(newOrder, shoppingCartDTO, productList, errors)) {
             try {
                 return create(newOrder);
             } catch (Exception e) {
                 response.addErrorMessage(ServiceErrorMessages.ORDER.couldNotCreate());
             }
+        }
         response.setErrorMessages(errors);
         return response;
     }
 
     private boolean prepareOrderFromShoppingCart(Order order, ShoppingCartDTO shoppingCartDTO, List<Product> produstList, List<String> errors) {
+        System.out.println("-----prepareOrderFromShoppingCart-----");
         try {
             produstList.forEach(product -> {
                 order.addOrderLine(getOrderLineFromProduct(product,
@@ -187,6 +197,9 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     private boolean validateAndFillProductList(ShoppingCartDTO shoppingCartDTO, List<Product> productList, List<String> errors) {
+
+        System.out.println("-----validateAndFillProductList-----");
+
         shoppingCartDTO.getProductMap().forEach((product, integer) -> {
             try {
                 productList.add(productRepository.getOne(product.getId()));
