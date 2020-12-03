@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import springWebshop.application.integration.CustomerRepository;
 import springWebshop.application.integration.OrderRepository;
 import springWebshop.application.integration.ProductRepository;
+import springWebshop.application.model.domain.Address;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
 import springWebshop.application.model.domain.Order.OrderStatus;
@@ -136,7 +137,7 @@ public class OrderSerivceImpl implements OrderService {
 
     @Override
     public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
-                                                              long customerId, CustomerAddress deliveryAddress) {
+                                                              long customerId, Address deliveryAddress) {
         System.out.println("-----createOrderFromShoppingCart-----");
 
         ServiceResponse<Order> response = new ServiceResponse<>();

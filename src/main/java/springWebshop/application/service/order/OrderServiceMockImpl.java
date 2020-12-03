@@ -7,6 +7,7 @@ import java.util.Random;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import springWebshop.application.model.domain.Address;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.Order.OrderStatus;
 import springWebshop.application.model.domain.OrderLine;
@@ -100,7 +101,7 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, CustomerAddress deliveryAddress) {
+	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, Address deliveryAddress) {
 		return null;
 	}
 

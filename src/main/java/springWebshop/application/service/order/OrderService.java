@@ -1,5 +1,6 @@
 package springWebshop.application.service.order;
 
+import springWebshop.application.model.domain.Address;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.dto.ShoppingCartDTO;
@@ -18,7 +19,7 @@ public interface OrderService {
     ServiceResponse<Order> create(Order newOrder);
 
     ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
-                                                       long customerId, CustomerAddress deliveryAddress);
+                                                       long customerId, Address deliveryAddress);
 
     ServiceResponse<Order> cancelOrderById(long id);
 
