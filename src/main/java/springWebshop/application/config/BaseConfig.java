@@ -182,9 +182,9 @@ public class BaseConfig {
 
         System.out.println(productRepository.findByName(("Product 1")));
 
-        System.out.println(productService.getAllProducts());
+//        System.out.println(productService.getAllProducts());
 
-        System.out.println(productService.getAllProducts());
+//        System.out.println(productService.getAllProducts());
         System.out.println("första TIO!!!");
 //		productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
         System.out.println("41 - 50!!!");
