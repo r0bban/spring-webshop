@@ -15,14 +15,10 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import springWebshop.application.integration.*;
-import springWebshop.application.model.domain.Order;
-import springWebshop.application.model.domain.OrderLine;
-import springWebshop.application.model.domain.Product;
-import springWebshop.application.model.domain.ProductCategory;
-import springWebshop.application.model.domain.ProductSubCategory;
-import springWebshop.application.model.domain.ProductType;
+import springWebshop.application.model.domain.*;
 import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.domain.user.Customer;
+import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.order.OrderService;
@@ -94,9 +90,39 @@ public class BaseConfig {
 
 
 
+            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
+            Address deliveryAddress = persistedCustomer.getAddresses()
+                    .stream()
+                    .filter(address -> address.isDefaultAddress())
+                    .findFirst().get();
+
+            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
+                    + "\nInput deliveryAddress: \n" + deliveryAddress);
+
+            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO,1L, deliveryAddress);
+            System.out.println(createOrderResponse);
+
+            if(createOrderResponse.isSucessful()){
+                System.out.println(createOrderResponse.getResponseObjects());
+            }
+
+
+
+
         };
 
 
+    }
+
+    private ShoppingCartDTO getRandomShoppingCartDTO(ProductService productService, int productIdFrom, int productIdTo) {
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO(productService);
+        for (int i = 0; i < 7; i++) {
+            long randomProdId = randomBetween(productIdFrom,productIdTo);
+            for (int j = 0; j < randomBetween(1, 3); j++) {
+                shoppingCartDTO.addItem(randomProdId);
+            }
+        }
+        return shoppingCartDTO;
     }
 
     private void createCustomers(CustomerRepository customerRepository, int quantity) {
@@ -174,6 +200,7 @@ public class BaseConfig {
             product1.setName("Product " + i);
             product1.setDescription("Testing this big product " + i);
             product1.setBasePrice(new Random().nextInt(50));
+            product1.setVatPercentage(0.25);
             ProductType prodType2 = new ProductType();
             prodType2.setId(1L);
             product1.setProductType(prodType2);

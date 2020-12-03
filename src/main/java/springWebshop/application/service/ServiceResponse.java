@@ -62,4 +62,16 @@ public class ServiceResponse<T> {
 //    public ServiceResponse(List<ServiceErrorMessages> errorMessages) {
 //        this.errorMessages = errorMessages;
 //    }
+
+
+    @Override
+    public String toString() {
+        return "ServiceResponse{" +
+                "sucessful=" + sucessful +
+                ", currentPage=" + currentPage +
+                ", totalPages=" + totalPages +
+                ", totalItems=" + totalItems +
+                ", errorMessages=" + errorMessages +
+                '}';
+    }
 }

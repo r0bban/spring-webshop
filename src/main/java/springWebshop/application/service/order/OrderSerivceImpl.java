@@ -2,6 +2,7 @@ package springWebshop.application.service.order;
 
 import java.util.*;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import springWebshop.application.service.ServiceResponse;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@Primary
 public class OrderSerivceImpl implements OrderService {
 
     final
@@ -113,13 +115,13 @@ public class OrderSerivceImpl implements OrderService {
 
     boolean hasValidCustomerAssociation(Order order, List<String> errors) {
         System.out.println("--------hasValidCustomerAssociation--------");
-
+        System.out.println("Validerad kund: ------> " + order.getCustomer());
         if (order.getCustomer() != null
-                && !customerRepository.existsById(order.getCustomer().getId())) {
+                && customerRepository.existsById(order.getCustomer().getId())) {
             return true;
         } else {
-            errors.add("Customer is not assigned to order OR customer does not exist." +
-                    "\n New Order must be associated to existing Customer.");
+            errors.add("\nCustomer is not assigned to order OR customer does not exist." +
+                    "\nNew Order must be associated to existing Customer.");
             return false;
         }
     }
@@ -147,9 +149,11 @@ public class OrderSerivceImpl implements OrderService {
 
         System.out.println("-----Optional<Customer> customer = customerRepository.findById(customerId);-----");
         Optional<Customer> customer = customerRepository.findById(customerId);
+        System.out.println("Hittad kund: ----> " + customer.get());
         newOrder.setCustomer(customer.isPresent()
                 ? customer.get()
                 : null);
+        System.out.println("Tillagd kund : ----> " + newOrder.getCustomer());
 
         System.out.println("-----newOrder.setDeliveryAddress(deliveryAddress);-----");
         newOrder.setDeliveryAddress(deliveryAddress);
@@ -202,9 +206,14 @@ public class OrderSerivceImpl implements OrderService {
 
         shoppingCartDTO.getProductMap().forEach((product, integer) -> {
             try {
-                productList.add(productRepository.getOne(product.getId()));
-            } catch (EntityNotFoundException e) {
-                errors.add(ServiceErrorMessages.PRODUCT.couldNotFind(product.getId()));
+                Optional<Product> validProduct = productRepository.findById(product.getId());
+                if (validProduct.isPresent()) {
+                    productList.add(validProduct.get());
+                } else {
+                    errors.add(ServiceErrorMessages.PRODUCT.couldNotFind(product.getId()));
+                }
+            } catch (Exception e) {
+                errors.add("Severe error while validating adding products to order. Contact store admin.");
             }
         });
         return shoppingCartDTO.getProductMap().size() == productList.size();

@@ -16,7 +16,6 @@ import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 
 @Service
-@Primary
 public class OrderServiceMockImpl implements OrderService {
 
 	List<Order> orderStore;
