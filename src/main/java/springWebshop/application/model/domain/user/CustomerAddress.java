@@ -36,13 +36,17 @@ public class CustomerAddress implements Address, Serializable {
 
     private AddressType addressType;
 
-    private boolean defaultAddress;
+    private boolean isDefaultAddress;
 
     public CustomerAddress(String street, int zipCode, String city, String country) {
         this.street = street;
         this.zipCode = zipCode;
         this.city = city;
         this.country = country;
+    }
+
+    public void setAsDefault(){
+        this.isDefaultAddress = true;
     }
 
     @Override
@@ -70,7 +74,7 @@ public class CustomerAddress implements Address, Serializable {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", addressType=" + addressType +
-                ", defaultAddress=" + defaultAddress +
+                ", defaultAddress=" + isDefaultAddress +
                 '}';
     }
 }

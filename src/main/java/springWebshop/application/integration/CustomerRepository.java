@@ -15,6 +15,12 @@ import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long>, CustomerRepositoryCustom {
 
+    @Override
+    default Optional<Customer> findById(Long id){
+        return findByIdFullFetch(id);
+    }
+
+
 
 //    Optional<Customer> findById(Long id){
 //        Criteria criteria = session.createCriteria(Customer.class);

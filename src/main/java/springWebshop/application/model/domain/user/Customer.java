@@ -38,6 +38,7 @@ public class Customer extends Account implements Serializable {
 	}
 
 	public void addAddress(CustomerAddress address){
+		if (this.addresses.isEmpty()) address.setAsDefault();
 		this.addresses.add(address);
 		address.setCustomer(this);
 	}

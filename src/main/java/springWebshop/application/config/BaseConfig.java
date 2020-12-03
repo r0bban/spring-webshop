@@ -44,9 +44,12 @@ public class BaseConfig {
 //    final
 //    CompanyRepository companyRepository;
 
-//    final
+    //    final
 //    ProductSerivce productService;
     private final ThymeleafProperties properties;
+    @Autowired
+//    @Qualifier("productServiceMockImpl")
+            ProductService productService;
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;
 
@@ -60,27 +63,22 @@ public class BaseConfig {
 //        this.productService = productService;
         this.properties = properties;
     }
-    
-    @Autowired 
-//    @Qualifier("productServiceMockImpl")
-    ProductService productService;
 
     @Bean
     public CommandLineRunner testStuffInHere(ProductRepository productRepository, ProductTypeRepository typeRepo,
-											 ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
-											 AccountRepository accountRepository, CompanyRepository companyRepository,
-											 OrderRepository orderRepository, OrderService orderService,
-											 CustomerRepository customerRepository, ProductService productService
-	,											CustomerAddressRespoitory addressRespoitory) {
+                                             ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
+                                             AccountRepository accountRepository, CompanyRepository companyRepository,
+                                             OrderRepository orderRepository, OrderService orderService,
+                                             CustomerRepository customerRepository, ProductService productService
+            , CustomerAddressRespoitory addressRespoitory) {
 
 
         return (args) -> {
-        	
-        	
-        	
+
+
 //        	orderService.getAllOrders().getResponseObjects().forEach(System.out::println);
-        	
-        	testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
+
+            testingRedesignedProductRepoAndService(productRepository, typeRepo, catRepo, subCatRepo);
 //        	productService.getAllProducts().getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	System.out.println();
 //        	productService.getAllProducts(2, 2).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
@@ -89,116 +87,109 @@ public class BaseConfig {
 //        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //
-			Customer customer = new Customer();
-			customer.setFirstName("Janne");
-			customer.setLastName("Larsson");
-			customer.setEmail("janne.larsson@gmail.com");
-			customer.setPhoneNumber("46709408925");
+            createCustomers(customerRepository, 50);
+            Customer persistedCustomer = customerRepository.findById(1L).get();
+            System.out.println(persistedCustomer);
+            persistedCustomer.getAddresses().forEach(System.out::println);
 
-			CustomerAddress address = new CustomerAddress("Storgatan " + (1), 17142, "Solna", "Sweden");
-			customer.addAddress(address);
-			customerRepository.save(customer);
-
-			CustomerAddress newAddress = new CustomerAddress("Storgatan " + (1), 17142, "Solna", "Sweden");
-			Customer foundCustomer = customerRepository.findById(1L).get();
-			foundCustomer.getAddresses().size();
-			foundCustomer.addAddress(newAddress);
-			customerRepository.save(foundCustomer);
-
-//
-			System.out.println("---------not getting address list!!!!---------");
-			Optional<Customer> persistedCustomer = customerRepository.findById(1L);
-//			System.out.println(persistedCustomer.get().getFirstName());
-//			persistedCustomer.setAddresses(null);
-//			System.out.println(persistedCustomer);
-			System.out.println("---------NOW GETTING  getting address list!!!!---------");
-			List<CustomerAddress> addresLisssssta = persistedCustomer.get().getAddresses();
-//			List<CustomerAddress> addresLisssssta = customerRepository.findById(1L).get().getAddresses();
-//			persistedCustomer.getAddresses().size();
-//			System.out.println(persistedCustomer.getAddresses());
-//			addressRespoitory.findByCustomerId(1L)
-//					.forEach(System.out::println);
-
-
-//			for (int i = 0; i <= 1; i++) {
-//				CustomerAddress address = new CustomerAddress("Storgatan " + (i+1), 17142, "Solna", "Sweden");
-//				persistedCustomer.addAddress(address);
-//			}
-//
-//			customerRepository.save(persistedCustomer);
 
 
         };
 
 
-
     }
 
-	private void orderTests(OrderRepository orderRepository, OrderService orderService) {
-		for (int i = 0; i < 5; i++) {
-			Order localOrder = new Order();
-			orderRepository.save(localOrder);
-			List<OrderLine> orderlines = new ArrayList<OrderLine>();
-			for (int j = 0; j < 10; j++) {
-				OrderLine orderLine = new OrderLine();
-				orderLine.setDiscount(new Random().nextInt(10));
-				orderLine.setSum(new Random().nextInt(10));
-				localOrder.addOrderLine(orderLine);
-			}
-			localOrder.setTotalSum(new Random().nextInt(100));
-			localOrder.setTotalVatSum(new Random().nextInt(100));
-			orderService.create(localOrder);
-		}
-	}
-    
+    private void createCustomers(CustomerRepository customerRepository, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            Customer customer = new Customer();
+            customer.setFirstName("Janne");
+            customer.setLastName("Larsson");
+            customer.setEmail("janne.larsson@gmail.com");
+            customer.setPhoneNumber("46709408925");
+
+            for (int j = 0; j < randomBetween(2,3); j++) {
+                CustomerAddress address = new CustomerAddress("Storgatan " + (i + 1), randomBetween(11401, 94789), "City X", "Sweden");
+                customer.addAddress(address);
+            }
+            customerRepository.save(customer);
+        }
+    }
+
+    int randomLowerThan(int highest) {
+        Random random = new Random();
+        return random.nextInt(highest);
+    }
+
+    int randomBetween(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    private void orderTests(OrderRepository orderRepository, OrderService orderService) {
+        for (int i = 0; i < 5; i++) {
+            Order localOrder = new Order();
+            orderRepository.save(localOrder);
+            List<OrderLine> orderlines = new ArrayList<OrderLine>();
+            for (int j = 0; j < 10; j++) {
+                OrderLine orderLine = new OrderLine();
+                orderLine.setDiscount(new Random().nextInt(10));
+                orderLine.setSum(new Random().nextInt(10));
+                localOrder.addOrderLine(orderLine);
+            }
+            localOrder.setTotalSum(new Random().nextInt(100));
+            localOrder.setTotalVatSum(new Random().nextInt(100));
+            orderService.create(localOrder);
+        }
+    }
+
     private void testingServiceResponseClass() {
-    	Product product1 = new Product();
-      Product product2 = new Product();
-      ArrayList products = new ArrayList();
-      ArrayList errors = new ArrayList();
-      products.add(product1);
-      products.add(product2);
-      errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
-      ServiceResponse response = new ServiceResponse<Product>(products, errors);
-      System.out.println(response.isSucessful());
-      System.out.println(response.getResponseObjects());
-      System.out.println(response.getErrorMessages());
+        Product product1 = new Product();
+        Product product2 = new Product();
+        ArrayList products = new ArrayList();
+        ArrayList errors = new ArrayList();
+        products.add(product1);
+        products.add(product2);
+        errors.add(ServiceErrorMessages.PRODUCT.couldNotCreate());
+        ServiceResponse response = new ServiceResponse<Product>(products, errors);
+        System.out.println(response.isSucessful());
+        System.out.println(response.getResponseObjects());
+        System.out.println(response.getErrorMessages());
     }
 
-	private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
-			ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
-		ProductCategory category = new ProductCategory("Möbler");
-		catRepo.save(category);
+    private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
+                                                        ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
+        ProductCategory category = new ProductCategory("Möbler");
+        catRepo.save(category);
 
-		ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
-		subCatRepo.save(subCategory);
+        ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
+        subCatRepo.save(subCategory);
 
-		ProductSubCategory subCat2 = new ProductSubCategory();
-		subCat2.setId(1L);
-		ProductType prodType = new ProductType("Gungstol", subCat2);
-		typeRepo.save(prodType);
+        ProductSubCategory subCat2 = new ProductSubCategory();
+        subCat2.setId(1L);
+        ProductType prodType = new ProductType("Gungstol", subCat2);
+        typeRepo.save(prodType);
 
-		for (int i = 0; i < 100; i++) {
-		    Product product1 = new Product();
-		    product1.setName("Product " + i);
-		    product1.setDescription("Testing this big product " + i);
-		    product1.setBasePrice(new Random().nextInt(50));
-		    ProductType prodType2 = new ProductType();
-		    prodType2.setId(1L);
-		    product1.setProductType(prodType2);
-		    productRepository.save(product1);
-		}
+        for (int i = 0; i < 100; i++) {
+            Product product1 = new Product();
+            product1.setName("Product " + i);
+            product1.setDescription("Testing this big product " + i);
+            product1.setBasePrice(new Random().nextInt(50));
+            ProductType prodType2 = new ProductType();
+            prodType2.setId(1L);
+            product1.setProductType(prodType2);
+            productRepository.save(product1);
+        }
 
-		System.out.println(productRepository.findByName(("Product 1")));
+        System.out.println(productRepository.findByName(("Product 1")));
 
-		System.out.println(productService.getAllProducts());
+        System.out.println(productService.getAllProducts());
 
-		System.out.println(productService.getAllProducts());
-		System.out.println("första TIO!!!");
+        System.out.println(productService.getAllProducts());
+        System.out.println("första TIO!!!");
 //		productService.getAllProducts(0,10).forEach(product -> System.out.println(product.getName()));
-		System.out.println("41 - 50!!!");
+        System.out.println("41 - 50!!!");
 //		productService.getAllProducts(4,10).forEach(product -> System.out.println(product.getName()));
-	}
+    }
 //
 //    private void simpleServiceTest() {
 //        ProductCategory existingCategory = new ProductCategory("Alpha");

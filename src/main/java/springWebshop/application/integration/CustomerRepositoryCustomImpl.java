@@ -1,6 +1,5 @@
 package springWebshop.application.integration;
 
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 import springWebshop.application.model.domain.user.Customer;
 
@@ -12,7 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
@@ -21,16 +19,17 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
     EntityManager em;
 
     @Override
-    public Optional<Customer> findById(long id) {
+    public Optional<Customer> findByIdFullFetch(Long id) {
 
 //        Criteria criteria = session.createCriteria(User.class);
 //        criteria.setFetchMode("roles", FetchMode.EAGER);
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-            CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Customer.class);
+            CriteriaQuery<Customer> criteriaQuery = criteriaBuilder.createQuery(Customer.class);
             Root<Customer> customer = criteriaQuery.from(Customer.class);
             customer.fetch("addresses", JoinType.INNER);
             criteriaQuery.select(customer)
+                    .where(criteriaBuilder.equal(customer.get("id"),id))
                     .distinct(true);
             TypedQuery<Customer> typedQuery = em.createQuery(criteriaQuery);
             return Optional.of(typedQuery.getSingleResult());
