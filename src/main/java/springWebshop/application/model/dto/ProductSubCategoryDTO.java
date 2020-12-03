@@ -13,6 +13,10 @@ public class ProductSubCategoryDTO {
 		this.id = id;
 		this.name = name;
 	}
+	@Override
+	public String toString() {
+		return "ProductSubCategoryDTO [id=" + id + ", name=" + name + "]";
+	}
 	
 
 }

@@ -13,5 +13,9 @@ public class ProductTypeDTO {
 		this.id = id;
 		this.name = name;
 	}
+	@Override
+	public String toString() {
+		return "ProductTypeDTO [id=" + id + ", name=" + name + "]";
+	}
 
 }

@@ -70,6 +70,6 @@ public class ProductSubCategory {
 
 	@Override
 	public String toString() {
-		return "ProductSubCategory [name=" + name + ", productCategory=" + productCategory.getName() + "]";
+		return "Subcategory:" + name + "|"+ productCategory.getName() + "]";
 	}
 }

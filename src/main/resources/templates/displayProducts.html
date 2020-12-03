@@ -78,58 +78,66 @@
 
         }
         $(document).ready(function () {
-            let categoriesObject = /*[[${session.sessionModel.categoryModel}]]*/;
+            let categoriesObject = /*[[${sessionModel.categoryModel}]]*/;
 
 
 
-            // console.log(categoriesObject)
-            // if (categoriesObject.selectedCat > 0) {
-            //     $('#sub').attr("disabled", false);
-            // }
-            // $('#cat').on('change', function () {
-            //     let selectedVal = this.value;
-            //     console.log(selectedVal)
-            //     document.forms['filter'].submit();
-            // });
-            // $('#sub').on('change', function () {
-            //     let selectedVal = this.value;
-            //     console.log(selectedVal)
-            //     document.forms['filter'].submit();
-            // });
+            console.log(categoriesObject)
+            if (categoriesObject.selectedCat > 0) {
+                $('#sub').attr("disabled", false);
+            }
+            if (categoriesObject.selectedSub > 0) {
+                $('#type').attr("disabled", false);
+            }
+            $('#cat').on('change', function () {
+                let selectedVal = this.value;
+                console.log(selectedVal)
+                document.forms['filter'].submit();
+            });
+            $('#sub').on('change', function () {
+                let selectedVal = this.value;
+                console.log(selectedVal)
+                document.forms['filter'].submit();
+            });
+            $('#type').on('change', function () {
+                let selectedVal = this.value;
+                console.log(selectedVal)
+                document.forms['filter'].submit();
+            });
 
         });
     </script>
 </head>
 
 
-<body th:with="currentPage=(${session.sessionModel.productPage}), dto=(${session.sessionModel.categoryModel})">
+<body th:with="currentPage=(${session.sessionModel.productPage})">
     <button type="button" th:onclick="showAlert()">Show Alert</button>
     <article class="container">
         <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
 
         <main>
+            <p th:text="${sessionModel}"></p>
 
             <div class="filterOptions" id="categoryParent">
-                <form name="filter" th:action="@{/webshop/products}" method="POST" th:object="${dto}">
-                    <p th:text="*{categories}"></p>
+                <form name="filter" th:action="@{/webshop/products}" method="POST"
+                    th:object="${sessionModel.categoryModel}">
                     <select id="cat" th:field="*{selectedCat}">
                         <option th:text="All" th:value="0">Categories</option>
 
-                        <option th:each="category : *{getCategories}" th:text="${category.name}"
-                            th:value="${category.id}">Categories</option>
+                        <option th:each="category : *{categories}" th:text="${category.name}" th:value="${category.id}">
+                        </option>
+                        Categories</option>
                     </select>
 
-                    <!-- <select id="sub" disabled>
-                        <th:body th:each="subCategory : ${categoryObject.subCategories}">
-                            <option th:text="${subCategory.name}" th:value="${subCategory.id}">Subcategories</option>
-                        </th:body>
-                    </select> -->
+                    <select id="sub" disabled th:field="*{selectedSub}">
+                        <option th:each="subCategory : *{subCategories}" th:text="${subCategory.name}"
+                            th:value="${subCategory.id}">Subcategories</option>
+                    </select>
+                    <select id="type" disabled th:field="*{selectedType}">
+                        <option th:each="type : *{types}" th:text="${type.name}" th:value="${type.id}"></option>
+                        Types</option>
+                    </select>
                 </form>
-                <!-- <select id="type">
-                    <th:body>
-                        <option value="">Types</option>
-                    </th:body>
-                </select> -->
 
             </div>
             <div class="productContainer">

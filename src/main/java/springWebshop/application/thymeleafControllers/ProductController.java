@@ -85,7 +85,10 @@ public class ProductController {
 			@PathVariable(name = "subcategory",required = false) Optional<String> subcategory,
 			@PathVariable(name = "type",required = false) Optional<String> type,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
-		System.out.println(session);
+		
+		session.getCategoryModel().setSelectedCat(0);
+		session.getCategoryModel().setSelectedSub(0);
+		session.getCategoryModel().setSelectedType(0);
 		selectFilteredProducts(category,subcategory,type);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
@@ -99,6 +102,7 @@ public class ProductController {
 		// Doesnt return Error Message? Empty list
 		session.setProductPage(currentPage);
 		m.addAttribute("totalPages", response.getTotalPages());
+		m.addAttribute("sessionModel", session);
 
 		
 		
@@ -116,11 +120,10 @@ public class ProductController {
 	}
 
 	@PostMapping(path = { "products" })
-	public String postAddItemToCart(@ModelAttribute("categoryModel")CategoryModelObject categoryDTO,
+	public String postAddItemToCart(
 			@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
 //		System.out.println("POST from products");
-		System.out.println(session);
 		ProductSearchConfig config = new ProductSearchConfig();
 		handleFiltering(session.getCategoryModel(),config);
 	
