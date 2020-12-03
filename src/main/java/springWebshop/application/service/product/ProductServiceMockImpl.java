@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.service.ServiceResponse;
 
 @Service
+@Qualifier("productServiceMockImpl")
 @Primary
 public class ProductServiceMockImpl implements ProductService {
 
@@ -127,14 +129,14 @@ public class ProductServiceMockImpl implements ProductService {
 		if (conf != null) {
 			if (conf.getProductTypeId() > 0) {
 				// Filter on Category/SubCategory/Type
-				System.out.println("In type");
+//				System.out.println("In type");
 				localProductStore = productStore.parallelStream()
 						.filter(product -> product.getProductType().getId() == conf.getProductTypeId())
 						.collect(Collectors.toList());
 			} else if (conf.getProductSubCategoryId() > 0) {
 				// Filter on Category/Subcategory
 
-				System.out.println("In Sub");
+//				System.out.println("In Sub");
 				localProductStore = productStore.parallelStream().filter(product -> product.getProductType()
 						.getProductSubCategory().getId() == conf.getProductSubCategoryId())
 						.collect(Collectors.toList());
@@ -142,7 +144,7 @@ public class ProductServiceMockImpl implements ProductService {
 //						.filter(subCatId->subCatId==conf.getProductSubCategoryId())
 //						.collect(Collectors.toList());
 			} else if (conf.getProductCategoryId() > 0) {
-				System.out.println("In cat");
+//				System.out.println("In cat");
 				localProductStore = productStore.parallelStream().filter(p -> p.getProductType().getProductSubCategory()
 						.getProductCategory().getId() == conf.getProductCategoryId()).collect(Collectors.toList());
 

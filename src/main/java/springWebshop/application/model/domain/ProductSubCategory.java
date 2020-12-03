@@ -50,13 +50,6 @@ public class ProductSubCategory {
         productTypes.remove(productType);
     }
 
-    @Override
-    public String toString() {
-        return "ProductSubCategory{" +
-                "id=" + id +
-                ", name='" + name + ',' + productCategory.getName() + '\'' + 
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -73,5 +66,10 @@ public class ProductSubCategory {
 
 	public @NotBlank String getFullyQualifiedName() {
 		return productCategory.getFullyQualifiedName() + "/" + name ;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductSubCategory [name=" + name + ", productCategory=" + productCategory.getName() + "]";
 	}
 }

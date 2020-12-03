@@ -45,9 +45,10 @@ public class ProductSegmentationServiceMockImpl implements ProductSegmentationSe
 		subStore = new ArrayList<>();
 		categoryStore = new ArrayList<>();
 
-		this.noCat = 2;
-		this.noSub = 2;
-		this.noType = 2;
+		this.noCat = 5;
+		this.noSub = 5;
+		this.noType = 10;
+		System.out.println("Init: " + noCat);
 		for (int i = 0; i < noCat; i++) {
 			ProductCategory z = new ProductCategory("ProductCategory " + (i + 1));
 			z.setId(++idProductCategoryGenerator);
@@ -68,7 +69,10 @@ public class ProductSegmentationServiceMockImpl implements ProductSegmentationSe
 			typeStore.add(x);
 
 		}
-		
+		categoryStore.forEach(System.out::println);
+		subStore.forEach(System.out::println);
+		typeStore.forEach(System.out::println);
+	
 	}
 	public ProductSegmentationServiceMockImpl() {
 		

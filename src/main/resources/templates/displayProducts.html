@@ -78,15 +78,31 @@
 
         }
         $(document).ready(function () {
-            $('#sel').on('change', function () {
-                document.forms['cat'].submit();
-            });
+            let categoriesObject = /*[[${session.sessionModel.categoryModel}]]*/;
+
+
+
+            // console.log(categoriesObject)
+            // if (categoriesObject.selectedCat > 0) {
+            //     $('#sub').attr("disabled", false);
+            // }
+            // $('#cat').on('change', function () {
+            //     let selectedVal = this.value;
+            //     console.log(selectedVal)
+            //     document.forms['filter'].submit();
+            // });
+            // $('#sub').on('change', function () {
+            //     let selectedVal = this.value;
+            //     console.log(selectedVal)
+            //     document.forms['filter'].submit();
+            // });
+
         });
     </script>
 </head>
 
 
-<body th:with="currentPage=(${session.sessionModel.productPage})">
+<body th:with="currentPage=(${session.sessionModel.productPage}), dto=(${session.sessionModel.categoryModel})">
     <button type="button" th:onclick="showAlert()">Show Alert</button>
     <article class="container">
         <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
@@ -94,21 +110,22 @@
         <main>
 
             <div class="filterOptions" id="categoryParent">
-                <form name="cat" th:action="@{/webshop/products}" method="POST" th:object="${categoriesAvailable}">
-                    <select id="sel" th:field="*{selectedCat}">
+                <form name="filter" th:action="@{/webshop/products}" method="POST" th:object="${dto}">
+                    <p th:text="*{categories}"></p>
+                    <select id="cat" th:field="*{selectedCat}">
                         <option th:text="All" th:value="0">Categories</option>
 
-                        <th:body th:each="category : ${categoriesAvailable.categories}">
-                            <option th:text="${category.name}" th:value="${category.id}">Categories</option>
-                        </th:body>
+                        <option th:each="category : *{getCategories}" th:text="${category.name}"
+                            th:value="${category.id}">Categories</option>
                     </select>
+
+                    <!-- <select id="sub" disabled>
+                        <th:body th:each="subCategory : ${categoryObject.subCategories}">
+                            <option th:text="${subCategory.name}" th:value="${subCategory.id}">Subcategories</option>
+                        </th:body>
+                    </select> -->
                 </form>
-                <select id="sub" disabled>
-                    <th:body>
-                        <option value="">Subcategories</option>
-                    </th:body>
-                </select>
-                <!-- <select>
+                <!-- <select id="type">
                     <th:body>
                         <option value="">Types</option>
                     </th:body>

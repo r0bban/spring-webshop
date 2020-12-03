@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductType;
@@ -22,7 +24,7 @@ import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.product.ProductCategoryService;
 import springWebshop.application.service.product.ProductSearchConfig;
 import springWebshop.application.service.product.ProductSegmentationService;
-import springWebshop.application.service.product.ProductServiceMockImpl;
+import springWebshop.application.service.product.ProductService;
 import springWebshop.application.service.product.ProductTypeService;
 
 @Controller
@@ -32,7 +34,7 @@ public class ProductController {
 
 	/// ÄNDRADE FRÅN INTERFACE TILL KONKRETE IMPL FÖRATT KOMMA ÅT EGNA Metode
 	@Autowired
-	ProductServiceMockImpl productService;
+	ProductService productService;
 
 	@Autowired
 	ProductCategoryService productCategoryService;
@@ -44,17 +46,10 @@ public class ProductController {
 
 
 	@ModelAttribute("sessionModel")
-	private SessionModel getShoppingCart() {
-		return new SessionModel(productService);
+	private SessionModel getSessionModel() {
+		return new SessionModel(productService,productSegmentationService);
 	}
 
-	@ModelAttribute("categoriesAvailable")
-	private CategoryModelObject getAllCategories(){
-		CategoryModelObject model = new CategoryModelObject();
-		model.setCategories(productSegmentationService.getAllCategories());
-		System.out.println(model);
-		return model;
-	}
 	
 	
 //
@@ -68,30 +63,29 @@ public class ProductController {
 //		productTypeService.save(new ProductSubCategory("Couches"));
 //		productTypeService.save(new ProductSubCategory("Ice Cream"));*//*
 //	}
-
-	@GetMapping()
-	public String home(Model model) {
-		model.addAttribute("newProduct", new ProductFormModel());
-		return "createNewProduct";
-	}
-
-	@PostMapping()
-	public String postHome(ProductFormModel postData, Model model) {
-		System.out.println(postData);
-		model.addAttribute("newProduct", new ProductFormModel());
-		postData.getDomainProduct().setProductType(new ProductType());
-		productService.create(postData.getDomainProduct());
-		return "createNewProduct";
-	}
+//
+//	@GetMapping()
+//	public String home(Model model) {
+//		model.addAttribute("newProduct", new ProductFormModel());
+//		return "createNewProduct";
+//	}
+//
+//	@PostMapping()
+//	public String postHome(ProductFormModel postData, Model model) {
+//		System.out.println(postData);
+//		model.addAttribute("newProduct", new ProductFormModel());
+//		postData.getDomainProduct().setProductType(new ProductType());
+//		productService.create(postData.getDomainProduct());
+//		return "createNewProduct";
+//	}
 
 	@GetMapping(path = { "products","products/{category}","products/{category}/{subcategory}","products/{category}/{subcategory}/{type}" })
-	public String getAllProducts(
+	public String getAllProducts(@ModelAttribute("sessionModel") SessionModel session, BindingResult result,
 			@PathVariable(name = "category",required = false) Optional<String> category,
 			@PathVariable(name = "subcategory",required = false) Optional<String> subcategory,
 			@PathVariable(name = "type",required = false) Optional<String> type,
-			@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
-		
+		System.out.println(session);
 		selectFilteredProducts(category,subcategory,type);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
@@ -105,7 +99,6 @@ public class ProductController {
 		// Doesnt return Error Message? Empty list
 		session.setProductPage(currentPage);
 		m.addAttribute("totalPages", response.getTotalPages());
-		m.addAttribute("sessionModel", session);
 
 		
 		
@@ -123,15 +116,14 @@ public class ProductController {
 	}
 
 	@PostMapping(path = { "products" })
-	public String postAddItemToCart(@ModelAttribute("categoriesAvailable") CategoryModelObject categoryDTO,
+	public String postAddItemToCart(@ModelAttribute("categoryModel")CategoryModelObject categoryDTO,
 			@RequestParam("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session,
 			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
-		System.out.println("POST from products");
-		System.out.println(categoryDTO);
+//		System.out.println("POST from products");
+		System.out.println(session);
 		ProductSearchConfig config = new ProductSearchConfig();
-		config.setProductCategoryId(categoryDTO.getSelectedCat());
-		config.setProductSubCategoryId(categoryDTO.getSelectedSub());
-		config.setProductTypeId(categoryDTO.getSelectedType());
+		handleFiltering(session.getCategoryModel(),config);
+	
 		
 		
 		if(productId.isPresent())
@@ -153,11 +145,20 @@ public class ProductController {
 		// Doesnt return Error Message? Empty list
 		
 		m.addAttribute("totalPages", response.getTotalPages());
-		m.addAttribute("sessionModel", session);
 
 		return "displayProducts";
 	}
 	
+	private void handleFiltering(CategoryModelObject categoryDTO, ProductSearchConfig config) {
+		config.setProductCategoryId(categoryDTO.getSelectedCat());
+		config.setProductSubCategoryId(categoryDTO.getSelectedSub());
+		config.setProductTypeId(categoryDTO.getSelectedType());
+		if(categoryDTO.getSelectedCat()>0) {
+			categoryDTO.setSubCategories(productSegmentationService.getAllSubCategories(categoryDTO.getSelectedCat()));
+			System.out.println(categoryDTO);
+		}
+	}
+
 	@GetMapping("/products/product/{id}")
 	public String getProduct(Model m,@PathVariable("id") long productId,
 			@ModelAttribute("sessionModel") SessionModel session) {

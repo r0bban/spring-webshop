@@ -34,7 +34,7 @@ public class ProductType {
 
 	@Override
 	public String toString() {
-		return "ProductType [name=" + name + ", productSubCategory=" + productSubCategory.getName() + "]";
+		return "ProductType [name=" + name + ", productSubCategory=" + productSubCategory.toString() + "]";
 	}
     
 	public String getFullyQualifiedName() {
