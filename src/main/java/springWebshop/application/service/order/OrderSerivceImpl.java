@@ -164,6 +164,7 @@ public class OrderSerivceImpl implements OrderService {
         if (validateAndFillProductList(shoppingCartDTO, productList, errors)
                 && prepareOrderFromShoppingCart(newOrder, shoppingCartDTO, productList, errors)) {
             try {
+                System.out.println("/////-->" + newOrder);
                 return create(newOrder);
             } catch (Exception e) {
                 response.addErrorMessage(ServiceErrorMessages.ORDER.couldNotCreate());
@@ -189,6 +190,8 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     private OrderLine getOrderLineFromProduct(Product product, int quantity) {
+        System.out.println("Incoming product to produce orderLine. ----> CartQuantity[" + quantity + "] " +product);
+
         OrderLine orderLine = new OrderLine();
         double lineSum = product.getBasePrice() * quantity;
         double lineVAT = product.getBasePrice() * product.getVatPercentage() * quantity;
@@ -197,6 +200,7 @@ public class OrderSerivceImpl implements OrderService {
         orderLine.setSum(lineSum);
         orderLine.setVatSum(lineVAT);
         orderLine.setSumPayable(lineSum + lineVAT);
+        orderLine.setVatPercentage(product.getVatPercentage());
         return orderLine;
     }
 

@@ -89,7 +89,6 @@ public class BaseConfig {
             persistedCustomer.getAddresses().forEach(System.out::println);
 
 
-
             ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
             Address deliveryAddress = persistedCustomer.getAddresses()
                     .stream()
@@ -99,14 +98,12 @@ public class BaseConfig {
             System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
                     + "\nInput deliveryAddress: \n" + deliveryAddress);
 
-            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO,1L, deliveryAddress);
+            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
             System.out.println(createOrderResponse);
 
-            if(createOrderResponse.isSucessful()){
+            if (createOrderResponse.isSucessful()) {
                 System.out.println(createOrderResponse.getResponseObjects());
             }
-
-
 
 
         };
@@ -117,7 +114,7 @@ public class BaseConfig {
     private ShoppingCartDTO getRandomShoppingCartDTO(ProductService productService, int productIdFrom, int productIdTo) {
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO(productService);
         for (int i = 0; i < 7; i++) {
-            long randomProdId = randomBetween(productIdFrom,productIdTo);
+            long randomProdId = randomBetween(productIdFrom, productIdTo);
             for (int j = 0; j < randomBetween(1, 3); j++) {
                 shoppingCartDTO.addItem(randomProdId);
             }
@@ -133,7 +130,7 @@ public class BaseConfig {
             customer.setEmail("janne.larsson@gmail.com");
             customer.setPhoneNumber("46709408925");
 
-            for (int j = 0; j < randomBetween(2,3); j++) {
+            for (int j = 0; j < randomBetween(2, 3); j++) {
                 CustomerAddress address = new CustomerAddress("Storgatan " + (i + 1), randomBetween(11401, 94789), "City X", "Sweden");
                 customer.addAddress(address);
             }
@@ -200,7 +197,8 @@ public class BaseConfig {
             product1.setName("Product " + i);
             product1.setDescription("Testing this big product " + i);
             product1.setBasePrice(new Random().nextInt(50));
-            product1.setVatPercentage(0.25);
+            product1.setVatPercentage(i % 2 == 0 ? 0.25 : 0.12);
+            if (i % 5 == 0) product1.setVatPercentage(0.06);
             ProductType prodType2 = new ProductType();
             prodType2.setId(1L);
             product1.setProductType(prodType2);

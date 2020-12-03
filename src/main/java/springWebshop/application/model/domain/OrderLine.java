@@ -27,7 +27,7 @@ public class OrderLine {
 
 	private double sum;
 	
-	private double vatSum;
+	private Double vatSum;
 
 	private double vatPercentage;
 
@@ -39,7 +39,16 @@ public class OrderLine {
 
 	@Override
 	public String toString() {
-		return "OrderLine [id=" + id + ", sum=" + sum + ", discount=" + discount + "]";
+		return "\nOrderLine{" +
+				"id=" + id +
+				", productId=" + productId +
+				", itemQuantity=" + itemQuantity +
+				", sum=" + sum +
+				", vatSum=" + vatSum +
+				", vatPercentage=" + vatPercentage +
+				", discount=" + discount +
+				", sumPayable=" + sumPayable +
+				", currency=" + currency +
+				'}';
 	}
-
 }

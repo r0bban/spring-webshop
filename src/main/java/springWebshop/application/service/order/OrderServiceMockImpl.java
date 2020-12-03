@@ -29,15 +29,15 @@ public class OrderServiceMockImpl implements OrderService {
 			for (int j = 0; j < 10; j++) {
 				OrderLine orderLine = new OrderLine();
 				orderLine.setId(++orderLineIdGenerator);
-				orderLine.setDiscount(new Random().nextInt(10));
-				orderLine.setSum(new Random().nextInt(10));
+				orderLine.setDiscount(new Random().nextDouble()*100);
+				orderLine.setSum(new Random().nextDouble()*100);
 				orderlines.add(orderLine);
 			}
 			Order localOrder = new Order();
 			localOrder.setId((long) ++orderIdGenerator);
-			localOrder.setTotalSum(new Random().nextInt(100));
-			localOrder.setTotalVatSum(new Random().nextInt(100));
-			localOrder.setOrderLines(orderlines);
+			localOrder.setTotalSum(new Random().nextDouble()*100);
+			localOrder.setTotalVatSum(new Random().nextDouble()*100);
+//			localOrder.setOrderLines(orderlines);
 			orderStore.add(localOrder);
 		}
 	}
