@@ -63,16 +63,49 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public ServiceResponse<Product> getProducts(int page) {
+		return getAllProductPageAndSize(page, defaultPageSize);
+	}
+	@Override
 	public ServiceResponse<Product> getProducts(int page, int size) {
 		return getAllProductPageAndSize(page, size);
 	}
 
+	
 	@Override
-	public ServiceResponse<Product> getProducts(int page) {
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig) {
+		// TODO Auto-generated method stub
+		return getAllProductPageAndSize(0, defaultPageSize);
+	}
+
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page) {
+		// TODO Auto-generated method stub
 		return getAllProductPageAndSize(page, defaultPageSize);
 	}
 
+	@Override
+	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size) {
+		return getAllProductPageAndSize(productSearchConfig, page, size);
+	}
+
+
 	private ServiceResponse<Product> getAllProductPageAndSize(int page, int size) {
+		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
+		if (size <= maxPageSize)
+			try {
+				Page<Product> response = productRepository.findAll(PageRequest.of(page, size));
+				setPageMetaData(response, serviceResponse);
+				serviceResponse.setResponseObjects(response.getContent());
+			} catch (Exception e) {
+				serviceResponse.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind() + "s page " + page + ".");
+			}
+		else
+			serviceResponse.addErrorMessage(
+					"You have requested " + size + "products. Max allowed page size is " + maxPageSize);
+		return serviceResponse;
+	}
+	private ServiceResponse<Product> getAllProductPageAndSize(ProductSearchConfig productSearchConfig,int page, int size) {
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
 		if (size <= maxPageSize)
 			try {
@@ -157,22 +190,5 @@ public class ProductServiceImpl implements ProductService {
 		return isExisting;
 	}
 
-	@Override
-	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

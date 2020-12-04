@@ -12,7 +12,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.PageRequest;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -20,6 +19,7 @@ import springWebshop.application.integration.*;
 import springWebshop.application.model.domain.*;
 import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.domain.user.Customer;
+import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
@@ -183,31 +183,57 @@ public class BaseConfig {
 
     private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
                                                         ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
-        ProductCategory category = new ProductCategory("Möbler");
-        catRepo.save(category);
+        int noCat = 3, noSub = 4,noType = 5;
 
-        ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
-        subCatRepo.save(subCategory);
+		System.out.println("Init: " + noCat);
+		for (int i = 0; i < noCat; i++) {
+			ProductCategory category = new ProductCategory("Category " + (i + 1));
+			catRepo.save(category);
 
-        ProductSubCategory subCat2 = new ProductSubCategory();
-        subCat2.setId(1L);
-        ProductType prodType = new ProductType("Gungstol", subCat2);
-        typeRepo.save(prodType);
+		}
+		for (int i = 0; i < noSub; i++) {
+			long rand = new Random().nextInt(noCat)+1;
+			System.out.println("Cat Rand:"+rand);
+			ProductSubCategory subCategory = new ProductSubCategory("SubCategory " + (i + 1),
+					catRepo.findById(rand).get());
+			subCatRepo.save(subCategory);
+		}
+		for (int i = 0; i < noType; i++) {
+			long rand = new Random().nextInt(noSub)+1;
+			System.out.println("Sub Rand:"+rand);
+			ProductType prodType = new ProductType("ProductType " + (i + 1),
+					subCatRepo.findById(rand).get());
+			typeRepo.save(prodType);
+
+		}
+
+//    	ProductCategory category = new ProductCategory("Möbler");
+//
+//
+//        ProductSubCategory subCategory = new ProductSubCategory("Stol", catRepo.findByName("Möbler").get());
+//        subCatRepo.save(subCategory);
+//
+//        ProductSubCategory subCat2 = new ProductSubCategory();
+//        subCat2.setId(1L);
+//        ProductType prodType = new ProductType("Gungstol", subCat2);
+
 
         for (int i = 0; i < 100; i++) {
+        	long rand = new Random().nextInt(noType)+1;
             Product product1 = new Product();
             product1.setName("Product " + i);
             product1.setDescription("Testing this big product " + i);
             product1.setBasePrice(new Random().nextInt(50));
+            product1.setProductType(typeRepo.findById(rand).get());
             product1.setVatPercentage(i % 2 == 0 ? 0.25 : 0.12);
             if (i % 5 == 0) product1.setVatPercentage(0.06);
             ProductType prodType2 = new ProductType();
             prodType2.setId(1L);
             product1.setProductType(prodType2);
             productRepository.save(product1);
+            System.out.println(product1);
         }
 
-        System.out.println(productRepository.findByName(("Product 1")));
 
 //        System.out.println(productService.getAllProducts());
 
