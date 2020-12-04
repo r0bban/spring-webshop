@@ -79,10 +79,10 @@
         }
         $(document).ready(function () {
             let categoriesObject = /*[[${sessionModel.categoryModel}]]*/;
+            let session = /*[[${session}]]*/;
+            console.log(session)
 
 
-
-            console.log(categoriesObject)
             if (categoriesObject.selectedCat > 0) {
                 $('#sub').attr("disabled", false);
             }
@@ -110,13 +110,13 @@
 </head>
 
 
-<body th:with="currentPage=(${session.sessionModel.productPage})">
+<body th:with="currentPage=(${sessionModel.productPage})">
+    <p th:text="|CP:${currentPage},TP:${totalPages}|"></p>
     <button type="button" th:onclick="showAlert()">Show Alert</button>
     <article class="container">
         <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
 
         <main>
-            <p th:text="${sessionModel}"></p>
 
             <div class="filterOptions" id="categoryParent">
                 <form name="filter" th:action="@{/webshop/products}" method="POST"
@@ -130,10 +130,12 @@
                     </select>
 
                     <select id="sub" disabled th:field="*{selectedSub}">
+                        <option th:text="All" th:value="0">Subcategories</option>
                         <option th:each="subCategory : *{subCategories}" th:text="${subCategory.name}"
                             th:value="${subCategory.id}">Subcategories</option>
                     </select>
                     <select id="type" disabled th:field="*{selectedType}">
+                        <option th:text="All" th:value="0">Types</option>
                         <option th:each="type : *{types}" th:text="${type.name}" th:value="${type.id}"></option>
                         Types</option>
                     </select>
@@ -141,14 +143,14 @@
 
             </div>
             <div class="productContainer">
-                <th:body th:each="product : ${allProducts}" class="productItem">
-                    <p th:text="${#request.getPathInfo()}"></p>
+                <div th:each="product : ${allProducts}" class="productItem">
                     <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
                         <span th:text="${product.name}">test</span></a>
+                        <!-- <span th:text="${product.productType.toString()}"></span> -->
                         <form method="POST" th:action="@{/webshop/products(id=__${product.id}__)}">
                             <input  type="submit" value="Add to cart"/>
                         </form>
-                    </th:body>
+                    </div>
                 </div>
 
 

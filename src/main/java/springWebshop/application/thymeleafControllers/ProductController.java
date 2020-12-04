@@ -3,6 +3,7 @@ package springWebshop.application.thymeleafControllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,7 @@ public class ProductController {
 
 	/// ÄNDRADE FRÅN INTERFACE TILL KONKRETE IMPL FÖRATT KOMMA ÅT EGNA Metode
 	@Autowired
+	@Qualifier("productServiceImpl")
 	ProductService productService;
 
 	@Autowired
@@ -84,23 +86,19 @@ public class ProductController {
 			@PathVariable(name = "category",required = false) Optional<String> category,
 			@PathVariable(name = "subcategory",required = false) Optional<String> subcategory,
 			@PathVariable(name = "type",required = false) Optional<String> type,
-			@RequestParam(required = false, name = "page") Optional<Integer> pathPage, Model m) {
-		
-		session.getCategoryModel().setSelectedCat(0);
-		session.getCategoryModel().setSelectedSub(0);
-		session.getCategoryModel().setSelectedType(0);
-		selectFilteredProducts(category,subcategory,type);
+			@RequestParam(required = false, name = "page",defaultValue = "1") Optional<Integer> pathPage, Model m) {
+		System.out.println("GET");
+		resetCategories(session.getCategoryModel());
+//		selectFilteredProducts(category,subcategory,type);
+		System.out.println("PP:"+pathPage);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
-		
 	
 		
-		ServiceResponse<Product> response = productService.getProducts(null,currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 //		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
-		
-		
-		// Doesnt return Error Message? Empty list
 		session.setProductPage(currentPage);
+		// Doesnt return Error Message? Empty list
 		m.addAttribute("totalPages", response.getTotalPages());
 		m.addAttribute("sessionModel", session);
 
@@ -111,6 +109,16 @@ public class ProductController {
 		
 		
 		return "displayProducts";
+	}
+
+
+
+	private void resetCategories(CategoryModelObject categoryModelObject) {
+		categoryModelObject.setSelectedCat(0);
+		categoryModelObject.setSelectedSub(0);
+		categoryModelObject.setSelectedType(0);
+		categoryModelObject.getSubCategories().clear();
+		categoryModelObject.getTypes().clear();
 	}
 	
 	private void selectFilteredProducts(Optional<String> category, Optional<String> subcategory, Optional<String> type) {
@@ -126,7 +134,8 @@ public class ProductController {
 //		System.out.println("POST from products");
 		ProductSearchConfig config = new ProductSearchConfig();
 		handleFiltering(session.getCategoryModel(),config);
-	
+		System.out.println("POST");
+
 		
 		
 		if(productId.isPresent())
@@ -134,6 +143,7 @@ public class ProductController {
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
 		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 10);
+		System.out.println(response);
 //		if(config.getProductSubCategoryId()>0) {
 //			categoryDTO.setSelectedSub(pro);
 //			if(config.getProductTypeId()>0) {
@@ -153,13 +163,23 @@ public class ProductController {
 	}
 	
 	private void handleFiltering(CategoryModelObject categoryDTO, ProductSearchConfig config) {
+		if(categoryDTO.getSelectedCat()>0) {
+			categoryDTO.setSubCategories(productSegmentationService.getAllSubCategories(categoryDTO.getSelectedCat()));
+			if(categoryDTO.getSelectedSub()>0) {
+				categoryDTO.setTypes(productSegmentationService.getAllTypes(categoryDTO.getSelectedSub()));
+				System.out.println(categoryDTO);
+			}
+			else {
+				categoryDTO.getTypes().clear();
+				categoryDTO.setSelectedType(0);
+			}
+		}
+		else {
+			resetCategories(categoryDTO);
+		}
 		config.setProductCategoryId(categoryDTO.getSelectedCat());
 		config.setProductSubCategoryId(categoryDTO.getSelectedSub());
 		config.setProductTypeId(categoryDTO.getSelectedType());
-		if(categoryDTO.getSelectedCat()>0) {
-			categoryDTO.setSubCategories(productSegmentationService.getAllSubCategories(categoryDTO.getSelectedCat()));
-			System.out.println(categoryDTO);
-		}
 	}
 
 	@GetMapping("/products/product/{id}")

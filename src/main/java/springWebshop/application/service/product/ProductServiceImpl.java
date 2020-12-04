@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
-@Service
-@Qualifier("productServiceImpl")
+@Service("productServiceImpl")
 public class ProductServiceImpl implements ProductService {
 
 	final ProductRepository productRepository;

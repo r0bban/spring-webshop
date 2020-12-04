@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
@@ -45,8 +46,8 @@ public class BaseConfig {
 //    ProductSerivce productService;
     private final ThymeleafProperties properties;
     @Autowired
-//    @Qualifier("productServiceMockImpl")
-            ProductService productService;
+    @Qualifier("productServiceImpl")
+    ProductService productService;
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;
 
@@ -66,7 +67,7 @@ public class BaseConfig {
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
                                              AccountRepository accountRepository, CompanyRepository companyRepository,
                                              OrderRepository orderRepository, OrderService orderService,
-                                             CustomerRepository customerRepository, ProductService productService
+                                             CustomerRepository customerRepository,@Qualifier("productServiceImpl") ProductService productService
             , CustomerAddressRespoitory addressRespoitory) {
 
 

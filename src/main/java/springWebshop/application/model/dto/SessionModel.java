@@ -12,15 +12,17 @@ public class SessionModel {
 
 	
 	
+
+
 	@Override
 	public String toString() {
-		return "SessionModel [categoryModel=" + categoryModel + "]";
+		return "SessionModel [productPage=" + productPage + ", categoryModel=" + categoryModel + "]";
 	}
 
-	Account user;
-	ShoppingCartDTO cart;
-	int productPage;
-	CategoryModelObject categoryModel;
+	private Account user;
+	private ShoppingCartDTO cart;
+	private int productPage;
+	private CategoryModelObject categoryModel;
 	
 	public SessionModel(ProductService productService, ProductSegmentationService productSegmentationService) {
 		// Start session as guest
