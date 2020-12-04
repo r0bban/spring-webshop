@@ -108,6 +108,24 @@ public class BaseConfig {
                 System.out.println(createOrderResponse.getResponseObjects());
             }
 
+            ProductSearchConfig prodConf = new ProductSearchConfig();
+            prodConf.setProductCategoryId(0);
+            prodConf.setSearchString("9");
+            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
+            System.out.println(prodSearchResp);
+            prodSearchResp.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+
+            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
+            System.out.println(prodSearchResp2);
+            prodSearchResp2.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+
+
+
+
 
         };
 
@@ -228,9 +246,9 @@ public class BaseConfig {
             product1.setProductType(typeRepo.findById(rand).get());
             product1.setVatPercentage(i % 2 == 0 ? 0.25 : 0.12);
             if (i % 5 == 0) product1.setVatPercentage(0.06);
-            ProductType prodType2 = new ProductType();
-            prodType2.setId(1L);
-            product1.setProductType(prodType2);
+//            ProductType prodType2 = new ProductType();
+//            prodType2.setId(1L);
+//            product1.setProductType(prodType2);
             productRepository.save(product1);
             System.out.println(product1);
         }
