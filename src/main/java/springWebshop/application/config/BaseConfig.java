@@ -24,6 +24,7 @@ import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 import springWebshop.application.service.order.OrderService;
+import springWebshop.application.service.product.ProductSearchConfig;
 import springWebshop.application.service.product.ProductService;
 
 @Configuration
@@ -46,7 +47,7 @@ public class BaseConfig {
 //    ProductSerivce productService;
     private final ThymeleafProperties properties;
     @Autowired
-    @Qualifier("productServiceImpl")
+    @Qualifier("ProductServiceImpl")
     ProductService productService;
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;
@@ -67,7 +68,7 @@ public class BaseConfig {
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
                                              AccountRepository accountRepository, CompanyRepository companyRepository,
                                              OrderRepository orderRepository, OrderService orderService,
-                                             CustomerRepository customerRepository,@Qualifier("productServiceImpl") ProductService productService
+                                             CustomerRepository customerRepository,@Qualifier("ProductServiceImpl") ProductService productService
             , CustomerAddressRespoitory addressRespoitory) {
 
 

@@ -13,8 +13,8 @@ import springWebshop.application.model.dto.ProductTypeDTO;
 public interface ProductSegmentationService {
 	
 	List<ProductCategoryDTO> getAllCategories();
-	List<ProductSubCategoryDTO> getAllSubCategories(long categoryId);
-	List<ProductTypeDTO> getAllTypes(long subCategoryId);
+	List<ProductSubCategoryDTO> getSubCategoriesByCategoryId(long categoryId);
+	List<ProductTypeDTO> getTypesBySubCategoryId(long subCategoryId);
 	
 	int getNoCategories();
 	int getNoSubCategories();

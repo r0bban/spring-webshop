@@ -25,7 +25,7 @@ import springWebshop.application.service.product.ProductService;
 public class AdminController {
 	
 	@Autowired
-	@Qualifier("productServiceImpl")
+	@Qualifier("ProductServiceImpl")
 	ProductService productService;
 
 	@GetMapping(path = { "products" })

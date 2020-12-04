@@ -16,7 +16,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
-@Service("productServiceImpl")
+@Service("ProductServiceImpl")
 public class ProductServiceImpl implements ProductService {
 
 	final ProductRepository productRepository;
@@ -59,29 +59,29 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ServiceResponse<Product> getProducts() {
-		return getAllProductPageAndSize(0, defaultPageSize);
+		return getAllProductPageAndSize(null,0, defaultPageSize);
 	}
 
 	@Override
 	public ServiceResponse<Product> getProducts(int page) {
-		return getAllProductPageAndSize(page, defaultPageSize);
+		return getAllProductPageAndSize(null,page, defaultPageSize);
 	}
 	@Override
 	public ServiceResponse<Product> getProducts(int page, int size) {
-		return getAllProductPageAndSize(page, size);
+		return getAllProductPageAndSize(null,page, size);
 	}
 
 	
 	@Override
 	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig) {
 		// TODO Auto-generated method stub
-		return getAllProductPageAndSize(0, defaultPageSize);
+		return getAllProductPageAndSize(productSearchConfig,0, defaultPageSize);
 	}
 
 	@Override
 	public ServiceResponse<Product> getProducts(ProductSearchConfig productSearchConfig, int page) {
 		// TODO Auto-generated method stub
-		return getAllProductPageAndSize(page, defaultPageSize);
+		return getAllProductPageAndSize(productSearchConfig, page, defaultPageSize);
 	}
 
 	@Override
@@ -90,26 +90,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 
-	private ServiceResponse<Product> getAllProductPageAndSize(int page, int size) {
-		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
-		if (size <= maxPageSize)
-			try {
-				Page<Product> response = productRepository.findAll(PageRequest.of(page, size));
-				setPageMetaData(response, serviceResponse);
-				serviceResponse.setResponseObjects(response.getContent());
-			} catch (Exception e) {
-				serviceResponse.addErrorMessage(ServiceErrorMessages.PRODUCT.couldNotFind() + "s page " + page + ".");
-			}
-		else
-			serviceResponse.addErrorMessage(
-					"You have requested " + size + "products. Max allowed page size is " + maxPageSize);
-		return serviceResponse;
-	}
+	
 	private ServiceResponse<Product> getAllProductPageAndSize(ProductSearchConfig productSearchConfig,int page, int size) {
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
 		if (size <= maxPageSize)
 			try {
-				Page<Product> response = productRepository.findAll(PageRequest.of(page, size));
+				Page<Product> response = productRepository.getProducts(productSearchConfig, page, size);
 				setPageMetaData(response, serviceResponse);
 				serviceResponse.setResponseObjects(response.getContent());
 			} catch (Exception e) {

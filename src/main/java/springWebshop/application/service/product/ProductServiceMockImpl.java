@@ -25,6 +25,7 @@ public class ProductServiceMockImpl implements ProductService {
 	static int idProductGenerator = 0;
 
 	@Autowired
+	@Qualifier("ProductSegmentationServiceMockImpl")
 	ProductSegmentationService productSegmentationService;
 	private ArrayList<ProductType> typeStore;
 	private ArrayList<ProductCategory> subStore;

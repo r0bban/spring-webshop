@@ -58,12 +58,6 @@ public class ServiceResponse<T> {
     private void sucessfulFalse() {
         this.sucessful = false;
     }
-//
-//    public ServiceResponse(List<ServiceErrorMessages> errorMessages) {
-//        this.errorMessages = errorMessages;
-//    }
-
-
     @Override
     public String toString() {
         return "ServiceResponse{" +
@@ -75,3 +69,4 @@ public class ServiceResponse<T> {
                 '}';
     }
 }
+

@@ -24,7 +24,7 @@ import springWebshop.application.model.dto.ProductCategoryDTO;
 import springWebshop.application.model.dto.ProductSubCategoryDTO;
 import springWebshop.application.model.dto.ProductTypeDTO;
 
-@Service
+@Service("ProductSegmentationServiceMockImpl")
 public class ProductSegmentationServiceMockImpl implements ProductSegmentationService {
 
 	private ArrayList<ProductType> typeStore;
@@ -88,7 +88,7 @@ public class ProductSegmentationServiceMockImpl implements ProductSegmentationSe
 	}
 
 	@Override
-	public List<ProductSubCategoryDTO> getAllSubCategories(long categoryId) {
+	public List<ProductSubCategoryDTO> getSubCategoriesByCategoryId(long categoryId) {
 		return subStore.stream()
 				.filter(subCategory -> subCategory.getProductCategory().getId() == categoryId)
 				.map(productSubcategory -> new ProductSubCategoryDTO(productSubcategory.getId(),
@@ -97,7 +97,7 @@ public class ProductSegmentationServiceMockImpl implements ProductSegmentationSe
 	}
 
 	@Override
-	public List<ProductTypeDTO> getAllTypes(long subCategoryId) {
+	public List<ProductTypeDTO> getTypesBySubCategoryId(long subCategoryId) {
 		return typeStore.stream()
 				.filter(type -> type.getProductSubCategory().getId() == subCategoryId)
 				.map(productType -> new ProductTypeDTO(productType.getId(), productType.getName()))

@@ -35,12 +35,14 @@ public class ProductController {
 
 	/// ÄNDRADE FRÅN INTERFACE TILL KONKRETE IMPL FÖRATT KOMMA ÅT EGNA Metode
 	@Autowired
-	@Qualifier("productServiceImpl")
+	@Qualifier("ProductServiceImpl")
 	ProductService productService;
 
 	@Autowired
 	ProductCategoryService productCategoryService;
+	
 	@Autowired
+	@Qualifier("ProductSegmentationServiceImpl")
 	ProductSegmentationService productSegmentationService;
 
 	@Autowired
@@ -94,7 +96,7 @@ public class ProductController {
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 	
 		
-		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(null,currentPage > 0 ? currentPage - 1 : 0, 10);
 //		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		session.setProductPage(currentPage);
@@ -143,15 +145,7 @@ public class ProductController {
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
 		
 		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 10);
-		System.out.println(response);
-//		if(config.getProductSubCategoryId()>0) {
-//			categoryDTO.setSelectedSub(pro);
-//			if(config.getProductTypeId()>0) {
-//				// Fetch All Types connected in heirarchy
-//				categoryDTO.setSelectedType(selectedType);
-//			}
-//			
-//		}
+		System.out.println(response.getResponseObjects());
 		
 		
 		m.addAttribute("allProducts", response.getResponseObjects());
@@ -164,9 +158,9 @@ public class ProductController {
 	
 	private void handleFiltering(CategoryModelObject categoryDTO, ProductSearchConfig config) {
 		if(categoryDTO.getSelectedCat()>0) {
-			categoryDTO.setSubCategories(productSegmentationService.getAllSubCategories(categoryDTO.getSelectedCat()));
+			categoryDTO.setSubCategories(productSegmentationService.getSubCategoriesByCategoryId(categoryDTO.getSelectedCat()));
 			if(categoryDTO.getSelectedSub()>0) {
-				categoryDTO.setTypes(productSegmentationService.getAllTypes(categoryDTO.getSelectedSub()));
+				categoryDTO.setTypes(productSegmentationService.getTypesBySubCategoryId(categoryDTO.getSelectedSub()));
 				System.out.println(categoryDTO);
 			}
 			else {
