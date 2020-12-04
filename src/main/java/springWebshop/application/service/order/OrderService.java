@@ -21,14 +21,9 @@ public interface OrderService {
     ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
                                                        long customerId, Address deliveryAddress);
 
-    ServiceResponse<Order> cancelOrderById(long id);
-
-    boolean orderIsCancelable(Order order);
-
     ServiceResponse<Order> setStatus(Order.OrderStatus orderStatus);
 
-    //	ServiceResponse<Order> update(Order updatedOrder);
-//	ServiceResponse<Order> productBySegmentation(ProductSearchConfig productSearchConfig);
-//	ServiceResponse<Order> ProductBySearchString(ProductSearchConfig productSearchConfig);
+    //ToDo Decide if use:
+    //ServiceResponse<Order> update(Order updatedOrder);
 
 }

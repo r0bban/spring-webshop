@@ -20,9 +20,6 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 
     @Override
     public Optional<Customer> findByIdFullFetch(Long id) {
-
-//        Criteria criteria = session.createCriteria(User.class);
-//        criteria.setFetchMode("roles", FetchMode.EAGER);
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<Customer> criteriaQuery = criteriaBuilder.createQuery(Customer.class);

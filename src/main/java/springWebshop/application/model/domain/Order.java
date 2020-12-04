@@ -33,8 +33,9 @@ public class Order {
     private Currency currency;
     private Date created;
     private Date dispatched;
-    private Date InDelivery;
+    private Date inDelivery;
     private Date deliveryComplete;
+    private Date canceled;
     @Embedded
     private DeliveryAddress deliveryAddress;
     @ManyToOne
@@ -56,10 +57,22 @@ public class Order {
 
     @Override
     public String toString() {
-        return "OrderId =" + id + orderLines + "\nTotalNumberOfItem=" + totalNumberOfItem
+        return "OrderId =" + id + "OrderId =" + getOrderStatus() + orderLines + "\nTotalNumberOfItem=" + totalNumberOfItem
                 + ", totalSum=" + totalSum + ", totalVatSum=" + totalVatSum + ", vatPercentages=" + getVatPercentages()
                 + ", totalDiscount=" + totalDiscount + ", totalPayable=" + totalPayable + ", currency=" + currency
                 + "]";
+    }
+
+    public OrderStatus getOrderStatus() {
+        if (this.canceled != null) return OrderStatus.CANCELED;
+        if (this.deliveryComplete != null) return OrderStatus.DELIVERY_COMPLETED;
+        if (this.inDelivery != null) return OrderStatus.DELIVERY;
+        if (this.dispatched != null) return OrderStatus.DISPATCHED;
+        return OrderStatus.NOT_HANDLED;
+    }
+
+    public boolean isCancelable(){
+        return this.getOrderStatus() == OrderStatus.NOT_HANDLED;
     }
 
     public HashMap<Double, Double> getVatPercentages() {
@@ -138,6 +151,7 @@ public class Order {
         DISPATCHED,
         DELIVERY,
         DELIVERY_COMPLETED,
+        CANCELED
     }
 
     @Getter

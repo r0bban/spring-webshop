@@ -23,7 +23,7 @@ import springWebshop.application.service.ServiceResponse;
 
 import javax.persistence.EntityNotFoundException;
 
-@Service
+@Service("PROD")
 @Primary
 public class OrderSerivceImpl implements OrderService {
 
@@ -174,7 +174,6 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     private OrderLine getOrderLineFromProduct(Product product, int quantity) {
-
         OrderLine orderLine = new OrderLine();
         double lineSum = product.getBasePrice() * quantity;
         double lineVAT = product.getBasePrice() * product.getVatPercentage() * quantity;
@@ -204,18 +203,7 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     @Override
-    public ServiceResponse<Order> cancelOrderById(long id) {
-        return null;
-    }
-
-    @Override
-    public boolean orderIsCancelable(Order order) {
-        return false;
-    }
-
-    @Override
     public ServiceResponse<Order> setStatus(OrderStatus orderStatus) {
         return null;
     }
-
 }

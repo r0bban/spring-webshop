@@ -15,7 +15,7 @@ import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
 
-@Service
+@Service("Mock")
 public class OrderServiceMockImpl implements OrderService {
 
 	List<Order> orderStore;
@@ -102,16 +102,6 @@ public class OrderServiceMockImpl implements OrderService {
 	@Override
 	public ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO, long customerId, Address deliveryAddress) {
 		return null;
-	}
-
-	@Override
-	public ServiceResponse<Order> cancelOrderById(long id) {
-		return null;
-	}
-
-	@Override
-	public boolean orderIsCancelable(Order order) {
-		return false;
 	}
 
 	@Override
