@@ -23,6 +23,7 @@ import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.order.OrderSearchConfig;
 import springWebshop.application.service.order.OrderService;
 import springWebshop.application.service.product.ProductSearchConfig;
 import springWebshop.application.service.product.ProductService;
@@ -139,10 +140,6 @@ public class BaseConfig {
 
 
 
-            if (createOrderResponse.isSucessful()) {
-                System.out.println(createOrderResponse.getResponseObjects());
-            }
-
             ProductSearchConfig prodConf = new ProductSearchConfig();
             prodConf.setProductCategoryId(0);
             prodConf.setSearchString("9");
@@ -160,6 +157,29 @@ public class BaseConfig {
 
 
             testSetOrderStatus(orderService, 1L);
+
+            for (int i = 0; i < 100; i++) {
+                ShoppingCartDTO cart = getRandomShoppingCartDTO(productService, 1, 100);
+
+                orderService.createOrderFromShoppingCart(cart, randomBetween(1,50), deliveryAddress);
+                System.out.println("Created order sucessfully: " + createOrderResponse.isSucessful());
+            }
+
+            for (int i = 2; i < 100; i++) {
+                ArrayList<Order.OrderStatus> statusList = new ArrayList<>();
+                statusList.add(Order.OrderStatus.CANCELED);
+                statusList.add(Order.OrderStatus.DISPATCHED);
+                statusList.add(Order.OrderStatus.DELIVERY);
+                statusList.add(Order.OrderStatus.DELIVERY_COMPLETED);
+
+                ServiceResponse response = orderService.setStatus(i, statusList.get(randomBetween(0,3)));
+                System.out.println("Changed status successfully: " + response.isSucessful() + response.getErrorMessages());
+            }
+//            OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
+//            orderSearchConfig.setMaxTotalSum(1.00);
+//            ServiceResponse<Order> searchOrderResponse = orderService.getOrders(orderSearchConfig);
+//            System.out.println(searchOrderResponse);
+
 
 
 

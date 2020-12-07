@@ -69,14 +69,29 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> getAllOrders(int page, int size) {
-		ArrayList<Order> responseObjects = new ArrayList<>();
-		ArrayList<String> errorMessages = new ArrayList<>();
-		responseObjects.addAll(paginatedList(page, size));
-		ServiceResponse<Order> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
-
-		return serviceResponse;
+	public ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig) {
+		return null;
 	}
+
+	@Override
+	public ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig, int page) {
+		return null;
+	}
+
+	@Override
+	public ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig, int page, int size) {
+		return null;
+	}
+
+//	@Override
+//	public ServiceResponse<Order> getAllOrders(int page, int size) {
+//		ArrayList<Order> responseObjects = new ArrayList<>();
+//		ArrayList<String> errorMessages = new ArrayList<>();
+//		responseObjects.addAll(paginatedList(page, size));
+//		ServiceResponse<Order> serviceResponse = new ServiceResponse<>(responseObjects, errorMessages);
+//
+//		return serviceResponse;
+//	}
 
 	private List<Order> paginatedList(int page, int size) {
 		ArrayList<Order> list = new ArrayList<>();
@@ -109,11 +124,11 @@ public class OrderServiceMockImpl implements OrderService {
 		return null;
 	}
 
-	@Override
-	public ServiceResponse<Order> getAllOrders(int page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ServiceResponse<Order> getAllOrders(int page) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 
 }

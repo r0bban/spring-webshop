@@ -2,9 +2,11 @@ package springWebshop.application.service.order;
 
 import springWebshop.application.model.domain.Address;
 import springWebshop.application.model.domain.Order;
+import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceResponse;
+import springWebshop.application.service.product.ProductSearchConfig;
 
 public interface OrderService {
 
@@ -13,10 +15,14 @@ public interface OrderService {
     ServiceResponse<Order> getAllOrders();
 
 //    ServiceResponse<Order> getAllOrders();
+//
+//    ServiceResponse<Order> getAllOrders(int page);
+//
+//    ServiceResponse<Order> getAllOrders(int page, int size);
 
-    ServiceResponse<Order> getAllOrders(int page);
-
-    ServiceResponse<Order> getAllOrders(int page, int size);
+    ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig);
+    ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig, int page);
+    ServiceResponse<Order> getOrders(OrderSearchConfig orderSearchConfig, int page, int size);
 
     ServiceResponse<Order> create(Order newOrder);
 

@@ -13,13 +13,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
-
 import springWebshop.application.model.domain.Product;
+
 @Repository
 public abstract class AbstractCustomRepository<T> {
 	
 	@PersistenceContext
 	EntityManager em;
+//
+//	final Class<T> typeParameterClass;
+//
+//	public AbstractCustomRepository(Class<T> typeParameterClass) {
+//		this.typeParameterClass = typeParameterClass;
+//	}
 	
 	protected Page<T> getPaginatedResult(int page, int size, List<Predicate> predicates,
 			 TypedQuery<T> typedQuery) {
