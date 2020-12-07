@@ -175,10 +175,14 @@ public class BaseConfig {
                 ServiceResponse response = orderService.setStatus(i, statusList.get(randomBetween(0,3)));
                 System.out.println("Changed status successfully: " + response.isSucessful() + response.getErrorMessages());
             }
-//            OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
-//            orderSearchConfig.setMaxTotalSum(1.00);
-//            ServiceResponse<Order> searchOrderResponse = orderService.getOrders(orderSearchConfig);
-//            System.out.println(searchOrderResponse);
+            OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
+            orderSearchConfig.setMaxTotalSum(350.00);
+            orderSearchConfig.setSortBy(OrderSearchConfig.SortBy.totalSum);
+            ServiceResponse<Order> searchOrderResponse = orderService.getOrders(orderSearchConfig, 0,30);
+            System.out.println(searchOrderResponse);
+            searchOrderResponse.getResponseObjects().forEach(order -> {
+                System.out.println(order);
+            });
 
 
 
