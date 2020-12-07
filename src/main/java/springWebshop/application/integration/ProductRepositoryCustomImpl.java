@@ -27,7 +27,6 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 	public Page<Product> getProducts(ProductSearchConfig config, int page, int size) {
 
 		List<Predicate> predicates = new ArrayList<>();
-
 		try {
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 			CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
@@ -38,20 +37,23 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 				predicates.add(criteriaBuilder.equal(
 						product.get("productType").get("id"),
 						config.getProductTypeId()));
+				System.out.println("Filter by Type");
 			}
 			else if (config.getProductSubCategoryId() > 0) {
 				predicates.add(criteriaBuilder.equal(
 						product.get("productType").get("productSubCategory").get("id"),
 						config.getProductSubCategoryId()));
 				
+				System.out.println("Filter by SubCategory");
 			}
 			else if (config.getProductCategoryId() > 0) {
 				predicates.add(criteriaBuilder.equal(
 						product.get("productType").get("productSubCategory").get("productCategory").get("id"),
 						config.getProductCategoryId()));
+				System.out.println("Filter by Category");
 				
 			}
-			if(config.getSearchString().length()!=0) {
+			if(config.getSearchString()!=null && config.getSearchString().length()>0) {
 				predicates.add(criteriaBuilder.like(product.get("name"), "%" + config.getSearchString() + "%"));
 				
 			}
@@ -60,13 +62,15 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 
 			return getPaginatedResult(page, size, predicates, typedQuery);
 		} catch (NoResultException e) {
+			System.out.println("Exception:" + e);
 			return null;
 		}
 
 	}
 
-//	private Page<T> getPaginatedResult(int page, int size, List<Predicate> predicates,
-//			 TypedQuery<T> typedQuery) {
+//	private Page<Product> getPaginatedResults(int page, int size, List<Predicate> predicates,
+//			 TypedQuery<Product> typedQuery) {
+//		System.out.println("Local Results");
 //		int firstResult = page * size;
 //		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 //		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
@@ -78,9 +82,9 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 //		typedQuery.setFirstResult(firstResult);
 //		typedQuery.setMaxResults(size);
 //
-//		List<T> productList = typedQuery.getResultList();
+//		List<Product> productList = typedQuery.getResultList();
 //		
-//		Page<T> newPage = new PageImpl<>(productList, PageRequest.of(page, size), totalItems);
+//		Page<Product> newPage = new PageImpl<>(productList, PageRequest.of(page, size), totalItems);
 //		System.out.println(newPage);
 //
 //		return newPage;

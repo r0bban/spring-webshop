@@ -95,7 +95,8 @@ public class ProductServiceImpl implements ProductService {
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
 		if (size <= maxPageSize)
 			try {
-				Page<Product> response = productRepository.getProducts(productSearchConfig, page, size);
+				Page<Product> response = productSearchConfig!= null ? productRepository.getProducts(productSearchConfig, page, size):
+					productRepository.findAll(PageRequest.of(page, size));
 				setPageMetaData(response, serviceResponse);
 				serviceResponse.setResponseObjects(response.getContent());
 			} catch (Exception e) {

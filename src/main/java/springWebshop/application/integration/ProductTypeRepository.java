@@ -10,4 +10,6 @@ import springWebshop.application.model.domain.ProductType;
 public interface ProductTypeRepository extends JpaRepository<ProductType, Long> {
 
     Optional<ProductType> findByName(String name);
+    
+    
 }

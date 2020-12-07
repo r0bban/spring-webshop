@@ -29,9 +29,9 @@ public class CategoryModelObject {
 	private long selectedSub;
 	private long selectedType;
 	
-	private List<ProductCategoryDTO> categories;
-	private List<ProductSubCategoryDTO> subCategories;
-	private List<ProductTypeDTO> types;
+	private List<SegmentDTO> categories;
+	private List<SegmentDTO> subCategories;
+	private List<SegmentDTO> types;
 	
 	public CategoryModelObject() {
 		categories = new  ArrayList<>();

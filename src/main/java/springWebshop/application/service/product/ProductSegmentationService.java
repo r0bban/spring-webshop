@@ -6,15 +6,13 @@ import java.util.List;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.dto.ProductCategoryDTO;
-import springWebshop.application.model.dto.ProductSubCategoryDTO;
-import springWebshop.application.model.dto.ProductTypeDTO;
+import springWebshop.application.model.dto.SegmentDTO;
 
 public interface ProductSegmentationService {
 	
-	List<ProductCategoryDTO> getAllCategories();
-	List<ProductSubCategoryDTO> getSubCategoriesByCategoryId(long categoryId);
-	List<ProductTypeDTO> getTypesBySubCategoryId(long subCategoryId);
+	List<SegmentDTO> getAllCategories();
+	List<SegmentDTO> getSubCategoriesByCategoryId(long categoryId);
+	List<SegmentDTO> getTypesBySubCategoryId(long subCategoryId);
 	
 	int getNoCategories();
 	int getNoSubCategories();

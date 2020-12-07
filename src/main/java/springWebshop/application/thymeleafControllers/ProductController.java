@@ -90,13 +90,15 @@ public class ProductController {
 			@PathVariable(name = "type",required = false) Optional<String> type,
 			@RequestParam(required = false, name = "page",defaultValue = "1") Optional<Integer> pathPage, Model m) {
 		System.out.println("GET");
-		resetCategories(session.getCategoryModel());
+//		resetCategories(session.getCategoryModel());
 //		selectFilteredProducts(category,subcategory,type);
 		System.out.println("PP:"+pathPage);
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
-	
+		ProductSearchConfig config = new ProductSearchConfig();
+		handleFiltering(session.getCategoryModel(),config);
 		
-		ServiceResponse<Product> response = productService.getProducts(null,currentPage > 0 ? currentPage - 1 : 0, 10);
+		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 10);
+		System.out.println(response);
 //		ServiceResponse<Product> response = productService.getProducts(currentPage > 0 ? currentPage - 1 : 0, 10);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		session.setProductPage(currentPage);
@@ -143,11 +145,8 @@ public class ProductController {
 		if(productId.isPresent())
 			session.getCart().addItem(productId.get());
 		int currentPage = pathPage.isPresent() ? pathPage.get() : session.getProductPage();
-		
 		ServiceResponse<Product> response = productService.getProducts(config,currentPage > 0 ? currentPage - 1 : 0, 10);
-		System.out.println(response.getResponseObjects());
-		
-		
+		m.addAttribute("currentPage", response.getCurrentPage()-1);
 		m.addAttribute("allProducts", response.getResponseObjects());
 		// Doesnt return Error Message? Empty list
 		
@@ -161,7 +160,7 @@ public class ProductController {
 			categoryDTO.setSubCategories(productSegmentationService.getSubCategoriesByCategoryId(categoryDTO.getSelectedCat()));
 			if(categoryDTO.getSelectedSub()>0) {
 				categoryDTO.setTypes(productSegmentationService.getTypesBySubCategoryId(categoryDTO.getSelectedSub()));
-				System.out.println(categoryDTO);
+//				System.out.println(categoryDTO);
 			}
 			else {
 				categoryDTO.getTypes().clear();

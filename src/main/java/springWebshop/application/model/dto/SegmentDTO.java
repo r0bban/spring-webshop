@@ -5,18 +5,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductSubCategoryDTO {
-	private long id;
-	private String name;
-	public ProductSubCategoryDTO(long id, String name) {
+public class SegmentDTO {
+	
+	public SegmentDTO(long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
+	private long id;
+	private String name;
 	@Override
 	public String toString() {
-		return "ProductSubCategoryDTO [id=" + id + ", name=" + name + "]";
+		return "ProductCategoryDTO [id=" + id + ", name=" + name + "]";
 	}
-	
 
+	
 }

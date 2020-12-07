@@ -86,42 +86,42 @@ public class BaseConfig {
 //        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //
-            createCustomers(customerRepository, 50);
-            Customer persistedCustomer = customerRepository.findById(1L).get();
-            System.out.println(persistedCustomer);
-            persistedCustomer.getAddresses().forEach(System.out::println);
-
-
-            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
-            Address deliveryAddress = persistedCustomer.getAddresses()
-                    .stream()
-                    .filter(address -> address.isDefaultAddress())
-                    .findFirst().get();
-
-            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
-                    + "\nInput deliveryAddress: \n" + deliveryAddress);
-
-            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
-            System.out.println(createOrderResponse);
-
-            if (createOrderResponse.isSucessful()) {
-                System.out.println(createOrderResponse.getResponseObjects());
-            }
-
-            ProductSearchConfig prodConf = new ProductSearchConfig();
-            prodConf.setProductCategoryId(0);
-            prodConf.setSearchString("9");
-            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
-            System.out.println(prodSearchResp);
-            prodSearchResp.getResponseObjects().forEach(product -> {
-                System.out.println("\n"+product);
-            });
-
-            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
-            System.out.println(prodSearchResp2);
-            prodSearchResp2.getResponseObjects().forEach(product -> {
-                System.out.println("\n"+product);
-            });
+//            createCustomers(customerRepository, 50);
+//            Customer persistedCustomer = customerRepository.findById(1L).get();
+//            System.out.println(persistedCustomer);
+//            persistedCustomer.getAddresses().forEach(System.out::println);
+//
+//
+//            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
+//            Address deliveryAddress = persistedCustomer.getAddresses()
+//                    .stream()
+//                    .filter(address -> address.isDefaultAddress())
+//                    .findFirst().get();
+//
+//            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
+//                    + "\nInput deliveryAddress: \n" + deliveryAddress);
+//
+//            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
+//            System.out.println(createOrderResponse);
+//
+//            if (createOrderResponse.isSucessful()) {
+//                System.out.println(createOrderResponse.getResponseObjects());
+//            }
+//
+//            ProductSearchConfig prodConf = new ProductSearchConfig();
+//            prodConf.setProductCategoryId(0);
+//            prodConf.setSearchString("9");
+//            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
+//            System.out.println(prodSearchResp);
+//            prodSearchResp.getResponseObjects().forEach(product -> {
+//                System.out.println("\n"+product);
+//            });
+//
+//            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
+//            System.out.println(prodSearchResp2);
+//            prodSearchResp2.getResponseObjects().forEach(product -> {
+//                System.out.println("\n"+product);
+//            });
 
 
 
@@ -204,7 +204,6 @@ public class BaseConfig {
                                                         ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
         int noCat = 3, noSub = 4,noType = 5;
 
-		System.out.println("Init: " + noCat);
 		for (int i = 0; i < noCat; i++) {
 			ProductCategory category = new ProductCategory("Category " + (i + 1));
 			catRepo.save(category);
@@ -212,14 +211,14 @@ public class BaseConfig {
 		}
 		for (int i = 0; i < noSub; i++) {
 			long rand = new Random().nextInt(noCat)+1;
-			System.out.println("Cat Rand:"+rand);
+//			System.out.println("Cat Rand:"+rand);
 			ProductSubCategory subCategory = new ProductSubCategory("SubCategory " + (i + 1),
 					catRepo.findById(rand).get());
 			subCatRepo.save(subCategory);
 		}
 		for (int i = 0; i < noType; i++) {
 			long rand = new Random().nextInt(noSub)+1;
-			System.out.println("Sub Rand:"+rand);
+//			System.out.println("Sub Rand:"+rand);
 			ProductType prodType = new ProductType("ProductType " + (i + 1),
 					subCatRepo.findById(rand).get());
 			typeRepo.save(prodType);
@@ -237,11 +236,11 @@ public class BaseConfig {
 //        ProductType prodType = new ProductType("Gungstol", subCat2);
 
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 40; i++) {
         	long rand = new Random().nextInt(noType)+1;
             Product product1 = new Product();
-            product1.setName("Product " + i);
-            product1.setDescription("Testing this big product " + i);
+            product1.setName("Product " + (i+1));
+            product1.setDescription("Testing this big product " + (i+1));
             product1.setBasePrice(new Random().nextInt(50));
             product1.setProductType(typeRepo.findById(rand).get());
             product1.setVatPercentage(i % 2 == 0 ? 0.25 : 0.12);
@@ -250,7 +249,7 @@ public class BaseConfig {
 //            prodType2.setId(1L);
 //            product1.setProductType(prodType2);
             productRepository.save(product1);
-            System.out.println(product1);
+            System.out.println(product1.getId()+":"+product1.getProductType().toString());
         }
 
 

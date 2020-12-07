@@ -31,23 +31,23 @@ public class ProductServiceMockImpl implements ProductService {
 	private ArrayList<ProductCategory> subStore;
 	private ArrayList<ProductSubCategory> categoryStore;
 
-	@PostConstruct
-	void init() {
-		System.out.println(productSegmentationService.getNoTypes());
-		productStore = new ArrayList<Product>();
-		typeStore = productSegmentationService.getTypeStore();
-		subStore = productSegmentationService.getCategoryStore();
-		categoryStore = productSegmentationService.getSubCategoryStore();
-		System.out.println(typeStore);
-		for (int i = 0; i < 100; i++) {
-			Product localProduct = new Product();
-			localProduct.setId(++idProductGenerator);
-			localProduct.setName("Product " + idProductGenerator);
-			localProduct.setBasePrice(new Random().nextInt(1000));
-			localProduct.setProductType(typeStore.get(new Random().nextInt(typeStore.size())));
-			productStore.add(localProduct);
-		}
-	}
+//	@PostConstruct
+//	void init() {
+//		System.out.println(productSegmentationService.getNoTypes());
+//		productStore = new ArrayList<Product>();
+//		typeStore = productSegmentationService.getTypeStore();
+//		subStore = productSegmentationService.getCategoryStore();
+//		categoryStore = productSegmentationService.getSubCategoryStore();
+//		System.out.println(typeStore);
+//		for (int i = 0; i < 100; i++) {
+//			Product localProduct = new Product();
+//			localProduct.setId(++idProductGenerator);
+//			localProduct.setName("Product " + idProductGenerator);
+//			localProduct.setBasePrice(new Random().nextInt(1000));
+//			localProduct.setProductType(typeStore.get(new Random().nextInt(typeStore.size())));
+//			productStore.add(localProduct);
+//		}
+//	}
 
 	public ProductServiceMockImpl() {
 
