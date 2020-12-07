@@ -89,8 +89,6 @@ public class ProductServiceImpl implements ProductService {
 		return getAllProductPageAndSize(productSearchConfig, page, size);
 	}
 
-
-	
 	private ServiceResponse<Product> getAllProductPageAndSize(ProductSearchConfig productSearchConfig,int page, int size) {
 		ServiceResponse<Product> serviceResponse = new ServiceResponse<>();
 		if (size <= maxPageSize)

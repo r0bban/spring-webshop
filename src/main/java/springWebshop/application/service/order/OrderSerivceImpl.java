@@ -15,23 +15,31 @@ import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
 import springWebshop.application.model.domain.Order.OrderStatus;
 import springWebshop.application.model.domain.Product;
-import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.domain.user.Customer;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
 
-import javax.persistence.EntityNotFoundException;
-
 @Service("PROD")
 @Primary
 public class OrderSerivceImpl implements OrderService {
+
+    private static final Map<OrderStatus, Integer> statusHierarchy;
+
+    static {
+        Map<OrderStatus, Integer> staticMap = new HashMap<>();
+        staticMap.put(OrderStatus.NOT_HANDLED, 1);
+        staticMap.put(OrderStatus.DISPATCHED, 2);
+        staticMap.put(OrderStatus.DELIVERY, 3);
+        staticMap.put(OrderStatus.DELIVERY_COMPLETED, 4);
+        staticMap.put(OrderStatus.CANCELED, 5);
+        statusHierarchy = Collections.unmodifiableMap(staticMap);
+    }
 
     final
     OrderRepository orderRepository;
     final ProductRepository productRepository;
     final CustomerRepository customerRepository;
-
     final int defaultPageSize = 10;
     final int maxPageSize = 30;
 
@@ -40,7 +48,6 @@ public class OrderSerivceImpl implements OrderService {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
     }
-
 
     @Override
     public ServiceResponse<Order> getOrderById(long id) {
@@ -203,7 +210,59 @@ public class OrderSerivceImpl implements OrderService {
     }
 
     @Override
-    public ServiceResponse<Order> setStatus(OrderStatus orderStatus) {
-        return null;
+    public ServiceResponse<Order> setStatus(long orderId, OrderStatus orderStatus) {
+        ServiceResponse<Order> response = new ServiceResponse<>();
+        List<String> errors = new ArrayList<>();
+        Optional<Order> order = orderRepository.findById(orderId);
+        if (order.isPresent()
+                && newStatusIsValidAndSet(order.get(), orderStatus, errors)) {
+            try {
+                orderRepository.save(order.get());
+                response.setSucessful(true);
+            } catch (Error error) {
+                errors.add(ServiceErrorMessages.ORDER.couldNotUpdate(orderId));
+            }
+        }
+        response.setErrorMessages(errors);
+        return response;
+    }
+
+    private boolean newStatusIsValidAndSet(Order order, OrderStatus requestedOrderStatus, List<String> errors) {
+        Date now = new Date();
+        OrderStatus currentStatus = order.getOrderStatus();
+
+        if (statusHierarchy.get(currentStatus) <= statusHierarchy.get(requestedOrderStatus)) {
+            switch (requestedOrderStatus) {
+                case CANCELED:
+                    order.setCanceled(now);
+                    break;
+                case DISPATCHED:
+                    order.setDispatched(now);
+                    break;
+                case DELIVERY:
+                    order.setInDelivery(now);
+                    break;
+                case DELIVERY_COMPLETED:
+                    order.setDeliveryComplete(now);
+                    break;
+                default:
+                    errors.add(requestedOrderStatus + "is not a valid status.");
+                    return false;
+            }
+            return true;
+        } else {
+            errors.add(ServiceErrorMessages.ORDER.couldNotUpdate(order.getId()));
+            errors.add("Cannot set status to " + requestedOrderStatus + " since current status is already set to " + currentStatus);
+            return false;
+        }
+    }
+
+    private boolean orderExist(long orderId, List<String> errors) {
+        if (orderRepository.existsById(orderId)) {
+            return true;
+        } else {
+            errors.add(ServiceErrorMessages.ORDER.couldNotFind(orderId));
+            return false;
+        }
     }
 }

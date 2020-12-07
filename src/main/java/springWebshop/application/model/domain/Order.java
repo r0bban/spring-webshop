@@ -57,7 +57,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return "OrderId =" + id + "OrderId =" + getOrderStatus() + orderLines + "\nTotalNumberOfItem=" + totalNumberOfItem
+        return "OrderId =" + id + " OrderStatus =" + getOrderStatus() + orderLines + "\nTotalNumberOfItem=" + totalNumberOfItem
                 + ", totalSum=" + totalSum + ", totalVatSum=" + totalVatSum + ", vatPercentages=" + getVatPercentages()
                 + ", totalDiscount=" + totalDiscount + ", totalPayable=" + totalPayable + ", currency=" + currency
                 + "]";

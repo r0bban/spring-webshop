@@ -105,7 +105,7 @@ public class OrderServiceMockImpl implements OrderService {
 	}
 
 	@Override
-	public ServiceResponse<Order> setStatus(OrderStatus orderStatus) {
+	public ServiceResponse<Order> setStatus(long orderId, OrderStatus orderStatus) {
 		return null;
 	}
 

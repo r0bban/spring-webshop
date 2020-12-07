@@ -12,6 +12,8 @@ public interface OrderService {
 
     ServiceResponse<Order> getAllOrders();
 
+//    ServiceResponse<Order> getAllOrders();
+
     ServiceResponse<Order> getAllOrders(int page);
 
     ServiceResponse<Order> getAllOrders(int page, int size);
@@ -21,7 +23,7 @@ public interface OrderService {
     ServiceResponse<Order> createOrderFromShoppingCart(ShoppingCartDTO shoppingCartDTO,
                                                        long customerId, Address deliveryAddress);
 
-    ServiceResponse<Order> setStatus(Order.OrderStatus orderStatus);
+    ServiceResponse<Order> setStatus(long orderId, Order.OrderStatus orderStatus);
 
     //ToDo Decide if use:
     //ServiceResponse<Order> update(Order updatedOrder);

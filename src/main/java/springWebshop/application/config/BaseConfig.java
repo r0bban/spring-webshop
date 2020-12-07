@@ -86,50 +86,105 @@ public class BaseConfig {
 //        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //
-//            createCustomers(customerRepository, 50);
-//            Customer persistedCustomer = customerRepository.findById(1L).get();
-//            System.out.println(persistedCustomer);
-//            persistedCustomer.getAddresses().forEach(System.out::println);
-//
-//
-//            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
-//            Address deliveryAddress = persistedCustomer.getAddresses()
-//                    .stream()
-//                    .filter(address -> address.isDefaultAddress())
-//                    .findFirst().get();
-//
-//            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
-//                    + "\nInput deliveryAddress: \n" + deliveryAddress);
-//
-//            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
-//            System.out.println(createOrderResponse);
-//
-//            if (createOrderResponse.isSucessful()) {
-//                System.out.println(createOrderResponse.getResponseObjects());
-//            }
-//
-//            ProductSearchConfig prodConf = new ProductSearchConfig();
-//            prodConf.setProductCategoryId(0);
-//            prodConf.setSearchString("9");
-//            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
-//            System.out.println(prodSearchResp);
-//            prodSearchResp.getResponseObjects().forEach(product -> {
-//                System.out.println("\n"+product);
-//            });
-//
-//            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
-//            System.out.println(prodSearchResp2);
-//            prodSearchResp2.getResponseObjects().forEach(product -> {
-//                System.out.println("\n"+product);
-//            });
+            createCustomers(customerRepository, 50);
+            Customer persistedCustomer = customerRepository.findById(1L).get();
+            System.out.println(persistedCustomer);
+            persistedCustomer.getAddresses().forEach(System.out::println);
 
 
+
+            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
+            Address deliveryAddress = persistedCustomer.getAddresses()
+                    .stream()
+                    .filter(address -> address.isDefaultAddress())
+                    .findFirst().get();
+
+            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
+                    + "\nInput deliveryAddress: \n" + deliveryAddress);
+
+            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
+            System.out.println("Created order - response: " + createOrderResponse);
+
+
+
+            if (createOrderResponse.isSucessful()) {
+                System.out.println(createOrderResponse.getResponseObjects());
+            }
+
+            ProductSearchConfig prodConf = new ProductSearchConfig();
+            prodConf.setProductCategoryId(0);
+            prodConf.setSearchString("9");
+            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
+            System.out.println(prodSearchResp);
+            prodSearchResp.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+
+            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
+            System.out.println(prodSearchResp2);
+            prodSearchResp2.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
+            Address deliveryAddress = persistedCustomer.getAddresses()
+                    .stream()
+                    .filter(address -> address.isDefaultAddress())
+                    .findFirst().get();
+
+            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
+                    + "\nInput deliveryAddress: \n" + deliveryAddress);
+
+            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
+            System.out.println("Created order - response: " + createOrderResponse);
+
+
+
+            if (createOrderResponse.isSucessful()) {
+                System.out.println(createOrderResponse.getResponseObjects());
+            }
+
+            ProductSearchConfig prodConf = new ProductSearchConfig();
+            prodConf.setProductCategoryId(0);
+            prodConf.setSearchString("9");
+            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
+            System.out.println(prodSearchResp);
+            prodSearchResp.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+
+            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
+            System.out.println(prodSearchResp2);
+            prodSearchResp2.getResponseObjects().forEach(product -> {
+                System.out.println("\n"+product);
+            });
+
+
+            testSetOrderStatus(orderService, 1L);
 
 
 
         };
 
 
+    }
+
+    private void testSetOrderStatus(OrderService orderService, long orderId) {
+        System.out.println("Fetch order no 1 ----->"+orderService.getOrderById(orderId).getResponseObjects().get(0));
+        ServiceResponse<Order> changeStatusResponse = orderService.setStatus(orderId, Order.OrderStatus.DISPATCHED);
+        System.out.println("Change order-status to: Dispatched ----> result: ");
+        System.out.println(changeStatusResponse);
+        if(!changeStatusResponse.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
+        ServiceResponse<Order> changeStatusResponse2 = orderService.setStatus(orderId, Order.OrderStatus.NOT_HANDLED);
+        System.out.println("Re-change order-status back to: Not Handled ----> result: ");
+        System.out.println(changeStatusResponse2);
+        if(changeStatusResponse2.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
+        ServiceResponse<Order> changeStatusResponse3 = orderService.setStatus(orderId, Order.OrderStatus.CANCELED);
+        if(!changeStatusResponse3.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        System.out.println("Re-change order-status back to: Canceled ----> result: ");
+        System.out.println(changeStatusResponse3);
+        System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
     }
 
     private ShoppingCartDTO getRandomShoppingCartDTO(ProductService productService, int productIdFrom, int productIdTo) {
@@ -204,6 +259,7 @@ public class BaseConfig {
                                                         ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
         int noCat = 3, noSub = 4,noType = 5;
 
+		
 		for (int i = 0; i < noCat; i++) {
 			ProductCategory category = new ProductCategory("Category " + (i + 1));
 			catRepo.save(category);
@@ -250,6 +306,10 @@ public class BaseConfig {
 //            product1.setProductType(prodType2);
             productRepository.save(product1);
             System.out.println(product1.getId()+":"+product1.getProductType().toString());
+
+//            productRepository.save(product1);
+            boolean result = productService.create(product1).isSucessful();
+            System.out.println((result ? "Successfully created: " : "Error -> Could not create: ") + product1);
         }
 
 
