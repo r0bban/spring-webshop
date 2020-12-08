@@ -2,7 +2,6 @@ package springWebshop.application.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,24 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import springWebshop.application.integration.*;
-import springWebshop.application.model.domain.*;
-import springWebshop.application.model.domain.user.CustomerAddress;
+import springWebshop.application.integration.AccountRepository;
+import springWebshop.application.integration.CompanyRepository;
+import springWebshop.application.integration.CustomerAddressRespoitory;
+import springWebshop.application.integration.CustomerRepository;
+import springWebshop.application.integration.OrderRepository;
+import springWebshop.application.integration.ProductCategoryRepository;
+import springWebshop.application.integration.ProductRepository;
+import springWebshop.application.integration.ProductSubCategoryRepository;
+import springWebshop.application.integration.ProductTypeRepository;
+import springWebshop.application.model.domain.Address;
+import springWebshop.application.model.domain.Order;
+import springWebshop.application.model.domain.OrderLine;
+import springWebshop.application.model.domain.Product;
+import springWebshop.application.model.domain.ProductCategory;
+import springWebshop.application.model.domain.ProductSubCategory;
+import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.domain.user.Customer;
-import springWebshop.application.model.dto.ShoppingCartDTO;
+import springWebshop.application.model.domain.user.CustomerAddress;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
@@ -126,34 +138,9 @@ public class BaseConfig {
             prodSearchResp2.getResponseObjects().forEach(product -> {
                 System.out.println("\n"+product);
             });
-            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
-            Address deliveryAddress = persistedCustomer.getAddresses()
-                    .stream()
-                    .filter(address -> address.isDefaultAddress())
-                    .findFirst().get();
-
-            System.out.println("Input shoppingCart: \n" + randomShoppingCartDTO
-                    + "\nInput deliveryAddress: \n" + deliveryAddress);
-
-            ServiceResponse<Order> createOrderResponse = orderService.createOrderFromShoppingCart(randomShoppingCartDTO, 1L, deliveryAddress);
-            System.out.println("Created order - response: " + createOrderResponse);
 
 
 
-            ProductSearchConfig prodConf = new ProductSearchConfig();
-            prodConf.setProductCategoryId(0);
-            prodConf.setSearchString("9");
-            ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
-            System.out.println(prodSearchResp);
-            prodSearchResp.getResponseObjects().forEach(product -> {
-                System.out.println("\n"+product);
-            });
-
-            ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
-            System.out.println(prodSearchResp2);
-            prodSearchResp2.getResponseObjects().forEach(product -> {
-                System.out.println("\n"+product);
-            });
 
 
             testSetOrderStatus(orderService, 1L);
@@ -332,8 +319,8 @@ public class BaseConfig {
             System.out.println(product1.getId()+":"+product1.getProductType().toString());
 
 //            productRepository.save(product1);
-            boolean result = productService.create(product1).isSucessful();
-            System.out.println((result ? "Successfully created: " : "Error -> Could not create: ") + product1);
+//            boolean result = productService.create(product1).isSucessful();
+//            System.out.println((result ? "Successfully created: " : "Error -> Could not create: ") + product1);
         }
 
 
