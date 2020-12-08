@@ -40,6 +40,22 @@ public class ProductType {
 	public String getFullyQualifiedName() {
 		return productSubCategory.getFullyQualifiedName() + "/" +  name;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		ProductType other = (ProductType) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
     
 
 }

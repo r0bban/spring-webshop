@@ -3,9 +3,7 @@ package springWebshop.application.integration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,19 +11,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 
 import springWebshop.application.model.domain.Product;
 import springWebshop.application.service.product.ProductSearchConfig;
-
 public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Product> implements ProductRepositoryCustom {
 
 
 	@Override
 	public Page<Product> getProducts(ProductSearchConfig config, int page, int size) {
-
+		
 		//TODO Not working properly, returning some correct data but missing some when filtering
 		// by subcategory and below
 		List<Predicate> predicates = new ArrayList<>();
@@ -60,7 +55,7 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 				predicates.add(criteriaBuilder.like(product.get("name"), "%" + config.getSearchString() + "%"));
 				
 			}
-			criteriaQuery.select(product).where(predicates.toArray(new Predicate[0])).distinct(true);
+			criteriaQuery.select(product).distinct(true).where(predicates.toArray(new Predicate[0]));
 			TypedQuery<Product> typedQuery = em.createQuery(criteriaQuery);
 			Page<Product> tmp = getPaginatedResult(page, size, predicates, typedQuery);
 			System.out.println("ReturningPage:");

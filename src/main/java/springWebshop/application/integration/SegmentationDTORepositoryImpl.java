@@ -21,8 +21,10 @@ import springWebshop.application.model.domain.ProductType;
 import springWebshop.application.model.dto.SegmentDTO;
 
 @Repository
-public class SegmentationDTORepositoryCustomImpl extends SegmentDTORepository {
+public class SegmentationDTORepositoryImpl implements SegmentationDTORepository{
 	
+	@PersistenceContext
+	EntityManager em;
 	@Override
 	public List<SegmentDTO> getAllCategoryDTO() {
 		
@@ -44,7 +46,6 @@ public class SegmentationDTORepositoryCustomImpl extends SegmentDTORepository {
 	
 	}
 
-
 	@Override
 	public List<SegmentDTO> getAllSubCategoryDTO(long categoryId) {
 
@@ -65,7 +66,6 @@ public class SegmentationDTORepositoryCustomImpl extends SegmentDTORepository {
 			return new ArrayList<>();
 		}
 	}
-
 	@Override
 	public List<SegmentDTO> getAllTypeDTO(long subCategoryId) {
 		try {

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import springWebshop.application.integration.SegmentationDTORepositoryCustomImpl;
+import springWebshop.application.integration.SegmentationDTORepositoryImpl;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
@@ -16,7 +16,7 @@ import springWebshop.application.model.dto.SegmentDTO;
 public class ProductSegmentationServiceImpl implements ProductSegmentationService {
 	
 	@Autowired
-	SegmentationDTORepositoryCustomImpl productCategoryDTORepository;
+	SegmentationDTORepositoryImpl productCategoryDTORepository;
 
 	@Override
 	public List<SegmentDTO> getAllCategories() {
