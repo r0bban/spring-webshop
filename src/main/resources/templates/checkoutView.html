@@ -1,10 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http:://www.thymeleaf.org">
+
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+    <meta charset="ISO-8859-1">
+    <title>Checkout View</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/shoppingCart.css}">
+
+    <style>
+        .container {
+            box-sizing: border-box;
+            background-color: antiquewhite;
+            grid-template-columns: auto auto;
+            grid-template-rows: 100%;
+            overflow: auto;
+        }
+
+
+
+        .customerInfo {
+            display: grid;
+            grid-template-rows: 10fr 1fr;
+            background-color: aliceblue;
+        }
+
+
+        .userDetails {
+
+            padding: 2rem;
+            flex: 2;
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-auto-rows: 10vh;
+            background-color: blanchedalmond;
+        }
+
+        .actions {
+            border-top: 1px solid darkcyan;
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
 </head>
-<body>
+
+<body th:with="cart=${session.sessionModel.cart}">
+    <div th:replace="fragments/header.html :: header(title='Checkout')"></div>
+    <main class="container">
+        <section class="wrapper" th:object="${cart}">
+
+            <section class="cartContainer">
+                <div th:each="product : ${cart.productMap}" class="cartItem">
+                    <div class="itemInfo">
+                        <span th:text="${product.key.name}"></span>
+                        <span th:text="|Price per item: ${product.key.basePrice}|"></span>
+                        <span th:text="|Quantity: ${product.value}|"></span>
+                        <span th:text="|Cost: ${cart.getItemSum(product.key)}|"></span>
+                    </div>
+                    <div class="itemEdit">
+                        <form method="POST" th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=add)}">
+                            <input type="submit" value="Increase" />
+                        </form>
+                        <form method="POST"
+                            th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=remove)}">
+                            <input type="submit" value="Decrease" />
+                        </form>
+
+                    </div>
+
+                </div>
+            </section>
+            <section class="metaContainer">
+                <div class="metaData">
+                    <span th:text="|Total sum: *{getTotalSum()}|"></span>
+                    <span th:text="|Total articles: *{getTotalItems()}|"></span>
+                </div>
+            </section>
+        </section>
+
+
+        <section class="customerInfo">
+            <div class="userDetails">
+                <span>Name</span>
+                <span>Name</span>
+                <span>Name</span>
+                <span>Name</span>
+                <span>Name</span>
+                <span>Name</span>
+            </div>
+            <div class="actions">
+                <span>Update user details</span>
+                <span>Place Order</span>
+            </div>
+        </section>
+    </main>
+    <footer>
+        Footer Here
+    </footer>
+
 
 </body>
+
 </html>

@@ -228,7 +228,7 @@ public class ProductController {
 		return "displayShoppingCart";
 	}
 	
-	@GetMapping
+	@GetMapping("checkout")
 	public String getCheckout(@ModelAttribute SessionModel sessionModel,Model m) {
 		
 		

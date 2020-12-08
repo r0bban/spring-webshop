@@ -1,0 +1,44 @@
+@charset "ISO-8859-1";
+.wrapper {
+  display: grid;
+  grid-template-rows: 10fr 1fr;
+  height: 100%;
+  background-color: red;
+}
+.cartContainer {
+  padding: 2rem;
+  background-color: beige;
+  display: grid;
+  grid-auto-rows: 50px;
+  gap: 1rem;
+  overflow: auto;
+}
+
+.cartItem {
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: azure;
+  border-bottom: 1px solid black;
+}
+
+.itemEdit {
+  display: flex;
+}
+
+.itemEdit > form > input {
+  background-color: antiquewhite;
+  padding: 0.5rem 1rem;
+  box-shadow: seagreen 1px 1px;
+  margin: 0;
+  border: 1px solid gray;
+}
+
+.metaContainer {
+  background-color: beige;
+  display: flex;
+  justify-content: space-evenly;
+  border-top: 1px solid darkcyan;
+  align-items: center;
+}

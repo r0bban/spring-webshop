@@ -54,41 +54,42 @@
 
 
 <body th:with="currentPage=(${sessionModel.productPage})">
-    <p th:text="|CP:${currentPage},TP:${totalPages}|"></p>
-    <button type="button" th:onclick="showAlert()">Show Alert</button>
-    <article class="container">
-        <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
+    <!-- <p th:text="|CP:${currentPage},TP:${totalPages}|"></p>
+    <button type="button" th:onclick="showAlert()">Show Alert</button> -->
 
-        <main>
-            <!-- <p th:text="${sessionModel.categoryModel}"></p> -->
-            <div class="filterOptions" id="categoryParent">
-                <form name="filter" th:action="@{/webshop/products}" method="POST"
-                    th:object="${sessionModel.categoryModel}">
-                    <select id="cat" th:field="*{selectedCat}">
-                        <option th:text="All" th:value="0">Categories</option>
+    <div th:replace="fragments/header.html :: header(title=Browsing...)"></div>
 
-                        <option th:each="category : *{categories}" th:text="${category.name}" th:value="${category.id}">
-                        </option>
-                        Categories</option>
-                    </select>
+    <main>
+        <!-- <p th:text="${sessionModel.categoryModel}"></p> -->
+        <div class="filterOptions" id="categoryParent">
+            <form name="filter" th:action="@{/webshop/products}" method="POST"
+                th:object="${sessionModel.categoryModel}">
+                <select id="cat" th:field="*{selectedCat}">
+                    <option th:text="All" th:value="0">Categories</option>
 
-                    <select id="sub" disabled th:field="*{selectedSub}">
-                        <option th:text="All" th:value="0">Subcategories</option>
-                        <option th:each="subCategory : *{subCategories}" th:text="${subCategory.name}"
-                            th:value="${subCategory.id}">Subcategories</option>
-                    </select>
-                    <select id="type" disabled th:field="*{selectedType}">
-                        <option th:text="All" th:value="0">Types</option>
-                        <option th:each="type : *{types}" th:text="${type.name}" th:value="${type.id}"></option>
-                        Types</option>
-                    </select>
-                </form>
+                    <option th:each="category : *{categories}" th:text="${category.name}" th:value="${category.id}">
+                    </option>
+                    Categories</option>
+                </select>
 
-            </div>
-            <div class="productContainer">
-                <div th:each="product : ${allProducts}" class="productItem">
-                    <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
+                <select id="sub" disabled th:field="*{selectedSub}">
+                    <option th:text="All" th:value="0">Subcategories</option>
+                    <option th:each="subCategory : *{subCategories}" th:text="${subCategory.name}"
+                        th:value="${subCategory.id}">Subcategories</option>
+                </select>
+                <select id="type" disabled th:field="*{selectedType}">
+                    <option th:text="All" th:value="0">Types</option>
+                    <option th:each="type : *{types}" th:text="${type.name}" th:value="${type.id}"></option>
+                    Types</option>
+                </select>
+            </form>
+
+        </div>
+        <div class="productContainer">
+            <div th:each="product : ${allProducts}" class="productItem">
+                <a th:href="@{__${#request.getRequestURL()}__/product/__${product.id}__}">
                         <span th:text="${product.name}">test</span></a>
+                        <span th:text="${product.productType}"></span>
                         <!-- <span th:text="${product.productType.toString()}"></span> -->
                         <form method="POST" th:action="@{/webshop/products(id=__${product.id}__)}">
                             <input  type="submit" value="Add to cart"/>
@@ -122,7 +123,6 @@
             <a th:if="${currentPage!=totalPages}" th:href="@{/webshop/products(page=__${currentPage<2?2:currentPage+1}__)}">Next</a>
 
         </footer>
-    </article>
    
 </body>
 

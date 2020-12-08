@@ -26,11 +26,14 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 	@Override
 	public Page<Product> getProducts(ProductSearchConfig config, int page, int size) {
 
+		//TODO Not working properly, returning some correct data but missing some when filtering
+		// by subcategory and below
 		List<Predicate> predicates = new ArrayList<>();
 		try {
 			CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 			CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
 			Root<Product> product = criteriaQuery.from(Product.class);
+			System.out.println("Config:"+config);
 			if (config.getProductTypeId() > 0) {
 //				ArrayList<Long> longArray;
 //				criteriaBuilder.isMember(product.get("productType").get("id"), product)
@@ -59,8 +62,11 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 			}
 			criteriaQuery.select(product).where(predicates.toArray(new Predicate[0])).distinct(true);
 			TypedQuery<Product> typedQuery = em.createQuery(criteriaQuery);
-
-			return getPaginatedResult(page, size, predicates, typedQuery);
+			Page<Product> tmp = getPaginatedResult(page, size, predicates, typedQuery);
+			System.out.println("ReturningPage:");
+			tmp.getContent().forEach(System.out::println);
+			
+			return tmp;
 		} catch (NoResultException e) {
 			System.out.println("Exception:" + e);
 			return null;

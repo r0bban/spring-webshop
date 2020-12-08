@@ -5,98 +5,56 @@
     <meta charset="ISO-8859-1">
     <title>Shopping Cart</title>
     <link rel="stylesheet" th:href="@{/css/base.css}">
-    <style>
-        .cartContainer {
-            height: 50vh;
-            padding: 2rem;
-            background-color: beige;
-            display: grid;
-            grid-auto-rows: 50px;
-            gap: 1rem;
+    <link rel="stylesheet" th:href="@{/css/shoppingCart.css}">
 
-            overflow: auto;
-
-        }
-
-        .cartItem {
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: azure;
-            border-bottom: 2px solid black;
-        }
-
-        .itemEdit {
-            display: flex;
-        }
-
-        .itemEdit>form>input {
-            background-color: antiquewhite;
-            padding: 0.5rem 1rem;
-            box-shadow: seagreen 1px 1px;
-            margin: 0;
-            border: 1px solid gray;
-
-        }
-
-        .metaContainer {
-            background-color: beige;
-            border-bottom: 1px solid gray;
-            display: grid;
-            grid-template-columns: auto auto;
-        }
-
-        .metaData {
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
 </head>
 
 <body th:with="cart=${session.sessionModel.cart}">
     <div th:replace="fragments/header.html :: header(title='Shopping Cart')"></div>
 
-    <article th:object="${cart}">
+    <main th:object="${cart}">
+        <article class="wrapper">
 
-        <section class="cartContainer">
-            <div th:each="product : ${cart.productMap}" class="cartItem">
-                <div class="itemInfo">
-                    <span th:text="${product.key.name}"></span>
-                    <span th:text="|Price per item: ${product.key.basePrice}|"></span>
-                    <span th:text="|Quantity: ${product.value}|"></span>
-                    <span th:text="|Cost: ${cart.getItemSum(product.key)}|"></span>
+            <section class="cartContainer">
+                <div th:each="product : ${cart.productMap}" class="cartItem">
+                    <div class="itemInfo">
+                        <span th:text="${product.key.name}"></span>
+                        <span th:text="|Price per item: ${product.key.basePrice}|"></span>
+                        <span th:text="|Quantity: ${product.value}|"></span>
+                        <span th:text="|Cost: ${cart.getItemSum(product.key)}|"></span>
+                    </div>
+                    <div class="itemEdit">
+                        <form method="POST" th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=add)}">
+                            <input type="submit" value="Increase" />
+                        </form>
+                        <form method="POST"
+                            th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=remove)}">
+                            <input type="submit" value="Decrease" />
+                        </form>
+
+                    </div>
+
                 </div>
-                <div class="itemEdit">
-                    <form method="POST" th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=add)}">
-                        <input type="submit" value="Increase" />
-                    </form>
-                    <form method="POST" th:action="@{/webshop/shoppingcart(id=__${product.key.id}__,action=remove)}">
-                        <input type="submit" value="Decrease" />
-                    </form>
-
-                </div>
-
-            </div>
-        </section>
-        <section class="metaContainer">
-            <div class="metaData">
+            </section>
+            <section class="metaContainer">
                 <span th:text="|Total sum: *{getTotalSum()}|"></span>
                 <span th:text="|Total articles: *{getTotalItems()}|"></span>
-            </div>
-            <a href="">Go to Checkout</a>
-        </section>
+                <a href="/webshop/checkout">Go to Checkout</a>
+            </section>
 
-    </article>
-
-
+        </article>
+    </main>
 
 
 
 
 
-    <a href="/webshop/products">Back to Shopping</a>
-    <div>Footer Here</div>
+    <footer>
+        <a href="/webshop/products">Back to Shopping</a>
+        <div>Footer Here</div>
+
+    </footer>
+
 
 </body>
 
