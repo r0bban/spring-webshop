@@ -30,6 +30,9 @@ public class ShoppingCartDTO {
         });
         return totalSum[0];
     }
+    public int getTotalItems() {
+    	return productMap.values().stream().reduce(0,(subTotal,quantity)->subTotal+quantity);
+    }
 
     public double getItemSum(Product item) {
         return productMap.get(item) * item.getBasePrice();
@@ -78,7 +81,7 @@ public class ShoppingCartDTO {
     private boolean removeOrDeductCartItem(Product product) {
         try {
             int currentQuantity = productMap.getOrDefault(product, 0);
-            if (currentQuantity > 0) {
+            if (currentQuantity > 1) {
                 productMap.put(product, --currentQuantity);
             } else {
                 productMap.remove(product);
@@ -89,14 +92,14 @@ public class ShoppingCartDTO {
         }
     }
 
-    @Override
-    public String toString() {
-//		System.out.println(productMap);
-        return productMap
-                .entrySet()
-                .stream()
-                .map(product -> product.getKey().getName() + ":" + product.getValue())
-                .collect(Collectors.toSet()).toString();
-    }
+//    @Override
+//    public String toString() {
+////		System.out.println(productMap);
+//        return productMap
+//                .entrySet()
+//                .stream()
+//                .map(product -> product.getKey().getName() + ":" + product.getValue())
+//                .collect(Collectors.toSet()).toString();
+//    }
 
 }

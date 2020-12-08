@@ -209,10 +209,31 @@ public class ProductController {
 	@GetMapping("shoppingcart")
 	public String getShoppingCart(@ModelAttribute SessionModel sesionModel, Model m) {
 		System.out.println(sesionModel);
+		return "displayShoppingCart";
+	}
+	@PostMapping("shoppingcart")
+	public String postShoppingCart(
+			@RequestParam("id") Optional<Integer> productId,
+			@RequestParam("action") Optional<String> action,
+			@ModelAttribute SessionModel sesionModel, Model m) {
 		
+		if(productId.isPresent()) {
+			if(action.isPresent() && action.get().equals("add"))
+				sesionModel.getCart().addItem(productId.get());
+			else if(action.isPresent() && action.get().equals("remove"))
+				sesionModel.getCart().removeItem((productId.get()));
+		}
 		
 		
 		return "displayShoppingCart";
+	}
+	
+	@GetMapping
+	public String getCheckout(@ModelAttribute SessionModel sessionModel,Model m) {
+		
+		
+		
+		return "checkoutView";
 	}
 
 	
