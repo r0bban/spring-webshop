@@ -1,6 +1,7 @@
 package springWebshop.application.config;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -11,18 +12,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import springWebshop.application.integration.AccountRepository;
-import springWebshop.application.integration.CompanyRepository;
-import springWebshop.application.integration.CustomerAddressRespoitory;
-import springWebshop.application.integration.CustomerRepository;
-import springWebshop.application.integration.OrderRepository;
-import springWebshop.application.integration.ProductCategoryRepository;
-import springWebshop.application.integration.ProductRepository;
-import springWebshop.application.integration.ProductSubCategoryRepository;
-import springWebshop.application.integration.ProductTypeRepository;
+import springWebshop.application.integration.*;
 import springWebshop.application.model.domain.Address;
 import springWebshop.application.model.domain.Order;
 import springWebshop.application.model.domain.OrderLine;
@@ -30,8 +24,7 @@ import springWebshop.application.model.domain.Product;
 import springWebshop.application.model.domain.ProductCategory;
 import springWebshop.application.model.domain.ProductSubCategory;
 import springWebshop.application.model.domain.ProductType;
-import springWebshop.application.model.domain.user.Customer;
-import springWebshop.application.model.domain.user.CustomerAddress;
+import springWebshop.application.model.domain.user.*;
 import springWebshop.application.model.dto.ShoppingCartDTO;
 import springWebshop.application.service.ServiceErrorMessages;
 import springWebshop.application.service.ServiceResponse;
@@ -42,6 +35,7 @@ import springWebshop.application.service.product.ProductService;
 
 @Configuration
 public class BaseConfig {
+    final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 //    final
 //    ProductRepository productRepository;
 //    final
@@ -81,8 +75,8 @@ public class BaseConfig {
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
                                              AccountRepository accountRepository, CompanyRepository companyRepository,
                                              OrderRepository orderRepository, OrderService orderService,
-                                             CustomerRepository customerRepository,@Qualifier("ProductServiceImpl") ProductService productService
-            , CustomerAddressRespoitory addressRespoitory) {
+                                             CustomerRepository customerRepository, @Qualifier("ProductServiceImpl") ProductService productService
+            , CustomerAddressRespoitory addressRespoitory, AdminRepository adminRepository, RoleRepository roleRepository) {
 
 
         return (args) -> {
@@ -99,11 +93,15 @@ public class BaseConfig {
 //        	productService.getProductById(1L).getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //        	productService.getProductByName("Johannes").getResponseObjects().forEach(t->System.out.println(t.getId() + ":" + t.getName()));
 //
-//            createCustomers(customerRepository, 50);
-//            Customer persistedCustomer = customerRepository.findById(1L).get();
-//            System.out.println(persistedCustomer);
-//            persistedCustomer.getAddresses().forEach(System.out::println);
-//
+
+            prepareRoles(roleRepository);
+            createCustomers(customerRepository, companyRepository, roleRepository, 50);
+            Customer persistedCustomer = customerRepository.findById(1L).get();
+            System.out.println(persistedCustomer);
+            persistedCustomer.getAddresses().forEach(System.out::println);
+            createAdmins(adminRepository, roleRepository, 10);
+            Account account = accountRepository.findByEmail("admin1@gmail.com").get();
+            System.out.println(account);
 //
 //
 //            ShoppingCartDTO randomShoppingCartDTO = getRandomShoppingCartDTO(productService, 1, 100);
@@ -135,73 +133,74 @@ public class BaseConfig {
 //            orderSearchTest(orderService, productService, deliveryAddress, createOrderResponse);
 
 
-
-
         };
 
 
     }
 
-	private void orderSearchTest(OrderService orderService, ProductService productService, Address deliveryAddress,
-			ServiceResponse<Order> createOrderResponse) {
-		for (int i = 0; i < 100; i++) {
-		    ShoppingCartDTO cart = getRandomShoppingCartDTO(productService, 1, 100);
+    private void orderSearchTest(OrderService orderService, ProductService productService, Address deliveryAddress,
+                                 ServiceResponse<Order> createOrderResponse) {
+        for (int i = 0; i < 100; i++) {
+            ShoppingCartDTO cart = getRandomShoppingCartDTO(productService, 1, 100);
 
-		    orderService.createOrderFromShoppingCart(cart, randomBetween(1,50), deliveryAddress);
-		    System.out.println("Created order sucessfully: " + createOrderResponse.isSucessful());
-		}
+            orderService.createOrderFromShoppingCart(cart, randomBetween(1, 50), deliveryAddress);
+            System.out.println("Created order sucessfully: " + createOrderResponse.isSucessful());
+        }
 
-		for (int i = 2; i < 100; i++) {
-		    ArrayList<Order.OrderStatus> statusList = new ArrayList<>();
-		    statusList.add(Order.OrderStatus.CANCELED);
-		    statusList.add(Order.OrderStatus.DISPATCHED);
-		    statusList.add(Order.OrderStatus.DELIVERY);
-		    statusList.add(Order.OrderStatus.DELIVERY_COMPLETED);
+        for (int i = 2; i < 100; i++) {
+            ArrayList<Order.OrderStatus> statusList = new ArrayList<>();
+            statusList.add(Order.OrderStatus.CANCELED);
+            statusList.add(Order.OrderStatus.DISPATCHED);
+            statusList.add(Order.OrderStatus.DELIVERY);
+            statusList.add(Order.OrderStatus.DELIVERY_COMPLETED);
 
-		    ServiceResponse response = orderService.setStatus(i, statusList.get(randomBetween(0,3)));
-		    System.out.println("Changed status successfully: " + response.isSucessful() + response.getErrorMessages());
-		}
-		OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
-		orderSearchConfig.setMaxTotalSum(350.00);
-		orderSearchConfig.setSortBy(OrderSearchConfig.SortBy.totalSum);
-		ServiceResponse<Order> searchOrderResponse = orderService.getOrders(orderSearchConfig, 0,30);
-		System.out.println(searchOrderResponse);
-		searchOrderResponse.getResponseObjects().forEach(order -> {
-		    System.out.println(order);
-		});
-	}
+            ServiceResponse response = orderService.setStatus(i, statusList.get(randomBetween(0, 3)));
+            System.out.println("Changed status successfully: " + response.isSucessful() + response.getErrorMessages());
+        }
+        OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
+        orderSearchConfig.setMaxTotalSum(350.00);
+        orderSearchConfig.setSortBy(OrderSearchConfig.SortBy.totalSum);
+        ServiceResponse<Order> searchOrderResponse = orderService.getOrders(orderSearchConfig, 0, 30);
+        System.out.println(searchOrderResponse);
+        searchOrderResponse.getResponseObjects().forEach(order -> {
+            System.out.println(order);
+        });
+    }
 
-	private void productSearchTest(ProductService productService) {
-		ProductSearchConfig prodConf = new ProductSearchConfig();
-		prodConf.setProductCategoryId(0);
-		prodConf.setSearchString("9");
-		ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
-		System.out.println(prodSearchResp);
-		prodSearchResp.getResponseObjects().forEach(product -> {
-		    System.out.println("\n"+product);
-		});
+    private void productSearchTest(ProductService productService) {
+        ProductSearchConfig prodConf = new ProductSearchConfig();
+        prodConf.setProductCategoryId(0);
+        prodConf.setSearchString("9");
+        ServiceResponse<Product> prodSearchResp = productService.getProducts(prodConf, 0, 10);
+        System.out.println(prodSearchResp);
+        prodSearchResp.getResponseObjects().forEach(product -> {
+            System.out.println("\n" + product);
+        });
 
-		ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
-		System.out.println(prodSearchResp2);
-		prodSearchResp2.getResponseObjects().forEach(product -> {
-		    System.out.println("\n"+product);
-		});
-	}
+        ServiceResponse<Product> prodSearchResp2 = productService.getProducts(prodConf, 1, 10);
+        System.out.println(prodSearchResp2);
+        prodSearchResp2.getResponseObjects().forEach(product -> {
+            System.out.println("\n" + product);
+        });
+    }
 
     private void testSetOrderStatus(OrderService orderService, long orderId) {
-        System.out.println("Fetch order no 1 ----->"+orderService.getOrderById(orderId).getResponseObjects().get(0));
+        System.out.println("Fetch order no 1 ----->" + orderService.getOrderById(orderId).getResponseObjects().get(0));
         ServiceResponse<Order> changeStatusResponse = orderService.setStatus(orderId, Order.OrderStatus.DISPATCHED);
         System.out.println("Change order-status to: Dispatched ----> result: ");
         System.out.println(changeStatusResponse);
-        if(!changeStatusResponse.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        if (!changeStatusResponse.isSucessful())
+            throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
         System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
         ServiceResponse<Order> changeStatusResponse2 = orderService.setStatus(orderId, Order.OrderStatus.NOT_HANDLED);
         System.out.println("Re-change order-status back to: Not Handled ----> result: ");
         System.out.println(changeStatusResponse2);
-        if(changeStatusResponse2.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        if (changeStatusResponse2.isSucessful())
+            throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
         System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
         ServiceResponse<Order> changeStatusResponse3 = orderService.setStatus(orderId, Order.OrderStatus.CANCELED);
-        if(!changeStatusResponse3.isSucessful()) throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
+        if (!changeStatusResponse3.isSucessful())
+            throw new RuntimeException("Unexpected result when tresting change of orderStatus in OrderService");
         System.out.println("Re-change order-status back to: Canceled ----> result: ");
         System.out.println(changeStatusResponse3);
         System.out.println("Updated order ----> " + orderService.getOrderById(orderId).getResponseObjects().get(0));
@@ -218,19 +217,59 @@ public class BaseConfig {
         return shoppingCartDTO;
     }
 
-    private void createCustomers(CustomerRepository customerRepository, int quantity) {
+    private void prepareRoles(RoleRepository roleRepository) {
+        Role role1 = new Role();
+        role1.setName(ERole.ADMIN);
+        roleRepository.save(role1);
+        Role role2 = new Role();
+        role2.setName(ERole.CUSTOMER);
+        roleRepository.save(role2);
+    }
+
+    private void createCustomers(CustomerRepository customerRepository, CompanyRepository companyRepository, RoleRepository roleRepository, int quantity) {
+        Role customerRole = roleRepository.findByName(ERole.CUSTOMER).get();
+
         for (int i = 0; i < quantity; i++) {
             Customer customer = new Customer();
             customer.setFirstName("Janne");
             customer.setLastName("Larsson");
-            customer.setEmail("janne.larsson@gmail.com");
+            customer.setEmail("customer" + (i + 1) + "@gmail.com");
             customer.setPhoneNumber("46709408925");
+            customer.setPassword(bCryptPasswordEncoder.encode("password"));
+            HashSet roles = new HashSet();
+            roles.add(customerRole);
+            customer.setRoles(roles);
 
             for (int j = 0; j < randomBetween(2, 3); j++) {
                 CustomerAddress address = new CustomerAddress("Storgatan " + (i + 1), randomBetween(11401, 94789), "City X", "Sweden");
                 customer.addAddress(address);
             }
             customerRepository.save(customer);
+        }
+        List<Customer> customerList = new ArrayList<>();
+        customerList.add(customerRepository.findById(10L).get());
+        customerList.add(customerRepository.findById(20L).get());
+
+        Company company = new Company();
+        company.setVAT("SE556587983701");
+        company.setCustomers(customerList);
+        companyRepository.save(company);
+    }
+
+
+    private void createAdmins(AdminRepository adminRepository, RoleRepository roleRepository, int quantity) {
+        Role adminRole = roleRepository.findByName(ERole.ADMIN).get();
+        for (int i = 0; i < quantity; i++) {
+            Admin admin = new Admin();
+            admin.setFirstName("Admin");
+            admin.setLastName("Number" + (i + 1));
+            admin.setEmail("admin" + (i + 1) + "@gmail.com");
+            admin.setPhoneNumber("46709408925");
+            admin.setPassword(bCryptPasswordEncoder.encode("password"));
+            HashSet roles = new HashSet();
+            roles.add(adminRole);
+            admin.setRoles(roles);
+            adminRepository.save(admin);
         }
     }
 
@@ -277,29 +316,29 @@ public class BaseConfig {
 
     private void testingRedesignedProductRepoAndService(ProductRepository productRepository,
                                                         ProductTypeRepository typeRepo, ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo) {
-        int noCat = 3, noSub = 4,noType = 5;
+        int noCat = 3, noSub = 4, noType = 5;
 
-		
-		for (int i = 0; i < noCat; i++) {
-			ProductCategory category = new ProductCategory("Category " + (i + 1));
-			catRepo.save(category);
 
-		}
-		for (int i = 0; i < noSub; i++) {
-			long rand = new Random().nextInt(noCat)+1;
+        for (int i = 0; i < noCat; i++) {
+            ProductCategory category = new ProductCategory("Category " + (i + 1));
+            catRepo.save(category);
+
+        }
+        for (int i = 0; i < noSub; i++) {
+            long rand = new Random().nextInt(noCat) + 1;
 //			System.out.println("Cat Rand:"+rand);
-			ProductSubCategory subCategory = new ProductSubCategory("SubCategory " + (i + 1),
-					catRepo.findById(rand).get());
-			subCatRepo.save(subCategory);
-		}
-		for (int i = 0; i < noType; i++) {
-			long rand = new Random().nextInt(noSub)+1;
+            ProductSubCategory subCategory = new ProductSubCategory("SubCategory " + (i + 1),
+                    catRepo.findById(rand).get());
+            subCatRepo.save(subCategory);
+        }
+        for (int i = 0; i < noType; i++) {
+            long rand = new Random().nextInt(noSub) + 1;
 //			System.out.println("Sub Rand:"+rand);
-			ProductType prodType = new ProductType("ProductType " + (i + 1),
-					subCatRepo.findById(rand).get());
-			typeRepo.save(prodType);
+            ProductType prodType = new ProductType("ProductType " + (i + 1),
+                    subCatRepo.findById(rand).get());
+            typeRepo.save(prodType);
 
-		}
+        }
 
 //    	ProductCategory category = new ProductCategory("Möbler");
 //
@@ -313,10 +352,10 @@ public class BaseConfig {
 
 
         for (int i = 0; i < 40; i++) {
-        	long rand = new Random().nextInt(noType)+1;
+            long rand = new Random().nextInt(noType) + 1;
             Product product1 = new Product();
-            product1.setName("Product " + (i+1));
-            product1.setDescription("Testing this big product " + (i+1));
+            product1.setName("Product " + (i + 1));
+            product1.setDescription("Testing this big product " + (i + 1));
             product1.setBasePrice(new Random().nextInt(50));
             product1.setProductType(typeRepo.findById(rand).get());
             product1.setVatPercentage(i % 2 == 0 ? 0.25 : 0.12);
@@ -325,7 +364,7 @@ public class BaseConfig {
 //            prodType2.setId(1L);
 //            product1.setProductType(prodType2);
             productRepository.save(product1);
-            System.out.println(product1.getId()+":"+product1.getProductType().toString());
+            System.out.println(product1.getId() + ":" + product1.getProductType().toString());
 
 //            productRepository.save(product1);
 //            boolean result = productService.create(product1).isSucessful();

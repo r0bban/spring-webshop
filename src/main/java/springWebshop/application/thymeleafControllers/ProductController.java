@@ -184,6 +184,11 @@ public class ProductController {
 //		m.addAttribute("quantity", session.getCart().getProductMap())
 		return "displayProduct";
 	}
+
+	@GetMapping("/currentuser")
+	public String getLoggeinUser() {
+		return "loggedInUser";
+	}
 	
 	@PostMapping(value = "/products/product/{id}",params = "cartAction=Add")
 	public String postAddItemToCart(Product product, @PathVariable("id") Optional<Integer> productId,@ModelAttribute("sessionModel") SessionModel session, Model m) {
