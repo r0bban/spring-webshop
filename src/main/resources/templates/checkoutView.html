@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http:://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!--<html xmlns:th="https://www.thymeleaf.org">-->
 
 <head>
     <meta charset="ISO-8859-1">
@@ -82,8 +85,8 @@
 
         <section class="customerInfo">
             <div class="userDetails">
-                <span>Name</span>
-                <span>Name</span>
+                <span sec:authentication="principal.firstName"></span>
+                <span sec:authentication="principal.lastName"></span>
                 <span>Name</span>
                 <span>Name</span>
                 <span>Name</span>
