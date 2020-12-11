@@ -55,6 +55,13 @@ public class Order {
         this.totalPayable = totalPayable;
     }
 
+    public String getHeaderString() {
+        return "OrderId =" + id + " OrderStatus =" + getOrderStatus() + "\nTotalNumberOfItem=" + totalNumberOfItem
+                + ", totalSum=" + totalSum + ", totalVatSum=" + totalVatSum + ", vatPercentages=" + getVatPercentages()
+                + ", totalDiscount=" + totalDiscount + ", totalPayable=" + totalPayable + ", currency=" + currency
+                + "]";
+    }
+
     @Override
     public String toString() {
         return "OrderId =" + id + " OrderStatus =" + getOrderStatus() + orderLines + "\nTotalNumberOfItem=" + totalNumberOfItem

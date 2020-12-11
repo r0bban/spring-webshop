@@ -106,15 +106,19 @@ public class BaseConfig {
 
             createOrderTest(orderService);
             OrderSearchConfig orderConf = OrderSearchConfig.builder()
-                    .minTotalSum(10.00)
-                    .maxTotalSum(90.00)
+//                    .minTotalSum(10.00)
+//                    .maxTotalSum(90.00)
+                    .status(Order.OrderStatus.NOT_HANDLED)
                     .sortBy(OrderSearchConfig.SortBy.totalSum)
                     .build();
             System.out.println(orderConf);
             ServiceResponse<Order> searchOrderResult = orderService.getOrders(orderConf);
             List<Order> orderList = searchOrderResult.getResponseObjects();
             System.out.println("Start order search result print");
-            System.out.println(searchOrderResult.isSucessful() ? orderList : searchOrderResult.getErrorMessages());
+            if (searchOrderResult.isSucessful()){
+                orderList.forEach(order -> System.out.println(order.getHeaderString()));
+            } else searchOrderResult.getErrorMessages().forEach(System.out::println);
+
             System.out.println("End order search result print");
 
 //            OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
@@ -147,8 +151,11 @@ public class BaseConfig {
             statusList.add(Order.OrderStatus.DELIVERY);
             statusList.add(Order.OrderStatus.DELIVERY_COMPLETED);
 
-            ServiceResponse<Order> setStatusResponse = orderService.setStatus(i, statusList.get(randomBetween(0, 3)));
-            System.out.println("Changed status successfully: " + setStatusResponse.isSucessful() + setStatusResponse.getErrorMessages());
+            if(randomBetween(0,4) != 0){
+                ServiceResponse<Order> setStatusResponse = orderService.setStatus(i, statusList.get(randomBetween(0, 3)));
+                System.out.println("Changed status successfully: " + setStatusResponse.isSucessful() + setStatusResponse.getErrorMessages());
+            }
+
         }
 //        OrderSearchConfig orderSearchConfig = new OrderSearchConfig();
 //        orderSearchConfig.setMaxTotalSum(350.00);
@@ -229,6 +236,7 @@ public class BaseConfig {
             customer.setEmail("customer" + (i + 1) + "@gmail.com");
             customer.setPhoneNumber("46709408925");
             customer.setPassword(bCryptPasswordEncoder.encode("password"));
+//            customer.setPassword(bCryptPasswordEncoder.encode("password"));
             HashSet roles = new HashSet();
             roles.add(customerRole);
             customer.setRoles(roles);
