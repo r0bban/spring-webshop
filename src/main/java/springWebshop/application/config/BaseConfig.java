@@ -12,7 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -32,26 +32,11 @@ import springWebshop.application.service.order.OrderSearchConfig;
 import springWebshop.application.service.order.OrderService;
 import springWebshop.application.service.product.ProductSearchConfig;
 import springWebshop.application.service.product.ProductService;
+import springWebshop.application.service.user.AccountService;
 
 @Configuration
 public class BaseConfig {
-    final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//    final
-//    ProductRepository productRepository;
-//    final
-//    ProductTypeRepository typeRepo;
-//    final
-//    ProductCategoryRepository catRepo;
-//    final
-//    ProductSubCategoryRepository subCatRepo;
-//
-//    final
-//    AccountRepository accountRepository;
-//    final
-//    CompanyRepository companyRepository;
-
-    //    final
-//    ProductSerivce productService;
+    final PasswordEncoder passwordEncoder;
     private final ThymeleafProperties properties;
     @Autowired
     @Qualifier("ProductServiceImpl")
@@ -59,14 +44,8 @@ public class BaseConfig {
     @Value("${spring.thymeleaf.templates_root:}")
     private String templatesRoot;
 
-    public BaseConfig(ThymeleafProperties properties) {
-//        this.productRepository = productRepository;
-//        this.typeRepo = typeRepo;
-//        this.catRepo = catRepo;
-//        this.subCatRepo = subCatRepo;
-//        this.accountRepository = accountRepository;
-//        this.companyRepository = companyRepository;
-//        this.productService = productService;
+    public BaseConfig(ThymeleafProperties properties, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.properties = properties;
     }
 
@@ -75,8 +54,8 @@ public class BaseConfig {
                                              ProductCategoryRepository catRepo, ProductSubCategoryRepository subCatRepo,
                                              AccountRepository accountRepository, CompanyRepository companyRepository,
                                              OrderRepository orderRepository, OrderService orderService,
-                                             CustomerRepository customerRepository, @Qualifier("ProductServiceImpl") ProductService productService
-            , CustomerAddressRespoitory addressRespoitory, AdminRepository adminRepository, RoleRepository roleRepository) {
+                                             CustomerRepository customerRepository, @Qualifier("ProductServiceImpl") ProductService productService,
+                                             AccountService accountService, CustomerAddressRespoitory addressRespoitory, AdminRepository adminRepository, RoleRepository roleRepository) {
 
 
         return (args) -> {
@@ -95,11 +74,11 @@ public class BaseConfig {
 //
 
             prepareRoles(roleRepository);
-            createCustomers(customerRepository, companyRepository, roleRepository, 50);
+            createCustomers(accountService, companyRepository, 50);
             Customer persistedCustomer = customerRepository.findById(1L).get();
             System.out.println(persistedCustomer);
             persistedCustomer.getAddresses().forEach(System.out::println);
-            createAdmins(adminRepository, roleRepository, 10);
+            createAdmins(accountService, 10);
             Account account = accountRepository.findByEmail("admin1@gmail.com").get();
             System.out.println(account);
 
@@ -226,8 +205,7 @@ public class BaseConfig {
         roleRepository.save(role2);
     }
 
-    private void createCustomers(CustomerRepository customerRepository, CompanyRepository companyRepository, RoleRepository roleRepository, int quantity) {
-        Role customerRole = roleRepository.findByName(ERole.CUSTOMER).get();
+    private void createCustomers(AccountService accountService, CompanyRepository companyRepository, int quantity) {
 
         for (int i = 0; i < quantity; i++) {
             Customer customer = new Customer();
@@ -235,21 +213,20 @@ public class BaseConfig {
             customer.setLastName("Larsson");
             customer.setEmail("customer" + (i + 1) + "@gmail.com");
             customer.setPhoneNumber("46709408925");
-            customer.setPassword(bCryptPasswordEncoder.encode("password"));
-//            customer.setPassword(bCryptPasswordEncoder.encode("password"));
-            HashSet roles = new HashSet();
-            roles.add(customerRole);
-            customer.setRoles(roles);
+            customer.setPassword("password");
 
             for (int j = 0; j < randomBetween(2, 3); j++) {
                 CustomerAddress address = new CustomerAddress("Storgatan " + (i + 1), randomBetween(11401, 94789), "City X", "Sweden");
                 customer.addAddress(address);
             }
-            customerRepository.save(customer);
+            ServiceResponse<Customer> resp = accountService.createCustomer(customer);
+            if (resp.isSucessful()) {
+                System.out.println("JAAAAAAAAA!!-->: " + resp);
+            } else System.out.println("NEEEEEEEEEEEEEEEEEEEJ!!-->: " + resp);;
         }
         List<Customer> customerList = new ArrayList<>();
-        customerList.add(customerRepository.findById(10L).get());
-        customerList.add(customerRepository.findById(20L).get());
+        customerList.add(accountService.getCustomerById(10L).getResponseObjects().get(0));
+        customerList.add(accountService.getCustomerById(20L).getResponseObjects().get(0));
 
         Company company = new Company();
         company.setVAT("SE556587983701");
@@ -258,19 +235,15 @@ public class BaseConfig {
     }
 
 
-    private void createAdmins(AdminRepository adminRepository, RoleRepository roleRepository, int quantity) {
-        Role adminRole = roleRepository.findByName(ERole.ADMIN).get();
+    private void createAdmins(AccountService accountService, int quantity) {
         for (int i = 0; i < quantity; i++) {
             Admin admin = new Admin();
             admin.setFirstName("Admin");
             admin.setLastName("Number" + (i + 1));
             admin.setEmail("admin" + (i + 1) + "@gmail.com");
             admin.setPhoneNumber("46709408925");
-            admin.setPassword(bCryptPasswordEncoder.encode("password"));
-            HashSet roles = new HashSet();
-            roles.add(adminRole);
-            admin.setRoles(roles);
-            adminRepository.save(admin);
+            admin.setPassword("password");
+            accountService.createAdmin(admin);
         }
     }
 
