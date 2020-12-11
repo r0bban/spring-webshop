@@ -46,10 +46,10 @@ public class OrderRepositoryCustomImpl extends AbstractCustomRepository<Order> i
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(orderRoot.get("inDelivery"), config.getSentForDeliveryLatest()));
             }
             if (config.getMinTotalSum() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(orderRoot.get("totalSum"), config.getMinTotalSum()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(orderRoot.get("totalSum"), config.getMinTotalSum()));
             }
             if (config.getMaxTotalSum() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(orderRoot.get("totalSum"), config.getMaxTotalSum()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(orderRoot.get("totalSum"), config.getMaxTotalSum()));
             }
 
             criteriaQuery.select(orderRoot).where(predicates.toArray(new Predicate[0])).distinct(true);
@@ -59,7 +59,7 @@ public class OrderRepositoryCustomImpl extends AbstractCustomRepository<Order> i
 
             TypedQuery<Order> typedQuery = em.createQuery(criteriaQuery);
 
-            return getPaginatedResult(page, size, predicates, typedQuery);
+            return getPaginatedResult(page, size, predicates, typedQuery, Order.class);
         } catch (NoResultException e) {
             return null;
         }

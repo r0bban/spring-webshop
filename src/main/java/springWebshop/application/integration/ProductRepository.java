@@ -13,6 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
     //    List <Product> findByProductTypes_Name(final String typeName);
     List<Product> findByName(String name);
     
-    Page<Product> getProducts(ProductSearchConfig config,int page,int size);
+//    Page<Product> getProducts(ProductSearchConfig config,int page,int size);
   
 }

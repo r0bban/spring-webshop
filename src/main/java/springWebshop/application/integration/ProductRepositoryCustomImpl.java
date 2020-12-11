@@ -57,7 +57,7 @@ public class ProductRepositoryCustomImpl extends AbstractCustomRepository<Produc
 			}
 			criteriaQuery.select(product).distinct(true).where(predicates.toArray(new Predicate[0]));
 			TypedQuery<Product> typedQuery = em.createQuery(criteriaQuery);
-			Page<Product> tmp = getPaginatedResult(page, size, predicates, typedQuery);
+			Page<Product> tmp = getPaginatedResult(page, size, predicates, typedQuery, Product.class);
 			System.out.println("ReturningPage:");
 			tmp.getContent().forEach(System.out::println);
 			

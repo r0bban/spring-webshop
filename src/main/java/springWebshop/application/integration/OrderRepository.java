@@ -11,6 +11,5 @@ import springWebshop.application.service.order.OrderSearchConfig;
 
 public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepositoryCustom{
 
-    Page<Order> getOrders(OrderSearchConfig config, int page, int size);
 
 }
